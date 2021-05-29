@@ -12,12 +12,14 @@ import OverviewView from './views/Overview';
 import PresentationView from './views/Presentation';
 import GardenPage from 'views/GardenManagement/GardenPage';
 import TreePage from 'views/TreeManagement/TreePage';
+import PlantTypePage from 'views/PlantTypeManagement/PlantTypePage';
 
 const routes = [
   {
     path: '/',
     exact: true,
-    component: () => <Redirect to="/presentation" />
+    component: () => <Redirect to="/overview" />
+    
   },
   {
     path: '/auth',
@@ -205,6 +207,11 @@ const routes = [
         path: '/garden',
         exact: true,
         component: GardenPage
+      },
+      {
+        path: '/plantType',
+        exact: true,
+        component: PlantTypePage
       },
       {
         path: '/tree',

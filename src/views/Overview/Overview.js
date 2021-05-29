@@ -37,7 +37,7 @@ const Overview = () => {
   return (
     <Page
       className={classes.root}
-      title="Overview"
+      title="Trang chủ"
     >
       <Header />
       <Statistics className={classes.statistics} />

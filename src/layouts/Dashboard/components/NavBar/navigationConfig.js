@@ -30,7 +30,7 @@ export default [
     title: 'Trang',
     pages: [
       {
-        title: 'Overview',
+        title: 'Trang chủ',
         href: '/overview',
         icon: HomeIcon
       },
@@ -51,7 +51,7 @@ export default [
       },
       {
         title: 'Loại cây được trồng',
-        href: '/garden',
+        href: '/plantType',
         icon: PlantTypeIcon 
       },
       {

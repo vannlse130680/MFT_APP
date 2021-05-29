@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   content: {
     backgroundColor: colors.green[600]
   },
-  message: {
+  message: { 
     display: 'flex',
     alignItems: 'center'
   },

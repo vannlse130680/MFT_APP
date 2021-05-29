@@ -13,7 +13,8 @@ import routes from './routes';
 import {
   ScrollReset,
   GoogleAnalytics,
-  CookiesNotification
+  CookiesNotification,
+  AuthGuard
 } from './components';
 import './mixins/chartjs';
 import './mixins/moment';
@@ -21,6 +22,7 @@ import './mixins/validate';
 import './mixins/prismjs';
 import './mock';
 import './assets/scss/index.scss';
+import { ToastContainer, toast } from 'react-toastify';
 
 const history = createBrowserHistory();
 const store = configureStore();
@@ -30,7 +32,9 @@ const App = () => {
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
+          <ToastContainer />
           <Router history={history}>
+            <AuthGuard></AuthGuard>
             <ScrollReset />
             <GoogleAnalytics />
             <CookiesNotification />

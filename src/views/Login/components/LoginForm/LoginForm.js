@@ -6,17 +6,20 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
+import { ToastContainer, toast } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 import useRouter from 'utils/useRouter';
 import { login } from 'actions';
+import { toastError, toastSuccess } from 'utils/toastHelper';
 
 const schema = {
-  email: {
-    presence: { allowEmpty: false, message: 'is required' },
-    email: true
+  
+  username: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
   password: {
-    presence: { allowEmpty: false, message: 'is required' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   }
 };
 
@@ -52,7 +55,7 @@ const LoginForm = props => {
   });
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    const errors = validate(formState.values, schema, {fullMessages: false});
 
     setFormState(formState => ({
       ...formState,
@@ -82,8 +85,20 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    // dispatch(login());
-    router.history.push('/');
+    console.log(formState.values);
+
+    if (formState.values.password === '123') {
+      dispatch(login());
+      toastSuccess('Đăng nhập thành công !');
+      var user = {
+        name : 'Văn',
+        role: 'Farmer'
+      };
+      localStorage.setItem('USER', JSON.stringify(user));
+      router.history.push('/');
+    } else {
+      toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
+    }
   };
 
   const hasError = field =>
@@ -97,6 +112,16 @@ const LoginForm = props => {
     >
       <div className={classes.fields}>
         <TextField
+          error={hasError('username')}
+          fullWidth
+          helperText={hasError('username') ? formState.errors.username[0] : null}
+          label="Tên đăng nhập"
+          name="username"
+          onChange={handleChange}
+          value={formState.values.username || ''}
+          variant="outlined"
+        />
+        {/* <TextField
           error={hasError('email')}
           fullWidth
           helperText={hasError('email') ? formState.errors.email[0] : null}
@@ -105,14 +130,14 @@ const LoginForm = props => {
           onChange={handleChange}
           value={formState.values.email || ''}
           variant="outlined"
-        />
+        /> */}
         <TextField
           error={hasError('password')}
           fullWidth
           helperText={
             hasError('password') ? formState.errors.password[0] : null
           }
-          label="Password"
+          label="Mật khẩu"
           name="password"
           onChange={handleChange}
           type="password"
@@ -128,7 +153,7 @@ const LoginForm = props => {
         type="submit"
         variant="contained"
       >
-        Sign in
+        Đăng nhập
       </Button>
     </form>
   );

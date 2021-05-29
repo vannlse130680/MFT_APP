@@ -16,33 +16,52 @@ import {
 import useRouter from 'utils/useRouter';
 
 const schema = {
-  firstName: {
-    presence: { allowEmpty: false, message: 'is required' },
+  fullName: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 32
     }
   },
-  lastName: {
-    presence: { allowEmpty: false, message: 'is required' },
+  username: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 32
     }
   },
   email: {
-    presence: { allowEmpty: false, message: 'is required' },
-    email: true,
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    email: {
+      message: 'Email không hợp lệ'
+    },
     length: {
       maximum: 64
     }
   },
+  phoneNum: {
+    format: {
+      pattern: /((09|03|07|08|05)+([0-9]{8})\b)/,
+
+      message: 'Số điện thoại không hợp lệ'
+    }
+  },
   password: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 128
     }
   },
+  confirmPassword: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 128
+    },
+    equality: {
+      attribute: 'password',
+      message: 'Mật khẩu nhập lại không trùng khớp'
+    }
+  },
   policy: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     checked: true
   }
 };
@@ -85,7 +104,7 @@ const RegisterForm = props => {
   });
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    const errors = validate(formState.values, schema, { fullMessages: false });
 
     setFormState(formState => ({
       ...formState,
@@ -125,39 +144,53 @@ const RegisterForm = props => {
     <form
       {...rest}
       className={clsx(classes.root, className)}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       <div className={classes.fields}>
         <TextField
-          error={hasError('firstName')}
+          error={hasError('fullName')}
           helperText={
-            hasError('firstName') ? formState.errors.firstName[0] : null
+            hasError('fullName') ? formState.errors.fullName[0] : null
           }
-          label="First name"
-          name="firstName"
+          fullWidth
+          label="Họ và tên *"
+          name="fullName"
           onChange={handleChange}
-          value={formState.values.firstName || ''}
+          value={formState.values.fullName || ''}
           variant="outlined"
         />
-        <TextField
-          error={hasError('lastName')}
-          helperText={
-            hasError('lastName') ? formState.errors.lastName[0] : null
-          }
-          label="Last name"
-          name="lastName"
-          onChange={handleChange}
-          value={formState.values.lastName || ''}
-          variant="outlined"
-        />
+
         <TextField
           error={hasError('email')}
           fullWidth
           helperText={hasError('email') ? formState.errors.email[0] : null}
-          label="Email address"
+          label="Địa chỉ email"
           name="email"
           onChange={handleChange}
           value={formState.values.email || ''}
+          variant="outlined"
+        />
+        <TextField
+          error={hasError('phoneNum')}
+          fullWidth
+          helperText={
+            hasError('phoneNum') ? formState.errors.phoneNum[0] : null
+          }
+          label="Số điện thoại *"
+          name="phoneNum"
+          onChange={handleChange}
+          value={formState.values.phoneNum || ''}
+          variant="outlined"
+        />
+        <TextField
+          error={hasError('username')}
+          fullWidth
+          helperText={
+            hasError('username') ? formState.errors.username[0] : null
+          }
+          label="Tên tài khoản"
+          name="username"
+          onChange={handleChange}
+          value={formState.values.username || ''}
           variant="outlined"
         />
         <TextField
@@ -166,11 +199,26 @@ const RegisterForm = props => {
           helperText={
             hasError('password') ? formState.errors.password[0] : null
           }
-          label="Password"
+          label="Mật khẩu"
           name="password"
           onChange={handleChange}
           type="password"
           value={formState.values.password || ''}
+          variant="outlined"
+        />
+        <TextField
+          error={hasError('confirmPassword')}
+          fullWidth
+          helperText={
+            hasError('confirmPassword')
+              ? formState.errors.confirmPassword[0]
+              : null
+          }
+          label="Xác nhận mật khẩu"
+          name="confirmPassword"
+          onChange={handleChange}
+          type="password"
+          value={formState.values.confirmPassword || ''}
           variant="outlined"
         />
         <div>
@@ -182,18 +230,14 @@ const RegisterForm = props => {
               name="policy"
               onChange={handleChange}
             />
-            <Typography
-              color="textSecondary"
-              variant="body1"
-            >
+            <Typography color="textSecondary" variant="body1">
               I have read the{' '}
               <Link
                 color="secondary"
                 component={RouterLink}
                 to="#"
                 underline="always"
-                variant="h6"
-              >
+                variant="h6">
                 Terms and Conditions
               </Link>
             </Typography>
@@ -209,9 +253,8 @@ const RegisterForm = props => {
         disabled={!formState.isValid}
         size="large"
         type="submit"
-        variant="contained"
-      >
-        Create account
+        variant="contained">
+        Tạo tài khoản
       </Button>
     </form>
   );

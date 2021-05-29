@@ -10,10 +10,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Header = props => {
-  const { className, ...rest } = props;
+  const {onAddEvent, className, ...rest } = props;
 
   const classes = useStyles();
-
+  // const onAddEventHandle = (params) => {
+  //   onAddEvent()
+  // }
   return (
     <div
       {...rest}
@@ -44,6 +46,7 @@ const Header = props => {
           <Button
             color="primary"
             variant="contained"
+            onClick={onAddEvent}
           >
             <AddIcon />
             Thêm vườn mới

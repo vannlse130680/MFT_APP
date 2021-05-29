@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   Card,
   CardActions,
@@ -45,14 +46,17 @@ const useStyles = makeStyles(theme => ({
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
+  },
+  buttonIcon: {
+    marginRight: theme.spacing(1)
   }
 }));
 
 const Results = props => {
-  const { className, gardens, ...rest } = props;
+  const { className, gardens,onEditEvent, ...rest } = props;
   // console.log(gardens);
   const classes = useStyles();
-  
+
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -103,24 +107,17 @@ const Results = props => {
     completed: colors.green[600],
     rejected: colors.red[600]
   };
+  const handleClickEdit = () => {
+    
+  }
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Typography
-        color="textSecondary"
-        gutterBottom
-        variant="body2"
-      >
+    <div {...rest} className={clsx(classes.root, className)}>
+      <Typography color="textSecondary" gutterBottom variant="body2">
         {gardens.length} Records found. Page {page + 1} of{' '}
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title="Tất cả vườn"
-        />
+        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -141,6 +138,7 @@ const Results = props => {
                     </TableCell>
                     <TableCell>Tên</TableCell>
                     <TableCell>Địa chỉ</TableCell>
+                    <TableCell>Loại cây được trồng</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -155,8 +153,7 @@ const Results = props => {
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}
-                      >
+                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
@@ -176,20 +173,18 @@ const Results = props => {
                                 color="inherit"
                                 component={RouterLink}
                                 to="/management/gardens/1"
-                                variant="h6"
-                              >
+                                variant="h6">
                                 {garden.name}
                               </Link>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>{garden.address}</TableCell>
+                        <TableCell>{garden.plantTypeName}</TableCell>
                         <TableCell>
                           <Label
-                            color={(statusColors[garden.status])}
-                            variant="outlined"
-                          >
-                            
+                            color={statusColors[garden.status]}
+                            variant="outlined">
                             {garden.status}
                           </Label>
                         </TableCell>
@@ -200,9 +195,20 @@ const Results = props => {
                             component={RouterLink}
                             size="small"
                             to="/management/gardens/1"
-                            variant="outlined"
-                          >
+                            variant="contained">
+                            {' '}
+                            <EditIcon className={classes.buttonIcon} />
                             Xem
+                          </Button>
+                          <Button
+                            color="secondary"
+                            
+                            size="small"
+                            onClick={onEditEvent}
+                            variant="contained">
+                            {' '}
+                            <EditIcon className={classes.buttonIcon} />
+                            Sửa
                           </Button>
                         </TableCell>
                       </TableRow>

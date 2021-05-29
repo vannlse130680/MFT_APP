@@ -75,8 +75,7 @@ const Alert = forwardRef((props, ref) => {
       component={Typography}
       elevation={1}
       ref={ref}
-      variant="h6"
-    >
+      variant="h6">
       <span className={classes.icon}>{icon || icons[variant]}</span>
       <div className={classes.message}>{message}</div>
       {onClose && (
@@ -84,8 +83,7 @@ const Alert = forwardRef((props, ref) => {
           className={classes.action}
           color="inherit"
           key="close"
-          onClick={onClose}
-        >
+          onClick={onClose}>
           <CloseIcon />
         </IconButton>
       )}

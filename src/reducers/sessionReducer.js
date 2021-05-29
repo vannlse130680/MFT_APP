@@ -1,7 +1,9 @@
 import * as actionTypes from 'actions';
+import { createBrowserHistory } from 'history';
 
 const initialState = {
-  loggedIn: true,
+  loggedIn: false,
+
   user: {
     first_name: 'Van',
     last_name: 'Nguyen',
@@ -13,10 +15,13 @@ const initialState = {
 };
 
 const sessionReducer = (state = initialState, action) => {
+  const history = createBrowserHistory();
   switch (action.type) {
     case actionTypes.SESSION_LOGIN: {
+      state.loggedIn = true
       return {
-        ...initialState
+        ...state,
+        loggedIn: true
       };
     }
 
@@ -31,7 +36,8 @@ const sessionReducer = (state = initialState, action) => {
     }
 
     default: {
-      return state;
+      
+      return {...state}
     }
   }
 };

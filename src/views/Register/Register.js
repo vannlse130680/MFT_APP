@@ -82,21 +82,15 @@ const Register = () => {
   const classes = useStyles();
 
   return (
-    <Page
-      className={classes.root}
-      title="Register"
-    >
+    <Page className={classes.root} title="Đăng ký">
       <Card className={classes.card}>
         <CardContent className={classes.content}>
           <PersonAddIcon className={classes.icon} />
-          <Typography
-            gutterBottom
-            variant="h3"
-          >
-            Sign up
+          <Typography gutterBottom variant="h3">
+            Đăng ký
           </Typography>
           <Typography variant="subtitle2">
-            Sign up on the internal platform
+            Đăng ký trên nền tảng nội bộ
           </Typography>
           <RegisterForm className={classes.registerForm} />
           <Divider className={classes.divider} />
@@ -106,44 +100,15 @@ const Register = () => {
             component={RouterLink}
             to="/auth/login"
             underline="always"
-            variant="subtitle2"
-          >
-            Have an account?
+            variant="subtitle2">
+            Bạn đã có tài khoản?
           </Link>
         </CardContent>
         <CardMedia
           className={classes.media}
           image="/images/auth.png"
-          title="Cover"
-        >
-          <Typography
-            color="inherit"
-            variant="subtitle1"
-          >
-            Hella narvwhal Cosby sweater McSweeney's, salvia kitsch before they
-            sold out High Life.
-          </Typography>
-          <div className={classes.person}>
-            <Avatar
-              alt="Person"
-              className={classes.avatar}
-              src="/images/avatars/avatar_2.png"
-            />
-            <div>
-              <Typography
-                color="inherit"
-                variant="body1"
-              >
-                Ekaterina Tankova
-              </Typography>
-              <Typography
-                color="inherit"
-                variant="body2"
-              >
-                Manager at inVision
-              </Typography>
-            </div>
-          </div>
+          title="Cover">
+          
         </CardMedia>
       </Card>
     </Page>

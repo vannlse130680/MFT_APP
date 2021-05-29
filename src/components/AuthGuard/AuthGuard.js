@@ -13,14 +13,20 @@ const AuthGuard = props => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!session.loggedIn || !session.user) {
+    if (
+      router.history.location.pathname === '/auth/login' ||
+      router.history.location.pathname === '/auth/register'
+    )
+      return;
+
+    if (!localStorage.getItem('USER')) {
       router.history.push('/auth/login');
       return;
     }
 
-    if (!roles.includes(session.user.role)) {
-      router.history.push('/errors/error-401');
-    }
+    // if (!roles.includes(session.user.role)) {
+    //   router.history.push('/errors/error-401');
+    // }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
