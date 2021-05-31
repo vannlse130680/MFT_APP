@@ -12,9 +12,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import useRouter from 'utils/useRouter';
 import { login } from 'actions';
 import { toastError, toastSuccess } from 'utils/toastHelper';
+import callAPI from 'utils/callAPI';
+import Axios from 'axios';
+import { renderRoutes } from 'react-router-config';
+import routes from 'routes';
 
 const schema = {
-  
   username: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
@@ -55,7 +58,7 @@ const LoginForm = props => {
   });
 
   useEffect(() => {
-    const errors = validate(formState.values, schema, {fullMessages: false});
+    const errors = validate(formState.values, schema, { fullMessages: false });
 
     setFormState(formState => ({
       ...formState,
@@ -85,20 +88,33 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log(formState.values);
+    // console.log(formState.values);
+    var data = {
+      username: formState.values.username,
+      password: formState.values.password
+    };
 
-    if (formState.values.password === '123') {
-      dispatch(login());
-      toastSuccess('Đăng nhập thành công !');
-      var user = {
-        name : 'Văn',
-        role: 'Farmer'
-      };
-      localStorage.setItem('USER', JSON.stringify(user));
-      router.history.push('/');
-    } else {
-      toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
-    }
+    // Axios.post(
+    //   'https://localhost:44316/api/Account/Login?username=vannl&password=12345'
+    // ).then((params) => {
+    //   console.log(params)
+    // });
+    callAPI('Account/Login', 'POST', data)
+      .then(response => {
+        if (response.data.length > 0) {
+          // dispatch(login());
+          toastSuccess('Đăng nhập thành công !');
+          var user = response.data[0]
+          localStorage.setItem('USER', JSON.stringify(user));
+          
+          router.history.push('/');
+        } else {
+          toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const hasError = field =>
@@ -108,13 +124,14 @@ const LoginForm = props => {
     <form
       {...rest}
       className={clsx(classes.root, className)}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       <div className={classes.fields}>
         <TextField
           error={hasError('username')}
           fullWidth
-          helperText={hasError('username') ? formState.errors.username[0] : null}
+          helperText={
+            hasError('username') ? formState.errors.username[0] : null
+          }
           label="Tên đăng nhập"
           name="username"
           onChange={handleChange}
@@ -151,8 +168,7 @@ const LoginForm = props => {
         disabled={!formState.isValid}
         size="large"
         type="submit"
-        variant="contained"
-      >
+        variant="contained">
         Đăng nhập
       </Button>
     </form>

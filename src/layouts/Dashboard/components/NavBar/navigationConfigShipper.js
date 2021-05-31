@@ -6,7 +6,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ChatIcon from '@material-ui/icons/ChatOutlined';
 import CodeIcon from '@material-ui/icons/Code';
-// import DashboardIcon from '@material-ui/icons/DashboardOutlined';
+import DashboardIcon from '@material-ui/icons/DashboardOutlined';
 import ErrorIcon from '@material-ui/icons/ErrorOutline';
 import FolderIcon from '@material-ui/icons/FolderOutlined';
 import HomeIcon from '@material-ui/icons/HomeOutlined';
@@ -34,36 +34,22 @@ export default [
         href: '/overview',
         icon: HomeIcon
       },
-      // {
-      //   title: 'Dashboards',
-      //   href: '/dashboards',
-      //   icon: DashboardIcon,
-      //   children: [
-      //     {
-      //       title: 'Default',
-      //       href: '/dashboards/default'
-      //     },
-      //     {
-      //       title: 'Analytics',
-      //       href: '/dashboards/analytics'
-      //     }
-      //   ]
-      // },
       {
-        title: 'Loại cây được trồng',
-        href: '/plantType',
-        icon: PlantTypeIcon 
+        title: 'Dashboards',
+        href: '/dashboards',
+        icon: DashboardIcon,
+        children: [
+          {
+            title: 'Default',
+            href: '/dashboards/default'
+          },
+          {
+            title: 'Analytics',
+            href: '/dashboards/analytics'
+          }
+        ]
       },
-      {
-        title: 'Vườn',
-        href: '/garden',
-        icon: GardenIcon 
-      },
-      {
-        title: 'Cây',
-        href: '/tree',
-        icon: TreeIcon 
-      },
+      
       {
         title: 'Profile',
         href: '/profile',

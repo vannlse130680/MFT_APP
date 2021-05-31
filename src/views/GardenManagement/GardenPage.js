@@ -2,10 +2,13 @@ import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import { AuthGuard, Page, SearchBar } from 'components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
+
+import Axios from 'axios';
+import callAPI from 'utils/callAPI';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -117,13 +120,35 @@ const GardenPage = () => {
       open: true,
       event: {}
     });
-  }
+  };
+
+  useEffect(() => {
+    // callAPI("Account", "GET", null).then((res) => {
+    //   console.log(res)
+    // })
+    // Axios.get('https://localhost:44316/api/Account').then(response => {
+    //   console.log(response);
+    
+    // });
+  });
   return (
-    <Page className={classes.root} title="Garden Management">
-      
+    <Page
+      className={classes.root}
+      title="Garden Management"
+    >
+      <AuthGuard roles={["FARMER"]}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
-      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      {gardens && <Results className={classes.results} gardens={gardens} onEditEvent={handleEventOpenEdit}/>}
+      <SearchBar
+        onFilter={handleFilter}
+        onSearch={handleSearch}
+      />
+      {gardens && (
+        <Results
+          className={classes.results}
+          gardens={gardens}
+          onEditEvent={handleEventOpenEdit}
+        />
+      )}
       <Modal
         onClose={handleModalClose}
         open={eventModal.open}

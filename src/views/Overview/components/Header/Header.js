@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -21,6 +21,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Header = props => {
+  const [profile, setProfile] = useState({});
+  useEffect(() => {
+    var user = localStorage.getItem('USER');
+    if (user) {
+      var data = JSON.parse(user);
+      // console.log(data);
+      setProfile(data);
+      
+    }
+  }, []);
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -47,14 +57,14 @@ const Header = props => {
             gutterBottom
             variant="overline"
           >
-            Home
+            Trang chủ
           </Typography>
           <Typography
             component="h1"
             gutterBottom
             variant="h3"
           >
-            Good Morning, {session.user.first_name}
+            Xin chào, {profile.fullname}
           </Typography>
           <Typography
             gutterBottom

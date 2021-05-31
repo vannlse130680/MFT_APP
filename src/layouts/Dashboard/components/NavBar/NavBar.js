@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -10,6 +10,8 @@ import { Hidden } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import { Navigation } from 'components';
 import navigationConfig from './navigationConfig';
+import navShipper from './navigationConfigShipper';
+import navAdmin from './navigationConfigAdmin';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,6 +43,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavBar = props => {
+  
+  const [profile, setProfile] = useState({});
+  useEffect(() => {
+    var user = localStorage.getItem('USER');
+    if (user) {
+      var data = JSON.parse(user);
+      // console.log(data);
+      setProfile(data);
+      
+    }
+  }, []);
   const { openMobile, onMobileClose, className, ...rest } = props;
 
   const classes = useStyles();
@@ -69,13 +82,18 @@ const NavBar = props => {
           className={classes.name}
           variant="h4"
         >
-          {session.user.first_name} {session.user.last_name}
+          {profile.fullname}
         </Typography>
-        <Typography variant="body2">{session.user.bio}</Typography>
+        <Typography variant="body2">{profile.role}</Typography>
       </div>
       <Divider className={classes.divider} />
       <nav className={classes.navigation}>
-        {navigationConfig.map(list => (
+        {(profile.role === 'farmer'
+          ? navigationConfig
+          : profile.role === 'shipper'
+            ? navShipper
+            : navAdmin
+        ).map(list => (
           <Navigation
             component="div"
             key={list.title}

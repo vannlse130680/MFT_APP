@@ -14,6 +14,8 @@ import {
 } from '@material-ui/core';
 
 import useRouter from 'utils/useRouter';
+import callAPI from 'utils/callAPI';
+import { toastError, toastSuccess } from 'utils/toastHelper';
 
 const schema = {
   fullName: {
@@ -23,6 +25,12 @@ const schema = {
     }
   },
   username: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 32
+    }
+  },
+  address: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 32
@@ -134,7 +142,29 @@ const RegisterForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    history.push('/');
+    console.log(formState.values);
+    var data = {
+      username: formState.values.username,
+      password: formState.values.password,
+      fullname: formState.values.fullName,
+      email: formState.values.email,
+      phone: formState.values.phoneNum,
+      address: formState.values.address,
+      avatar: ''
+    };
+    console.log(data);
+    callAPI('Account/register', 'POST', data)
+      .then(response => {
+        if (response.status === 200 && response.data) {
+          toastSuccess('Đăng kí tài khoản thành công');
+          history.push('/');
+        } else {
+          toastError('Tên tài khoản đã tồn tại !');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const hasError = field =>
@@ -179,6 +209,16 @@ const RegisterForm = props => {
           name="phoneNum"
           onChange={handleChange}
           value={formState.values.phoneNum || ''}
+          variant="outlined"
+        />
+        <TextField
+          error={hasError('address')}
+          fullWidth
+          helperText={hasError('address') ? formState.errors.address[0] : null}
+          label="Địa chỉ"
+          name="address"
+          onChange={handleChange}
+          value={formState.values.address || ''}
           variant="outlined"
         />
         <TextField

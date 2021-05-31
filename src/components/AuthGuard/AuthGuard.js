@@ -23,10 +23,12 @@ const AuthGuard = props => {
       router.history.push('/auth/login');
       return;
     }
-
-    // if (!roles.includes(session.user.role)) {
-    //   router.history.push('/errors/error-401');
-    // }
+    if (roles) {
+      console.log(roles);
+      if (!roles.includes('FARMER')) {
+        router.history.push('/errors/error-401');
+      }
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
@@ -35,12 +37,11 @@ const AuthGuard = props => {
 };
 
 AuthGuard.propTypes = {
-  children: PropTypes.node,
-  roles: PropTypes.array.isRequired
+  children: PropTypes.node
 };
 
-AuthGuard.defaultProps = {
-  roles: []
-};
+// AuthGuard.defaultProps = {
+//   roles: []
+// };
 
 export default AuthGuard;
