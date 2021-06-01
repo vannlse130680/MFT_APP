@@ -22,7 +22,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing(6, 2)
+    padding: theme.spacing(6, 2),
+    marginTop : 50
   },
   card: {
     width: theme.breakpoints.values.md,
@@ -89,10 +90,11 @@ const Register = () => {
           <Typography gutterBottom variant="h3">
             Đăng ký
           </Typography>
-          <Typography variant="subtitle2">
+          {/* <Typography variant="subtitle2">
             Đăng ký trên nền tảng nội bộ
-          </Typography>
+          </Typography> */}
           <RegisterForm className={classes.registerForm} />
+          
           <Divider className={classes.divider} />
           <Link
             align="center"
@@ -110,7 +112,9 @@ const Register = () => {
           title="Cover">
           
         </CardMedia>
+        
       </Card>
+      
     </Page>
   );
 };

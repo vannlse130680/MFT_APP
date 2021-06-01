@@ -49,17 +49,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, gardens, ...rest } = props;
+  const { className, plantTypes, ...rest } = props;
   // console.log(gardens);
   const classes = useStyles();
-  
+
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? gardens.map(garden => garden.id)
+      ? plantTypes.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -99,28 +99,18 @@ const Results = props => {
   };
   const statusColors = {
     canceled: colors.grey[600],
-    pending: colors.orange[600],
-    completed: colors.green[600],
+    0: colors.orange[600],
+    1: colors.green[600],
     rejected: colors.red[600]
   };
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Typography
-        color="textSecondary"
-        gutterBottom
-        variant="body2"
-      >
-        {gardens.length} Records found. Page {page + 1} of{' '}
-        {Math.ceil(gardens.length / rowsPerPage)}
+    <div {...rest} className={clsx(classes.root, className)}>
+      <Typography color="textSecondary" gutterBottom variant="body2">
+        {plantTypes.length} Records found. Page {page + 1} of{' '}
+        {Math.ceil(plantTypes.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title="Danh sách"
-        />
+        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -130,18 +120,21 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === gardens.length}
+                        checked={selectedCustomers.length === plantTypes.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < gardens.length
+                          selectedCustomers.length < plantTypes.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell>
                     <TableCell>Tên</TableCell>
-                    <TableCell>Địa chỉ</TableCell>
-                    <TableCell>Loại cây được trồng</TableCell>
+                    <TableCell>Phân loại</TableCell>
+                    <TableCell>Năng suất bình quân (kg / vụ)</TableCell>
+                    <TableCell>Số mùa vụ (vụ / năm)</TableCell>
+                    <TableCell>Nhà cung cấp</TableCell>
+                    <TableCell>Giá</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -150,24 +143,27 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {gardens
+                  {plantTypes
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((garden, index) => (
+                    .map((planType, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}
-                      >
+                        selected={
+                          selectedCustomers.indexOf(planType.id) !== -1
+                        }>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(garden.id) !== -1
+                              selectedCustomers.indexOf(planType.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, garden.id)
+                              handleSelectOne(event, planType.id)
                             }
-                            value={selectedCustomers.indexOf(garden.id) !== -1}
+                            value={
+                              selectedCustomers.indexOf(planType.id) !== -1
+                            }
                           />
                         </TableCell>
                         <TableCell>
@@ -177,22 +173,22 @@ const Results = props => {
                                 color="inherit"
                                 component={RouterLink}
                                 to="/management/gardens/1"
-                                variant="h6"
-                              >
-                                {garden.name}
+                                variant="h6">
+                                {planType.name}
                               </Link>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>{garden.address}</TableCell>
-                        <TableCell>{garden.plantTypeName}</TableCell>
+                        <TableCell>{planType.t.typeName}</TableCell>
+                        <TableCell>{planType.yield}</TableCell>
+                        <TableCell>{planType.crops}</TableCell>
+                        <TableCell>{planType.supplier}</TableCell>
+                        <TableCell>{planType.price}</TableCell>
                         <TableCell>
                           <Label
-                            color={(statusColors[garden.status])}
-                            variant="outlined"
-                          >
-                            
-                            {garden.status}
+                            color={statusColors[planType.status]}
+                            variant="contained">
+                            {planType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
                           </Label>
                         </TableCell>
 
@@ -202,9 +198,8 @@ const Results = props => {
                             component={RouterLink}
                             size="small"
                             to="/management/gardens/1"
-                            variant="outlined"
-                          >
-                            Xem
+                            variant="outlined">
+                            Sửa
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -217,7 +212,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={gardens.length}
+            count={plantTypes.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -233,11 +228,11 @@ const Results = props => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  gardens: PropTypes.array.isRequired
+  plantTypes: PropTypes.array.isRequired
 };
 
 Results.defaultProps = {
-  gardens: []
+  plantTypes: []
 };
 
 export default Results;

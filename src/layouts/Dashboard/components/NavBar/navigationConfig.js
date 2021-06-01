@@ -34,21 +34,21 @@ export default [
         href: '/overview',
         icon: HomeIcon
       },
-      // {
-      //   title: 'Dashboards',
-      //   href: '/dashboards',
-      //   icon: DashboardIcon,
-      //   children: [
-      //     {
-      //       title: 'Default',
-      //       href: '/dashboards/default'
-      //     },
-      //     {
-      //       title: 'Analytics',
-      //       href: '/dashboards/analytics'
-      //     }
-      //   ]
-      // },
+      {
+        title: 'Quản lý vườn',
+        href: '/gardenManagement',
+        icon: GardenIcon,
+        children: [
+          {
+            title: 'Vườn',
+            href: '/gardenManagement/garden'
+          },
+          {
+            title: 'Cây',
+            href: '/dashboards/analytics'
+          }
+        ]
+      },
       {
         title: 'Loại cây được trồng',
         href: '/plantType',

@@ -1,4 +1,4 @@
-import { Modal } from '@material-ui/core';
+import { Modal, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import { AuthGuard, Page, SearchBar } from 'components';
@@ -9,6 +9,8 @@ import Results from './components/Result/Results';
 
 import Axios from 'axios';
 import callAPI from 'utils/callAPI';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from 'actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -123,25 +125,27 @@ const GardenPage = () => {
   };
 
   useEffect(() => {
+    // console.log('hahaha');
     // callAPI("Account", "GET", null).then((res) => {
     //   console.log(res)
     // })
     // Axios.get('https://localhost:44316/api/Account').then(response => {
     //   console.log(response);
-    
+
     // });
   });
+  // const dispatch = useDispatch()
+  // const handleonClick = () => {
+   
+  //   dispatch(login())
+  // }
+  // const counter = useSelector((state) => state.session)
+  // console.log(counter)
   return (
-    <Page
-      className={classes.root}
-      title="Garden Management"
-    >
-      <AuthGuard roles={["FARMER"]}></AuthGuard>
+    <Page className={classes.root} title="Garden Management">
+      <AuthGuard roles={['FARMER']}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
-      <SearchBar
-        onFilter={handleFilter}
-        onSearch={handleSearch}
-      />
+      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {gardens && (
         <Results
           className={classes.results}
@@ -149,10 +153,7 @@ const GardenPage = () => {
           onEditEvent={handleEventOpenEdit}
         />
       )}
-      <Modal
-        onClose={handleModalClose}
-        open={eventModal.open}
-      >
+      <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
           event={eventModal.event}
           onAdd={handleEventAdd}
@@ -161,6 +162,7 @@ const GardenPage = () => {
           onEdit={handleEventEdit}
         />
       </Modal>
+      {/* <Button variant="text" color="default" onClick={handleonClick}> a</Button> */}
     </Page>
   );
 };

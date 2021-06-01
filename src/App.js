@@ -24,6 +24,7 @@ import './mixins/prismjs';
 import './mock';
 import './assets/scss/index.scss';
 import { ToastContainer, toast } from 'react-toastify';
+import GlobalLoading from 'utils/globalLoading';
 
 const history = createBrowserHistory();
 const store = configureStore();
@@ -46,6 +47,7 @@ const App = () => {
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
+          <GlobalLoading/>
           <ToastContainer />
           <Router history={history}>
             <AuthGuard></AuthGuard>

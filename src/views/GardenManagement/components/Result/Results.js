@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
+import ViewIcon from '@material-ui/icons/VisibilityOutlined';
 import {
   Card,
   CardActions,
@@ -48,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   },
   buttonIcon: {
+    marginRight: theme.spacing(1)
+  },
+  actionIcon: {
     marginRight: theme.spacing(1)
   }
 }));
@@ -111,13 +115,23 @@ const Results = props => {
     
   }
   return (
-    <div {...rest} className={clsx(classes.root, className)}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
+    <div
+      {...rest}
+      className={clsx(classes.root, className)}
+    >
+      <Typography
+        color="textSecondary"
+        gutterBottom
+        variant="body2"
+      >
         {gardens.length} Records found. Page {page + 1} of{' '}
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
+        <CardHeader
+          action={<GenericMoreButton />}
+          title="Danh sách"
+        />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -153,7 +167,8 @@ const Results = props => {
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
+                        selected={selectedCustomers.indexOf(garden.id) !== -1}
+                      >
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
@@ -173,7 +188,8 @@ const Results = props => {
                                 color="inherit"
                                 component={RouterLink}
                                 to="/management/gardens/1"
-                                variant="h6">
+                                variant="h6"
+                              >
                                 {garden.name}
                               </Link>
                             </div>
@@ -184,30 +200,34 @@ const Results = props => {
                         <TableCell>
                           <Label
                             color={statusColors[garden.status]}
-                            variant="outlined">
+                            variant="contained"
+                          >
                             {garden.status}
                           </Label>
                         </TableCell>
 
                         <TableCell align="center">
                           <Button
+                            className={classes.actionIcon}
                             color="primary"
                             component={RouterLink}
                             size="small"
                             to="/management/gardens/1"
-                            variant="contained">
+                            variant="outlined"
+                          >
                             {' '}
-                            <EditIcon className={classes.buttonIcon} />
+                            {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
                           <Button
                             color="secondary"
                             
-                            size="small"
                             onClick={onEditEvent}
-                            variant="contained">
+                            size="small"
+                            variant="outlined"
+                          >
                             {' '}
-                            <EditIcon className={classes.buttonIcon} />
+                            {/* <EditIcon className={classes.buttonIcon} /> */}
                             Sửa
                           </Button>
                         </TableCell>

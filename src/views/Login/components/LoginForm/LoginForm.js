@@ -16,6 +16,7 @@ import callAPI from 'utils/callAPI';
 import Axios from 'axios';
 import { renderRoutes } from 'react-router-config';
 import routes from 'routes';
+import { hideLoading, showLoading } from 'actions/loading';
 
 const schema = {
   username: {
@@ -88,33 +89,40 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    dispatch(showLoading());
     // console.log(formState.values);
-    var data = {
-      username: formState.values.username,
-      password: formState.values.password
-    };
 
-    // Axios.post(
-    //   'https://localhost:44316/api/Account/Login?username=vannl&password=12345'
-    // ).then((params) => {
-    //   console.log(params)
-    // });
-    callAPI('Account/Login', 'POST', data)
-      .then(response => {
-        if (response.data.length > 0) {
-          // dispatch(login());
-          toastSuccess('Đăng nhập thành công !');
-          var user = response.data[0]
-          localStorage.setItem('USER', JSON.stringify(user));
-          
-          router.history.push('/');
-        } else {
-          toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    setTimeout(function() {
+      var data = {
+        username: formState.values.username,
+        password: formState.values.password
+      };
+
+      // Axios.post(
+      //   'https://localhost:44316/api/Account/Login?username=vannl&password=12345'
+      // ).then((params) => {
+      //   console.log(params)
+      // });
+      callAPI('Account/Login', 'POST', data)
+        .then(response => {
+          if (response.data.length > 0) {
+            // dispatch(login());
+            dispatch(hideLoading());
+            toastSuccess('Đăng nhập thành công !');
+            var user = response.data[0];
+            user.username = data.username
+            localStorage.setItem('USER', JSON.stringify(user));
+
+            router.history.push('/');
+          } else {
+            dispatch(hideLoading());
+            toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }, 1000);
   };
 
   const hasError = field =>

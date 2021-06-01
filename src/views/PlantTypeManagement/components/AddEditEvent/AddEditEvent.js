@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -19,7 +19,21 @@ import {
   colors
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
-
+import { Autocomplete } from '@material-ui/lab';
+import validate from 'validate.js';
+import callAPI from 'utils/callAPI';
+import { values } from 'lodash';
+const schema = {
+  name: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  supplier: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  test: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  }
+};
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'absolute',
@@ -61,25 +75,94 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const classes = useStyles();
 
-  const defaultEvent = {
-    title: 'Event title',
-    desc: 'Event description',
-    allDay: false,
-    start: moment().toDate(),
-    end: moment().toDate()
-  };
+  // const defaultValue = {
+  //   name: '111',
+  //   address: '111',
+  //   plantType: '11'
+  // };
+  const [treeTypes, setTreeTypes] = useState([]);
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: {},
+    touched: {},
+    errors: {}
+  });
+  useEffect(() => {
+    const errors = validate(formState.values, schema, { fullMessages: false });
 
-  const [values, setValues] = useState(event || defaultEvent);
+    setFormState(formState => ({
+      ...formState,
+      isValid: errors ? false : true,
+      errors: errors || {}
+    }));
+  }, [formState.values]);
+
+  useEffect(() => {
+    callAPI('treetype', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setTreeTypes(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+  const hasError = field =>
+    formState.touched[field] && formState.errors[field] ? true : false;
+  // const [values, setValues] = useState(event || defaultEvent);
 
   const mode = event ? 'edit' : 'add';
 
-  const handleFieldChange = e => {
-    e.persist();
-    setValues(values => ({
-      ...values,
-      [e.target.name]:
-        e.target.type === 'checkbox' ? e.target.checked : e.target.value
-    }));
+  // const handleFieldChange = e => {
+  //   e.persist();
+  //   setValues(values => ({
+  //     ...values,
+  //     [e.target.name]:
+  //       e.target.type === 'checkbox' ? e.target.checked : e.target.value
+  //   }));
+  // };
+
+  const handleChange = (event, value) => {
+    event.persist();
+    console.log(event.target.name);
+    if (event.target.name === "test") {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          test: ''
+        },
+        touched: {
+          ...formState.touched,
+          [event.target.name]: true
+        }
+      }));
+    } else if (event.target.name) {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          [event.target.name]:
+            event.target.type === 'checkbox'
+              ? event.target.checked
+              : event.target.value
+        },
+        touched: {
+          ...formState.touched,
+          [event.target.name]: true
+        }
+      }));
+    } else {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          auto: value,
+          test: 'ád'
+        }
+      }));
+    }
   };
 
   const handleDelete = () => {
@@ -87,117 +170,146 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    if (!values.title || !values.desc) {
-      return;
-    }
+    // if (!values.title || !values.desc) {
+    //   return;
+    // }
+    var { values } = formState;
+    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var data = {
+      treeTypeID: values.auto.id,
+      name: values.name,
+      farmerUsername: username,
+      supplier: values.supplier,
+      crops: parseInt(values.crops),
+      yield: parseFloat(values.yield),
+      price: parseFloat(values.price)
+    };
 
-    onAdd({ ...values, id: uuid() });
+    console.log(formState);
+    onAdd(data);
   };
 
   const handleEdit = () => {
-    if (!values.title || !values.desc) {
-      return;
-    }
+    // if (!values.title || !values.desc) {
+    //   return;
+    // }
 
-    onEdit(values);
+    // onEdit(values);
+    onEdit();
   };
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-      ref={ref}
-    >
+    <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
       <form>
         <CardContent>
-          <Typography
-            align="center"
-            gutterBottom
-            variant="h3"
-          >
-            {mode === 'add' ? 'Add Event' : 'Edit Event'}
+          <Typography align="center" gutterBottom variant="h3">
+            {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
           </Typography>
           <TextField
             className={classes.field}
+            error={hasError('name')}
             fullWidth
-            label="Title"
-            name="title"
-            onChange={handleFieldChange}
-            value={values.title}
+            helperText={hasError('name') ? formState.errors.name[0] : null}
+            label="Tên"
+            name="name"
+            onChange={handleChange}
+            value={formState.values.name || ''}
             variant="outlined"
           />
           <TextField
             className={classes.field}
+            error={hasError('supplier')}
             fullWidth
-            label="Description"
-            name="desc"
-            onChange={handleFieldChange}
-            value={values.desc}
-            variant="outlined"
-          />
-          <FormControlLabel
-            className={classes.field}
-            control={
-              <Switch
-                checked={values.allDay}
-                name="allDay"
-                onChange={handleFieldChange}
-              />
+            helperText={
+              hasError('supplier') ? formState.errors.supplier[0] : null
             }
-            label="All day"
-          />
-          <TextField
-            className={classes.field}
-            defaultValue={moment(values.start).format('YYYY-MM-DDThh:mm:ss')}
-            fullWidth
-            label="Start date"
-            name="start"
-            onChange={handleFieldChange}
-            type="datetime-local"
+            label="Nhà cung cấp"
+            name="supplier"
+            onChange={handleChange}
+            value={formState.values.supplier || ''}
             variant="outlined"
           />
           <TextField
             className={classes.field}
-            defaultValue={moment(values.end).format('YYYY-MM-DDThh:mm:ss')}
-            disabled={values.allDay}
             fullWidth
-            label="End date"
-            name="end"
-            onChange={handleFieldChange}
-            type="datetime-local"
+            label="Năng suất bình quân (kg/vụ)"
+            name="yield"
+            onChange={handleChange}
+            value={formState.values.yield || ''}
             variant="outlined"
+          />
+          <TextField
+            className={classes.field}
+            fullWidth
+            label="Số vụ"
+            name="crops"
+            onChange={handleChange}
+            value={formState.values.crops || ''}
+            variant="outlined"
+            type="number"
+          />
+          <TextField
+            className={classes.field}
+            fullWidth
+            label="Giá"
+            name="price"
+            onChange={handleChange}
+            value={formState.values.price || ''}
+            variant="outlined"
+            type="number"
+          />
+          <Autocomplete
+            // onChange={handleChange}
+
+            fullWidth
+            // value={formState.values.test}
+            // inputValue={formState.values.test}
+            getOptionLabel={option => option.typeName}
+            // value={formState.values.test}
+            getOptionSelected={(option, value) => option.id === value.id}
+            onChange={(event, value) => handleChange(event, value)}
+            onInputChange={handleChange} // prints the selected value
+            options={treeTypes}
+            renderInput={params => (
+              <TextField
+                {...params}
+                className={classes.field}
+                error={hasError('test')}
+                helperText={hasError('test') ? formState.errors.test[0] : null}
+                label="Loại trái cây"
+                name="test"
+                value={formState.values.test}
+                variant="outlined"
+              />
+            )}
           />
         </CardContent>
         <Divider />
         <CardActions>
-          <IconButton
-            edge="start"
-            onClick={handleDelete}
-          >
+          {/* <IconButton edge="start" onClick={handleDelete}>
             <DeleteIcon />
-          </IconButton>
+          </IconButton> */}
           <Button
             className={classes.cancelButton}
             onClick={onCancel}
-            variant="contained"
-          >
-            Cancel
+            variant="contained">
+            Hủy bỏ
           </Button>
           {mode === 'add' ? (
             <Button
               className={classes.confirmButton}
               onClick={handleAdd}
-              variant="contained"
-            >
-              Add
+              disabled={!formState.isValid}
+              variant="contained">
+              Tạo
             </Button>
           ) : (
             <Button
               className={classes.confirmButton}
               onClick={handleEdit}
-              variant="contained"
-            >
-              Save
+              disabled={!formState.isValid}
+              variant="contained">
+              Lưu
             </Button>
           )}
         </CardActions>

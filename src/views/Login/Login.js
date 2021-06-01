@@ -89,9 +89,9 @@ const Login = () => {
           <Typography gutterBottom variant="h3">
             Đăng nhập
           </Typography>
-          <Typography variant="subtitle2">
-            Đăng nhập trên nền tảng nội bộ
-          </Typography>
+            {/* <Typography variant="subtitle2">
+              Đăng nhập trên nền tảng nội bộ
+            </Typography> */}
           <LoginForm className={classes.loginForm} />
           <Divider className={classes.divider} />
           <Link

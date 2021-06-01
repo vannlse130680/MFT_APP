@@ -1,8 +1,11 @@
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
 
 import { AuthGuard, Page, SearchBar } from 'components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import callAPI from 'utils/callAPI';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
@@ -17,38 +20,59 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PlantTypePage = () => {
+  const [value, setValue] = useState(0); // integer state
+  const plantTypesStore = useSelector(state => state.plantTypes);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    var username = JSON.parse(localStorage.getItem('USER')).username;
+    // console.log(username)
+    callAPI(`planttype/${username}`, 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(actFetchPlantTypes(res.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [value]);
+
   const classes = useStyles();
-  const initGardensValue = [
-    {
-      id: 1,
-      name: 'Vườn trái cây Long Khánh',
-      address: 'Đồng Nai',
-      status: 'completed',
-      plantTypeName: 'Xoài'
-    },
-    {
-      id: 2,
-      name: 'Vườn trái cây Trung An',
-      address: 'Củ Chi',
-      status: 'completed',
-      plantTypeName: 'Cam'
-    },
-    {
-      id: 3,
-      name: 'Khu du lịch Cồn Phụng',
-      address: 'Bến Tre',
-      status: 'pending',
-      plantTypeName: 'Mận'
-    },
-    {
-      id: 4,
-      name: 'Miệt vườn Vĩnh Kim',
-      address: 'Tiền Giang',
-      status: 'pending',
-      plantTypeName: 'Dừa'
-    }
-  ];
-  const [gardens, setGardens] = useState(initGardensValue);
+  // const initGardensValue = [
+  //   {
+  //     id: 1,
+  //     name: 'Xoài cát hòa lộc',
+  //     type: 'Xoài',
+  //     yield: 100,
+  //     crops: 4,
+  //     price: 100,
+  //     supplier: 'ABC',
+  //     status: 'Active'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Xoài cát hòa lộc',
+  //     type: 'Xoài',
+  //     yield: 100,
+  //     crops: 4,
+  //     price: 100,
+  //     supplier: 'ABC',
+  //     status: 'Active'
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Xoài cát hòa lộc',
+  //     type: 'Xoài',
+  //     yield: 100,
+  //     crops: 4,
+  //     price: 100,
+  //     supplier: 'ABC',
+  //     status: 'Active'
+  //   }
+  // ];
+
+ 
+
   const [events, setEvents] = useState([]);
   const [eventModal, setEventModal] = useState({
     open: false,
@@ -61,8 +85,20 @@ const PlantTypePage = () => {
       event: null
     });
   };
-  const handleEventAdd = event => {
-    setEvents(events => [...events, event]);
+
+  const handleEventAdd = data => {
+    // setEvents(events => [...events, event]);
+    console.log(data);
+    callAPI('PlantType/addPlantTree', 'POST', data)
+      .then(res => {
+        if (res.status === 200) {
+          setValue(1)
+          
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     setEventModal({
       open: false,
       event: null
@@ -83,28 +119,19 @@ const PlantTypePage = () => {
     });
   };
 
-  function filterByValue(array, string) {
-    return array.filter(o =>
-      Object.keys(o).some(k =>
-        o[k]
-          .toString()
-          .toLowerCase()
-          .includes(string.trim().toLowerCase())
-      )
-    );
-  }
   const handleFilter = () => {};
   const handleSearch = keyword => {
-    var arr = initGardensValue;
+    dispatch(actSearchPlantTypes(keyword));
+    // var arr = plantTypesStore;
 
-    var result = filterByValue(arr, keyword);
+    // var result = filterByValue(arr, keyword);
 
-    if (keyword && keyword.trim() !== '') {
-      setGardens(result);
-    } else {
-      setGardens(initGardensValue);
-    }
-    // console.log(gardens)
+    // if (keyword && keyword.trim() !== '') {
+    //   setPlantTypes(result);
+    // } else {
+    //   setPlantTypes(plantTypesStore);
+    // }
+    // // console.log(gardens)
   };
   const handleEventNew = () => {
     setEventModal({
@@ -112,24 +139,16 @@ const PlantTypePage = () => {
       event: null
     });
   };
+
   return (
-    <Page
-      className={classes.root}
-      title="Garden Management"
-    >
+    <Page className={classes.root} title="Quản lý loại cây">
+      <AuthGuard roles={['FARMER']}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
-      <SearchBar
-        onFilter={handleFilter}
-        onSearch={handleSearch}
-      />
-      {gardens && <Results
-        className={classes.results}
-        gardens={gardens}
-                  />}
-      <Modal
-        onClose={handleModalClose}
-        open={eventModal.open}
-      >
+      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
+      {plantTypesStore && (
+        <Results className={classes.results} plantTypes={plantTypesStore} />
+      )}
+      <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
           event={eventModal.event}
           onAdd={handleEventAdd}

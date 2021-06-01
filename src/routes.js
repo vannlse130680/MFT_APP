@@ -204,7 +204,7 @@ const routes = [
         component: lazy(() => import('views/GettingStarted'))
       },
       {
-        path: '/garden',
+        path: '/gardenManagement/garden',
         exact: true,
         component: GardenPage
       },

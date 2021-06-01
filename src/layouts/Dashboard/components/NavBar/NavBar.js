@@ -46,6 +46,7 @@ const NavBar = props => {
   
   const [profile, setProfile] = useState({});
   useEffect(() => {
+    
     var user = localStorage.getItem('USER');
     if (user) {
       var data = JSON.parse(user);
@@ -88,9 +89,9 @@ const NavBar = props => {
       </div>
       <Divider className={classes.divider} />
       <nav className={classes.navigation}>
-        {(profile.role === 'farmer'
+        {(profile.role === 'Nông dân'
           ? navigationConfig
-          : profile.role === 'shipper'
+          : profile.role === 'Shipper'
             ? navShipper
             : navAdmin
         ).map(list => (
