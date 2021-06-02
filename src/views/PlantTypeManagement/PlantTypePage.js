@@ -1,5 +1,6 @@
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
 
 import { AuthGuard, Page, SearchBar } from 'components';
@@ -20,16 +21,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PlantTypePage = () => {
-  const [value, setValue] = useState(0); // integer state
+  const [value, setValue] = useState(true); // integer state
   const plantTypesStore = useSelector(state => state.plantTypes);
   const dispatch = useDispatch();
   useEffect(() => {
+    console.log('reden');
+    dispatch(showLoading());
     var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(username)
     callAPI(`planttype/${username}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
           dispatch(actFetchPlantTypes(res.data));
+          dispatch(hideLoading());
         }
       })
       .catch(err => {
@@ -38,42 +42,9 @@ const PlantTypePage = () => {
   }, [value]);
 
   const classes = useStyles();
-  // const initGardensValue = [
-  //   {
-  //     id: 1,
-  //     name: 'Xoài cát hòa lộc',
-  //     type: 'Xoài',
-  //     yield: 100,
-  //     crops: 4,
-  //     price: 100,
-  //     supplier: 'ABC',
-  //     status: 'Active'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Xoài cát hòa lộc',
-  //     type: 'Xoài',
-  //     yield: 100,
-  //     crops: 4,
-  //     price: 100,
-  //     supplier: 'ABC',
-  //     status: 'Active'
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Xoài cát hòa lộc',
-  //     type: 'Xoài',
-  //     yield: 100,
-  //     crops: 4,
-  //     price: 100,
-  //     supplier: 'ABC',
-  //     status: 'Active'
-  //   }
-  // ];
-
- 
 
   const [events, setEvents] = useState([]);
+  const [selectedPlantType, setSelectedPlantType] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -92,17 +63,16 @@ const PlantTypePage = () => {
     callAPI('PlantType/addPlantTree', 'POST', data)
       .then(res => {
         if (res.status === 200) {
-          setValue(1)
-          
+          setValue(!value);
+          setEventModal({
+            open: false,
+            event: null
+          });
         }
       })
       .catch(err => {
         console.log(err);
       });
-    setEventModal({
-      open: false,
-      event: null
-    });
   };
   const handleEventDelete = event => {
     setEvents(events => events.filter(e => e.id !== event.id));
@@ -111,11 +81,17 @@ const PlantTypePage = () => {
       event: null
     });
   };
-  const handleEventEdit = event => {
-    setEvents(events => events.map(e => (e.id === event.id ? event : e)));
-    setEventModal({
-      open: false,
-      event: null
+  const handleEventEdit = data => {
+    // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
+    console.log(data);
+    callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
+      if (res.status === 200) {
+        setValue(!value);
+        setEventModal({
+          open: false,
+          event: null
+        });
+      }
     });
   };
 
@@ -134,22 +110,34 @@ const PlantTypePage = () => {
     // // console.log(gardens)
   };
   const handleEventNew = () => {
+    setSelectedPlantType(null);
     setEventModal({
       open: true,
       event: null
     });
   };
-
+  const handleEventOpenEdit = plantType => {
+    setSelectedPlantType(plantType);
+    setEventModal({
+      open: true,
+      event: {}
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý loại cây">
       <AuthGuard roles={['FARMER']}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {plantTypesStore && (
-        <Results className={classes.results} plantTypes={plantTypesStore} />
+        <Results
+          className={classes.results}
+          plantTypes={plantTypesStore}
+          onEditEvent={handleEventOpenEdit}
+        />
       )}
       <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
+          selectedPlantType={selectedPlantType}
           event={eventModal.event}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}

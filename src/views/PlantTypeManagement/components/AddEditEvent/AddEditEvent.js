@@ -16,7 +16,11 @@ import {
   Divider,
   FormControlLabel,
   Switch,
-  colors
+  colors,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { Autocomplete } from '@material-ui/lab';
@@ -32,6 +36,33 @@ const schema = {
   },
   test: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  yield: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      greaterThan: 0,
+      lessThanOrEqualTo: 1000,
+      message: 'Năng suất phải lớn 0 và bé hơn 10000kg'
+    }
+  },
+  crops: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+      greaterThan: 0,
+      lessThanOrEqualTo: 100,
+      message: 'Số vụ phải lớn 0 và bé hơn 100 và là số nguyên'
+    }
+  },
+  price: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+
+      greaterThan: 0,
+      lessThanOrEqualTo: 100000000,
+      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+    }
   }
 };
 const useStyles = makeStyles(theme => ({
@@ -70,6 +101,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     onAdd,
     onEdit,
     className,
+    selectedPlantType,
     ...rest
   } = props;
 
@@ -83,7 +115,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const [treeTypes, setTreeTypes] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
-    values: {},
+    values: { status: 1 },
     touched: {},
     errors: {}
   });
@@ -96,7 +128,16 @@ const AddEditEvent = forwardRef((props, ref) => {
       errors: errors || {}
     }));
   }, [formState.values]);
+  // useEffect(() => {
 
+  //   if(sel)
+  //   setFormState(formState => ({
+  //     ...formState,
+  //     values: {
+  //       name: selectedPlantType.plantTypeName
+  //     }
+  //   }));
+  // }, []);
   useEffect(() => {
     callAPI('treetype', 'GET', null)
       .then(res => {
@@ -107,6 +148,23 @@ const AddEditEvent = forwardRef((props, ref) => {
       .catch(err => {
         console.log(err);
       });
+  }, []);
+
+  useEffect(() => {
+    if (selectedPlantType)
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          name: selectedPlantType.plantTypeName,
+          supplier: selectedPlantType.supplier,
+          yield: selectedPlantType.yield,
+          crops: selectedPlantType.crops,
+          price: selectedPlantType.price,
+          test: 'a',
+          auto: selectedPlantType.t,
+          status: selectedPlantType.status
+        }
+      }));
   }, []);
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
@@ -124,9 +182,10 @@ const AddEditEvent = forwardRef((props, ref) => {
   // };
 
   const handleChange = (event, value) => {
+    if (!event) return;
     event.persist();
-    console.log(event.target.name);
-    if (event.target.name === "test") {
+
+    if (event.target.name === 'test') {
       setFormState(formState => ({
         ...formState,
         values: {
@@ -139,6 +198,7 @@ const AddEditEvent = forwardRef((props, ref) => {
         }
       }));
     } else if (event.target.name) {
+      console.log('status');
       setFormState(formState => ({
         ...formState,
         values: {
@@ -146,6 +206,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           [event.target.name]:
             event.target.type === 'checkbox'
               ? event.target.checked
+              : event.target.value === ''
+              ? null
               : event.target.value
         },
         touched: {
@@ -154,6 +216,7 @@ const AddEditEvent = forwardRef((props, ref) => {
         }
       }));
     } else {
+      // console.log('auto');
       setFormState(formState => ({
         ...formState,
         values: {
@@ -182,7 +245,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       supplier: values.supplier,
       crops: parseInt(values.crops),
       yield: parseFloat(values.yield),
-      price: parseFloat(values.price)
+      price: parseInt(values.price)
     };
 
     console.log(formState);
@@ -190,14 +253,23 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
-    // if (!values.title || !values.desc) {
-    //   return;
-    // }
-
-    // onEdit(values);
-    onEdit();
+    var username = JSON.parse(localStorage.getItem('USER')).username;
+    // console.log(formState.values);
+    var data = {
+      id: selectedPlantType.id,
+      treeTypeID: formState.values.auto.id,
+      plantTypeName: formState.values.name,
+      farmerUsername: username,
+      supplier: formState.values.supplier,
+      crops: parseInt(formState.values.crops) ,
+      yield: parseFloat( formState.values.yield),
+      price: parseInt(formState.values.price) ,
+      status: formState.values.status
+    };
+    // console.log(data)
+    onEdit(data);
   };
-
+  // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
       <form>
@@ -231,38 +303,48 @@ const AddEditEvent = forwardRef((props, ref) => {
           />
           <TextField
             className={classes.field}
+            error={hasError('yield')}
             fullWidth
+            fullWidth
+            helperText={hasError('yield') ? formState.errors.yield[0] : null}
             label="Năng suất bình quân (kg/vụ)"
             name="yield"
             onChange={handleChange}
+            type="number"
             value={formState.values.yield || ''}
             variant="outlined"
           />
           <TextField
             className={classes.field}
+            error={hasError('crops')}
             fullWidth
+            fullWidth
+            helperText={hasError('crops') ? formState.errors.crops[0] : null}
             label="Số vụ"
             name="crops"
             onChange={handleChange}
+            type="number"
             value={formState.values.crops || ''}
             variant="outlined"
-            type="number"
           />
           <TextField
             className={classes.field}
+            error={hasError('price')}
             fullWidth
+            fullWidth
+            helperText={hasError('price') ? formState.errors.price[0] : null}
             label="Giá"
             name="price"
             onChange={handleChange}
+            type="number"
             value={formState.values.price || ''}
             variant="outlined"
-            type="number"
           />
           <Autocomplete
             // onChange={handleChange}
-
+            // value={selectedPlantType.t}
+            defaultValue={selectedPlantType ? selectedPlantType.t : null}
             fullWidth
-            // value={formState.values.test}
             // inputValue={formState.values.test}
             getOptionLabel={option => option.typeName}
             // value={formState.values.test}
@@ -278,11 +360,28 @@ const AddEditEvent = forwardRef((props, ref) => {
                 helperText={hasError('test') ? formState.errors.test[0] : null}
                 label="Loại trái cây"
                 name="test"
-                value={formState.values.test}
+                value={formState.values.test || ''}
                 variant="outlined"
               />
             )}
           />
+          {selectedPlantType ? (
+            <FormControl className={classes.field} variant="outlined">
+              <InputLabel id="demo-simple-select-outlined-label">
+                Trạng thái
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                label="Trạng thái"
+                name="status"
+                onChange={handleChange}
+                value={formState.values.status}>
+                <MenuItem value={1}>Hoạt động</MenuItem>
+                <MenuItem value={0}>Tạm ngừng</MenuItem>
+              </Select>
+            </FormControl>
+          ) : null}
         </CardContent>
         <Divider />
         <CardActions>
@@ -298,16 +397,16 @@ const AddEditEvent = forwardRef((props, ref) => {
           {mode === 'add' ? (
             <Button
               className={classes.confirmButton}
-              onClick={handleAdd}
               disabled={!formState.isValid}
+              onClick={handleAdd}
               variant="contained">
               Tạo
             </Button>
           ) : (
             <Button
               className={classes.confirmButton}
-              onClick={handleEdit}
               disabled={!formState.isValid}
+              onClick={handleEdit}
               variant="contained">
               Lưu
             </Button>

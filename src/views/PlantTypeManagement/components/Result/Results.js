@@ -49,8 +49,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, plantTypes, ...rest } = props;
-  // console.log(gardens);
+  const { className, plantTypes, onEditEvent, ...rest } = props;
+  // console.log(plantTypes);
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -103,6 +103,11 @@ const Results = props => {
     1: colors.green[600],
     rejected: colors.red[600]
   };
+
+
+  const handleEditClick = (plantType) => {
+    onEditEvent(plantType)
+  }
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <Typography color="textSecondary" gutterBottom variant="body2">
@@ -145,24 +150,24 @@ const Results = props => {
                 <TableBody>
                   {plantTypes
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((planType, index) => (
+                    .map((plantType, index) => (
                       <TableRow
                         hover
                         key={index}
                         selected={
-                          selectedCustomers.indexOf(planType.id) !== -1
+                          selectedCustomers.indexOf(plantType.id) !== -1
                         }>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(planType.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, planType.id)
+                              handleSelectOne(event, plantType.id)
                             }
                             value={
-                              selectedCustomers.indexOf(planType.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                           />
                         </TableCell>
@@ -174,30 +179,30 @@ const Results = props => {
                                 component={RouterLink}
                                 to="/management/gardens/1"
                                 variant="h6">
-                                {planType.name}
+                                {plantType.plantTypeName}
                               </Link>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>{planType.t.typeName}</TableCell>
-                        <TableCell>{planType.yield}</TableCell>
-                        <TableCell>{planType.crops}</TableCell>
-                        <TableCell>{planType.supplier}</TableCell>
-                        <TableCell>{planType.price}</TableCell>
+                        <TableCell>{plantType.t.typeName}</TableCell>
+                        <TableCell>{plantType.yield}</TableCell>
+                        <TableCell>{plantType.crops}</TableCell>
+                        <TableCell>{plantType.supplier}</TableCell>
+                        <TableCell>{plantType.price}</TableCell>
                         <TableCell>
                           <Label
-                            color={statusColors[planType.status]}
+                            color={statusColors[plantType.status]}
                             variant="contained">
-                            {planType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
+                            {plantType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
                           </Label>
                         </TableCell>
 
                         <TableCell align="center">
                           <Button
                             color="primary"
-                            component={RouterLink}
+                            
                             size="small"
-                            to="/management/gardens/1"
+                            onClick={handleEditClick.bind(this, plantType)}
                             variant="outlined">
                             Sửa
                           </Button>
