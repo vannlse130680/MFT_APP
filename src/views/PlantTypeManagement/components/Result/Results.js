@@ -121,7 +121,7 @@ const Results = props => {
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {plantTypes.length} Records found. Page {page + 1} of{' '}
+        {plantTypes.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
         {Math.ceil(plantTypes.length / rowsPerPage)}
       </Typography>
       <Card>

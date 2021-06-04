@@ -17,6 +17,7 @@ import { toastError, toastSuccess } from 'utils/toastHelper';
 import TreeHeader from '../Header/TreeHeader';
 import Results from './Result/Results';
 import AddEditEvent from './AddEditEvent';
+import { actFetchTREES } from 'actions/trees';
 
 
 const useStyles = makeStyles(theme => ({
@@ -28,27 +29,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TreePage = () => {
+const TreePage = props => {
+  const {gardenId} = props
   const classes = useStyles();
   const [value, setValue] = useState(true); //
-  const gardensStore = useSelector(state => state.gardens);
+  const treesStore = useSelector(state => state.trees);
   const dispatch = useDispatch();
-  // useEffect(() => {
+  useEffect(() => {
     
-  //   dispatch(showLoading());
-  //   var username = JSON.parse(localStorage.getItem('USER')).username;
-  //   // console.log(username)
-  //   callAPI(`garden/${username}`, 'GET', null)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         dispatch(actFetchGardens(res.data));
-  //         dispatch(hideLoading());
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }, [value]);
+    dispatch(showLoading());
+    // var username = JSON.parse(localStorage.getItem('USER')).username;
+    // console.log(username)
+    callAPI(`tree/${gardenId}`, 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(actFetchTREES(res.data));
+          dispatch(hideLoading());
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [value]);
   
   // const [gardens, setGardens] = useState(initGardensValue);
   const [events, setEvents] = useState([]);
@@ -148,17 +150,19 @@ const TreePage = () => {
       className={classes.root}
       title="Garden Management"
     >
+      
       <AuthGuard roles={['FARMER']} />
-      <TreeHeader onAddEvent={handleEventNew} />
       <SearchBar
         onFilter={handleFilter}
         onSearch={handleSearch}
       />
-      {gardensStore && (
+      <TreeHeader onAddEvent={handleEventNew} />
+      
+      {treesStore && (
         <Results
           
           className={classes.results}
-          gardens={gardensStore}
+          trees={treesStore}
           onEditEvent={handleEventOpenEdit}
         />
       )}

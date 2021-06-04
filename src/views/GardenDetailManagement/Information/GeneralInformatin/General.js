@@ -21,7 +21,7 @@ import PersonIcon from '@material-ui/icons/PersonOutline';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { Label } from 'components';
-
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -34,11 +34,12 @@ const useStyles = makeStyles(theme => ({
     '& > * + *': {
       marginLeft: 0
     },
-    marginTop : 0
+    marginTop: 0
   },
   buttonIcon: {
     marginRight: theme.spacing(1)
-  }
+  },
+ 
 }));
 
 const General = props => {
@@ -47,7 +48,7 @@ const General = props => {
   const classes = useStyles();
 
   const [openEdit, setOpenEdit] = useState(false);
-
+  const gardenInfor = useSelector(state => state.gardenInfor);
   const handleEditOpen = () => {
     setOpenEdit(true);
   };
@@ -57,68 +58,61 @@ const General = props => {
   };
 
   return (
-    <Card  style={{width : 500, marginTop: 50}}
+    <Card
+      style={{ width: 500, marginTop: 20 }}
       {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader title="Thông tin vườn" />
+      className={clsx(classes.root, className)}>
+      <CardHeader title="Thông tin vườn" className={classes.title}/>
       <Divider />
       <CardContent className={classes.content}>
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell  style={{fontWeight : "bold"}} > Mã</TableCell>
-              <TableCell  style={{fontWeight : "bold"}}>
-                sad
-                {/* <div>
-                  <Label
-                    color={
-                      customer.verified ? colors.green[600] : colors.orange[600]
-                    }
-                  >
-                    {customer.verified
-                      ? 'Email verified'
-                      : 'Email not verified'}
-                  </Label>
-                </div> */}
+              <TableCell style={{ fontWeight: 'bold' }}> Mã</TableCell>
+              <TableCell align="right" style={{ fontWeight: 'bold' }}>
+                {gardenInfor.gardenCode}
               </TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Tên</TableCell>
-              <TableCell>{customer.phone}</TableCell>
+              <TableCell>{gardenInfor.gardenName}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Địa chỉ</TableCell>
-              <TableCell>asd asd asd asd á sda asd asd asd asd sad sad asd sd dá ad da ad ad da ad sad </TableCell>
+              <TableCell>{gardenInfor.address}</TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Trạng thái</TableCell>
-              <TableCell>{customer.country}</TableCell>
+              <TableCell>
+                <div>
+                  <Label
+                    color={
+                      gardenInfor.status === 1 ? colors.green[600] : colors.orange[600]
+                    }>
+                    {gardenInfor.status === 1
+                      ? 'Hoạt động'
+                      : 'Tạm ngừng'}
+                  </Label>
+                </div>
+              </TableCell>
             </TableRow>
-            
           </TableBody>
         </Table>
       </CardContent>
       <CardActions className={classes.actions}>
-      
         <Button onClick={handleEditOpen}>
           <EditIcon className={classes.buttonIcon} />
           Chỉnh sửa
         </Button>
-        
       </CardActions>
       <CardActions className={classes.actions}>
-      
-      <Button onClick={handleEditOpen}>
-        <EditIcon className={classes.buttonIcon} />
-        Chỉnh sửa
-      </Button>
-      
-    </CardActions>
+        <Button onClick={handleEditOpen}>
+          <EditIcon className={classes.buttonIcon} />
+          Chỉnh sửa
+        </Button>
+      </CardActions>
     </Card>
   );
 };
-
-
 
 export default General;

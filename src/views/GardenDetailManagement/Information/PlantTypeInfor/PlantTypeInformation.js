@@ -20,6 +20,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 
 import { Label } from 'components';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -42,7 +43,7 @@ const PlantTypeInformation = props => {
   const { customer, className, ...rest } = props;
   console.log(props);
   const classes = useStyles();
-
+  const gardenInfor = useSelector(state => state.gardenInfor);
   const [openEdit, setOpenEdit] = useState(false);
 
   const handleEditOpen = () => {
@@ -52,10 +53,11 @@ const PlantTypeInformation = props => {
   const handleEditClose = () => {
     setOpenEdit(false);
   };
-
+  //   const a = gardenInfor.pt
+  // console.log(a.plantTypeName)
   return (
     <Card
-      style={{ width: 500, marginTop: 50 }}
+      style={{ width: 600, marginTop: 20 }}
       {...rest}
       className={clsx(classes.root, className)}>
       <CardHeader title="Thông tin loại cây" />
@@ -64,20 +66,10 @@ const PlantTypeInformation = props => {
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>Phân loại</TableCell>
+              <TableCell>Phân loại:</TableCell>
               <TableCell>
-                ádasdad
-                {/* <div>
-                  <Label
-                    color={
-                      customer.verified ? colors.green[600] : colors.orange[600]
-                    }
-                  >
-                    {customer.verified
-                      ? 'Email verified'
-                      : 'Email not verified'}
-                  </Label>
-                </div> */}
+                {gardenInfor.tt.typeName}
+                
               </TableCell>
             </TableRow>
             <TableRow
@@ -86,30 +78,39 @@ const PlantTypeInformation = props => {
               //   wordWrap: 'break-word'
               // }}
               selected>
-              <TableCell>Tên</TableCell>
+              <TableCell>Tên:</TableCell>
+              <TableCell>{gardenInfor.pt.plantTypeName}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Năng suất bình quân:</TableCell>
+              <TableCell>{gardenInfor.pt.yield}</TableCell>
+            </TableRow>
+            <TableRow selected>
+              <TableCell>Số vụ/năm:</TableCell>
+              <TableCell>{gardenInfor.pt.crops}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Nhà cung cấp:</TableCell>
+              <TableCell>{gardenInfor.pt.supplier} </TableCell>
+            </TableRow>
+            <TableRow selected>
+              <TableCell>Giá:</TableCell>
+              <TableCell>{gardenInfor.pt.price} VNĐ</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Trạng thái:</TableCell>
               <TableCell>
-                ádasd aádas dasdasd asdasda sdads asd adasd ádasdas dasdasd asda sda sdadas das dads
+                <div>
+                  <Label
+                    color={
+                      gardenInfor.pt.status === 1
+                        ? colors.green[600]
+                        : colors.orange[600]
+                    }>
+                    {gardenInfor.pt.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
+                  </Label>
+                </div>
               </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Năng suất</TableCell>
-              <TableCell>{customer.state}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Mùa vụ</TableCell>
-              <TableCell>{customer.country}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Nhà cung cấp</TableCell>
-              <TableCell>{customer.address2}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Giá</TableCell>
-              <TableCell>{customer.address1}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>{customer.address2}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

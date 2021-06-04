@@ -20,7 +20,11 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  TableCell,
+  TableRow,
+  TableBody,
+  Table
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { Autocomplete } from '@material-ui/lab';
@@ -28,10 +32,10 @@ import validate from 'validate.js';
 import callAPI from 'utils/callAPI';
 import { values } from 'lodash';
 const schema = {
-  name: {
+  code: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
-  address: {
+  price: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
   test: {
@@ -231,39 +235,37 @@ const AddEditEvent = forwardRef((props, ref) => {
     // console.log(data)
     onEdit(data);
   };
+  function encodeImageFileAsURL() {
+    var filesSelected = document.getElementById('inputFileToLoad').files;
+    if (filesSelected.length > 0) {
+      var fileToLoad = filesSelected[0];
+
+      var fileReader = new FileReader();
+
+      fileReader.onload = function(fileLoadedEvent) {
+        var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+        var newImage = document.createElement('img');
+        newImage.src = srcData;
+        // var image = document.getElementById('haha');
+        // image.src = srcData;
+        newImage.style.cssText = 'width:200px;height:200px;';
+
+        document.getElementById('imgTest').innerHTML = newImage.outerHTML;
+      };
+      fileReader.readAsDataURL(fileToLoad);
+    }
+  }
+
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm vườn' : 'Cập nhật vườn'}
+            {mode === 'add' ? 'Thêm cây' : 'Cập nhật cây'}
           </Typography>
-          <Autocomplete
-            // onChange={handleChange}
-            // value={selectedPlantType.t}
-            // disableClearable="true"
-            defaultValue={selectedGarden ? selectedGarden.plantTypeObj : null}
-            // inputValue={formState.values.test}
-            getOptionLabel={option => option.plantTypeName}
-            // value={formState.values.test}
-            getOptionSelected={(option, value) => option.id === value.id}
-            onChange={(event, value) => handleChange(event, value)}
-            onInputChange={handleChange} // prints the selected value
-            options={plantTypesName}
-            renderInput={params => (
-              <TextField
-                {...params}
-                className={classes.field}
-                error={hasError('test')}
-                helperText={hasError('test') ? formState.errors.test[0] : null}
-                label="Loại trái cây"
-                name="test"
-                value={formState.values.test || ''}
-                variant="outlined"
-              />
-            )}
-          />
+
           <TextField
             className={classes.field}
             error={hasError('code')}
@@ -275,8 +277,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.code || ''}
             variant="outlined"
           />
-         
-          
+
           <TextField
             className={classes.field}
             error={hasError('name')}
@@ -301,6 +302,31 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.address || ''}
             variant="outlined"
           />
+
+          {/* <img id="haha" src="" /> */}
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell style={{ borderBottom: 'none' }}>
+                  Tải ảnh lên
+                  <div>
+                    {' '}
+                    <input
+                      id="inputFileToLoad"
+                      type="file"
+                      accept="image/*"
+                      onChange={encodeImageFileAsURL}
+                    />
+                  </div>
+                  Xóa
+                </TableCell>
+
+                <TableCell align="right" style={{ borderBottom: 'none' }}>
+                  <div id="imgTest"></div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
 
           {selectedGarden ? (
             <FormControl className={classes.field} variant="outlined" fullWidth>

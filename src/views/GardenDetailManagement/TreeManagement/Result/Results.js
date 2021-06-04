@@ -58,8 +58,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, gardens, onEditEvent, ...rest } = props;
-  console.log(gardens);
+  const { className, trees, onEditEvent, ...rest } = props;
+  console.log(trees);
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -68,7 +68,7 @@ const Results = props => {
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? gardens.map(garden => garden.id)
+      ? trees.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -112,17 +112,15 @@ const Results = props => {
     1: colors.green[600],
     rejected: colors.red[600]
   };
-  
 
-  const handleEditClick = (garden) => {
-    onEditEvent(garden)
-  }
+  const handleEditClick = garden => {
+    onEditEvent(garden);
+  };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
-        {Math.ceil(gardens.length / rowsPerPage)}
+        {trees.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(trees.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -135,11 +133,11 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === gardens.length}
+                        checked={selectedCustomers.length === trees.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < gardens.length
+                          selectedCustomers.length < trees.length
                         }
                         onChange={handleSelectAll}
                       />
@@ -158,7 +156,7 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {gardens
+                  {trees
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((garden, index) => (
                       <TableRow
@@ -178,22 +176,24 @@ const Results = props => {
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>
-                          <div className={classes.nameCell}>
-                            <div>
-                              <Link
-                                color="inherit"
-                                // component={RouterLink}
-                                to="/management/gardens/1"
-                                variant="h6">
-                                {garden.gardenName}
-                              </Link>
-                            </div>
-                          </div>
+                          <img
+                            style={{
+                              width: '100px',
+                              height: '150px',
+                              position: 'relative',
+                              display: 'inline-block',
+                              overflow: 'hidden',
+                              margin: 0
+                            }}
+                            src={garden.image}
+                          />
                         </TableCell>
-                        <TableCell>{garden.address}</TableCell>
-                        <TableCell>{garden.plantTypeName}</TableCell>
+                        <TableCell>{garden.treeCode}</TableCell>
+                        <TableCell>{garden.price}</TableCell>
+                        <TableCell>{garden.description}</TableCell>
+                        <TableCell>{garden.addDate}</TableCell>
+
                         <TableCell>
                           <Label
                             color={statusColors[garden.status]}
@@ -234,7 +234,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={gardens.length}
+            count={trees.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}

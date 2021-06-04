@@ -6,57 +6,31 @@ import { Grid, Typography, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles(() => ({
-  root: {}
+  root: {},
+  fr: {
+    float: 'right'
+  }
 }));
 
 const TreeHeader = props => {
-  const {onAddEvent, className, ...rest } = props;
+  const { onAddEvent, className, ...rest } = props;
 
   const classes = useStyles();
   // const onAddEventHandle = (params) => {
   //   onAddEvent()
   // }
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Grid
-        alignItems="flex-end"
-        container
-        justify="space-between"
-        spacing={3}
-      >
-        <Grid item>
-          <Typography
-            component="h2"
-            gutterBottom
-            variant="overline"
-          >
-            Quản lý
-          </Typography>
-          <Typography
-            component="h1"
-            variant="h3"
-          >
-            Vườn
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={onAddEvent}
-          >
-            <AddIcon />
-            Thêm vườn mới
-          </Button>
-        </Grid>
-      </Grid>
+    <div {...rest} className={clsx(classes.root, className)}>
+      <Button
+        className={classes.fr}
+        color="primary"
+        variant="contained"
+        onClick={onAddEvent}>
+        <AddIcon />
+        Thêm cây mới
+      </Button>
     </div>
   );
 };
-
-
 
 export default TreeHeader;

@@ -1,9 +1,13 @@
 import { Divider, Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { actFetchGardensAllInfor } from 'actions/gardenInfor';
+import { hideLoading, showLoading } from 'actions/loading';
 import { Page } from 'components';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
+import callAPI from 'utils/callAPI';
 import { Logs } from 'views/CustomerManagementDetails/components';
 
 import Header from './Header/Header';
@@ -24,8 +28,29 @@ const useStyles = makeStyles(theme => ({
 const GardenDetailPage = props => {
   const { match, history } = props;
   const classes = useStyles();
-  console.log(props);
+  const dispatch = useDispatch();
   const { id, tab } = match.params;
+  console.log(id);
+  
+  useEffect(() => {
+
+    dispatch(showLoading());
+    // var username = JSON.parse(localStorage.getItem('USER')).username;
+    // console.log(username)
+    
+    callAPI(`Garden/getGardenById/${id}`, 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          
+          dispatch(actFetchGardensAllInfor(res.data[0]))
+          dispatch(hideLoading());
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+
 
   const handleTabsChange = (event, value) => {
     history.push(value);
@@ -40,29 +65,15 @@ const GardenDetailPage = props => {
     return <Redirect to={`/gardenManagement/garden/${id}/information`} />;
   }
 
-  // if (!tabs.find(t => t.value === tab)) {
-  //   return <Redirect to="/errors/error-404" />;
-  // }
+  if (!tabs.find(t => t.value === tab)) {
+    return <Redirect to="/errors/error-404" />;
+  }
 
   // const [value, setValue] = useState(true); //
+  // const [allInfor, setAllInfor] = useState({}); //
   // const gardensStore = useSelector(state => state.gardens);
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-
-  //   dispatch(showLoading());
-  //   var username = JSON.parse(localStorage.getItem('USER')).username;
-  //   // console.log(username)
-  //   callAPI(`garden/${username}`, 'GET', null)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         dispatch(actFetchGardens(res.data));
-  //         dispatch(hideLoading());
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }, [value]);
+ 
+  
 
   // const [gardens, setGardens] = useState(initGardensValue);
   // const [events, setEvents] = useState([]);
@@ -154,32 +165,11 @@ const GardenDetailPage = props => {
   //   });
   // };
 
-  function encodeImageFileAsURL() {
-    var filesSelected = document.getElementById('inputFileToLoad').files;
-    if (filesSelected.length > 0) {
-      var fileToLoad = filesSelected[0];
-
-      var fileReader = new FileReader();
-
-      fileReader.onload = function(fileLoadedEvent) {
-        var srcData = fileLoadedEvent.target.result; // <--- data: base64
-
-        var newImage = document.createElement('img');
-        newImage.src = srcData;
-        newImage.style.cssText = 'width:200px;height:200px;';
-
-        console.log(srcData);
-        document.getElementById('imgTest').innerHTML = newImage.outerHTML;
-      };
-      fileReader.readAsDataURL(fileToLoad);
-    }
-  }
-
+  
 
   return (
-    <Page className={classes.root} title="Customer Management Details">
-      <input id="inputFileToLoad" type="file" onChange={encodeImageFileAsURL} />
-      <div id="imgTest" ></div>
+    <Page className={classes.root} title="Quản lý vườn">
+    
       
       <Header />
       <Tabs
@@ -196,7 +186,7 @@ const GardenDetailPage = props => {
       <Divider className={classes.divider} />
       <div className={classes.content}>
         {tab === 'information' && <GardenInformation customer={{}} />}
-        {tab === 'trees' && <TreePage id={id} />}
+        {tab === 'trees' && <TreePage gardenId={id} />}
         {/* {tab === 'logs' && <Logs />} */}
       </div>
     </Page>
