@@ -7,6 +7,7 @@ import { AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import callAPI from 'utils/callAPI';
+import { toastError, toastSuccess } from 'utils/toastHelper';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
@@ -44,6 +45,7 @@ const PlantTypePage = () => {
   const classes = useStyles();
 
   const [events, setEvents] = useState([]);
+  const [resetPage, setResetPage] = useState(false);
   const [selectedPlantType, setSelectedPlantType] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
@@ -63,11 +65,16 @@ const PlantTypePage = () => {
     callAPI('PlantType/addPlantTree', 'POST', data)
       .then(res => {
         if (res.status === 200) {
-          setValue(!value);
-          setEventModal({
-            open: false,
-            event: null
-          });
+          if(res.data) {
+            toastSuccess("Thêm thành công !")
+            setValue(!value);
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            toastError("Thêm thất bại !")
+          }
         }
       })
       .catch(err => {
@@ -86,28 +93,25 @@ const PlantTypePage = () => {
     console.log(data);
     callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
       if (res.status === 200) {
-        setValue(!value);
-        setEventModal({
-          open: false,
-          event: null
-        });
+        if(res.data) {
+          toastSuccess("Cập nhật thành công !")
+          setValue(!value);
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          toastError("Cập nhật thất bại !")
+        }
       }
     });
   };
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
+    setResetPage(!resetPage)
     dispatch(actSearchPlantTypes(keyword));
-    // var arr = plantTypesStore;
-
-    // var result = filterByValue(arr, keyword);
-
-    // if (keyword && keyword.trim() !== '') {
-    //   setPlantTypes(result);
-    // } else {
-    //   setPlantTypes(plantTypesStore);
-    // }
-    // // console.log(gardens)
+   
   };
   const handleEventNew = () => {
     setSelectedPlantType(null);
@@ -123,6 +127,7 @@ const PlantTypePage = () => {
       event: {}
     });
   };
+ 
   return (
     <Page className={classes.root} title="Quản lý loại cây">
       <AuthGuard roles={['FARMER']}></AuthGuard>
@@ -130,6 +135,7 @@ const PlantTypePage = () => {
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {plantTypesStore && (
         <Results
+          resetPage={resetPage}
           className={classes.results}
           plantTypes={plantTypesStore}
           onEditEvent={handleEventOpenEdit}

@@ -10,10 +10,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Header = props => {
-  const { className, ...rest } = props;
+  const {onAddEvent, className, ...rest } = props;
 
   const classes = useStyles();
-
+  // const onAddEventHandle = (params) => {
+  //   onAddEvent()
+  // }
   return (
     <div
       {...rest}
@@ -37,16 +39,17 @@ const Header = props => {
             component="h1"
             variant="h3"
           >
-            Cây
+            Vườn
           </Typography>
         </Grid>
         <Grid item>
           <Button
             color="primary"
             variant="contained"
+            onClick={onAddEvent}
           >
             <AddIcon />
-            Thêm cây mới
+            Thêm vườn mới
           </Button>
         </Grid>
       </Grid>

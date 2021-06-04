@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+import EditIcon from '@material-ui/icons/Edit';
+import ViewIcon from '@material-ui/icons/VisibilityOutlined';
 import {
   Card,
   CardActions,
@@ -24,6 +26,7 @@ import {
 } from '@material-ui/core';
 
 import { GenericMoreButton, Label, TableEditBar } from 'components';
+import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -45,30 +48,30 @@ const useStyles = makeStyles(theme => ({
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
+  },
+  buttonIcon: {
+    marginRight: theme.spacing(1)
+  },
+  actionIcon: {
+    marginRight: theme.spacing(1)
   }
 }));
 
 const Results = props => {
-  const { className, plantTypes, onEditEvent, resetPage, ...rest } = props;
-  // console.log(plantTypes);
+  const { className, gardens, onEditEvent, ...rest } = props;
+  console.log(gardens);
   const classes = useStyles();
-  useEffect(() => {
-    if(resetPage) {
-      console.log(resetPage)
-      setPage(0)
-    }
-  }, [resetPage])
+
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? plantTypes.map(garden => garden.id)
+      ? gardens.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
-    // console.log(selectedCustomers)
   };
 
   const handleSelectOne = (event, id) => {
@@ -90,12 +93,9 @@ const Results = props => {
         selectedCustomers.slice(0, selectedIndex),
         selectedCustomers.slice(selectedIndex + 1)
       );
-
-      
     }
 
     setSelectedCustomers(newSelectedCustomers);
-    // console.log(selectedCustomers)
   };
 
   const handleChangePage = (event, page) => {
@@ -112,17 +112,17 @@ const Results = props => {
     1: colors.green[600],
     rejected: colors.red[600]
   };
+  
 
-
-  const handleEditClick = (plantType) => {
-    onEditEvent(plantType)
+  const handleEditClick = (garden) => {
+    onEditEvent(garden)
   }
-
   return (
     <div {...rest} className={clsx(classes.root, className)}>
+      
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {plantTypes.length} Records found. Page {page + 1} of{' '}
-        {Math.ceil(plantTypes.length / rowsPerPage)}
+        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
+        {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -135,22 +135,21 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === plantTypes.length}
+                        checked={selectedCustomers.length === gardens.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < plantTypes.length
+                          selectedCustomers.length < gardens.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell>
                     <TableCell>STT</TableCell>
-                    <TableCell>Tên</TableCell>
-                    <TableCell>Phân loại</TableCell>
-                    <TableCell>Năng suất bình quân (kg/vụ)</TableCell>
-                    <TableCell>Số mùa vụ (vụ/năm)</TableCell>
-                    <TableCell>Nhà cung cấp</TableCell>
-                    <TableCell>Giá (vnđ)</TableCell>
+                    <TableCell>Hình đại diện</TableCell>
+                    <TableCell>Mã</TableCell>
+                    <TableCell>Giá thuê(/năm)</TableCell>
+                    <TableCell>Mô tả</TableCell>
+                    <TableCell>Ngày tạo</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -159,63 +158,69 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {plantTypes
+                  {gardens
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((plantType, index) => (
+                    .map((garden, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={
-                          selectedCustomers.indexOf(plantType.id) !== -1
-                        }>
+                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(plantType.id) !== -1
+                              selectedCustomers.indexOf(garden.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, plantType.id)
+                              handleSelectOne(event, garden.id)
                             }
-                            value={
-                              selectedCustomers.indexOf(plantType.id) !== -1
-                            }
+                            value={selectedCustomers.indexOf(garden.id) !== -1}
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>
                           <div className={classes.nameCell}>
                             <div>
                               <Link
                                 color="inherit"
-                                component={RouterLink}
+                                // component={RouterLink}
                                 to="/management/gardens/1"
                                 variant="h6">
-                                {plantType.plantTypeName}
+                                {garden.gardenName}
                               </Link>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>{plantType.t.typeName}</TableCell>
-                        <TableCell>{plantType.yield}</TableCell>
-                        <TableCell>{plantType.crops}</TableCell>
-                        <TableCell>{plantType.supplier}</TableCell>
-                        <TableCell>{plantType.price}</TableCell>
+                        <TableCell>{garden.address}</TableCell>
+                        <TableCell>{garden.plantTypeName}</TableCell>
                         <TableCell>
                           <Label
-                            color={statusColors[plantType.status]}
+                            color={statusColors[garden.status]}
                             variant="contained">
-                            {plantType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
+                            {garden.statusName}
                           </Label>
                         </TableCell>
 
                         <TableCell align="center">
                           <Button
+                            className={classes.actionIcon}
                             color="primary"
-                            
+                            component={RouterLink}
                             size="small"
-                            onClick={handleEditClick.bind(this, plantType)}
-                            variant="outlined">
+                            to={`/gardenManagement/garden/${garden.id}`}
+                            variant="contained">
+                            {' '}
+                            {/* <ViewIcon className={classes.buttonIcon} /> */}
+                            Xem
+                          </Button>
+                          <Button
+                            color="secondary"
+                            onClick={handleEditClick.bind(this, garden)}
+                            size="small"
+                            variant="contained">
+                            {' '}
+                            {/* <EditIcon className={classes.buttonIcon} /> */}
                             Sửa
                           </Button>
                         </TableCell>
@@ -229,7 +234,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={plantTypes.length}
+            count={gardens.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -245,11 +250,11 @@ const Results = props => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  plantTypes: PropTypes.array.isRequired
+  gardens: PropTypes.array
 };
 
 Results.defaultProps = {
-  plantTypes: []
+  gardens: []
 };
 
 export default Results;

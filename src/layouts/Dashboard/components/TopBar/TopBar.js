@@ -32,6 +32,7 @@ import axios from 'utils/axios';
 import useRouter from 'utils/useRouter';
 import { PricingModal, NotificationsPopover, Label } from 'components';
 import { logout } from 'actions';
+import { toastSuccess } from 'utils/toastHelper';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -127,6 +128,7 @@ const TopBar = props => {
   const handleLogout = () => {
     localStorage.clear()
     history.push('/auth/login');
+    toastSuccess("Đăng xuất thành công !")
     dispatch(logout());
   };
 

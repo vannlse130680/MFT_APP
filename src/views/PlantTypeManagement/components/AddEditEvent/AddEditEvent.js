@@ -277,6 +277,31 @@ const AddEditEvent = forwardRef((props, ref) => {
           <Typography align="center" gutterBottom variant="h3">
             {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
           </Typography>
+          <Autocomplete
+            // onChange={handleChange}
+            // value={selectedPlantType.t}
+            defaultValue={selectedPlantType ? selectedPlantType.t : null}
+            fullWidth
+            // inputValue={formState.values.test}
+            getOptionLabel={option => option.typeName}
+            // value={formState.values.test}
+            getOptionSelected={(option, value) => option.id === value.id}
+            onChange={(event, value) => handleChange(event, value)}
+            onInputChange={handleChange} // prints the selected value
+            options={treeTypes}
+            renderInput={params => (
+              <TextField
+                {...params}
+                className={classes.field}
+                error={hasError('test')}
+                helperText={hasError('test') ? formState.errors.test[0] : null}
+                label="Loại trái cây"
+                name="test"
+                value={formState.values.test || ''}
+                variant="outlined"
+              />
+            )}
+          />
           <TextField
             className={classes.field}
             error={hasError('name')}
@@ -340,33 +365,9 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.price || ''}
             variant="outlined"
           />
-          <Autocomplete
-            // onChange={handleChange}
-            // value={selectedPlantType.t}
-            defaultValue={selectedPlantType ? selectedPlantType.t : null}
-            fullWidth
-            // inputValue={formState.values.test}
-            getOptionLabel={option => option.typeName}
-            // value={formState.values.test}
-            getOptionSelected={(option, value) => option.id === value.id}
-            onChange={(event, value) => handleChange(event, value)}
-            onInputChange={handleChange} // prints the selected value
-            options={treeTypes}
-            renderInput={params => (
-              <TextField
-                {...params}
-                className={classes.field}
-                error={hasError('test')}
-                helperText={hasError('test') ? formState.errors.test[0] : null}
-                label="Loại trái cây"
-                name="test"
-                value={formState.values.test || ''}
-                variant="outlined"
-              />
-            )}
-          />
+          
           {selectedPlantType ? (
-            <FormControl className={classes.field} variant="outlined">
+            <FormControl className={classes.field} variant="outlined" fullWidth>
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái
               </InputLabel>

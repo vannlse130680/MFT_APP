@@ -57,8 +57,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, gardens,onEditEvent, ...rest } = props;
-  // console.log(gardens);
+  const { className, gardens, onEditEvent, ...rest } = props;
+  console.log(gardens);
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -107,31 +107,23 @@ const Results = props => {
   };
   const statusColors = {
     canceled: colors.grey[600],
-    pending: colors.orange[600],
-    completed: colors.green[600],
+    0: colors.orange[600],
+    1: colors.green[600],
     rejected: colors.red[600]
   };
-  const handleClickEdit = () => {
-    
+  
+
+  const handleEditClick = (garden) => {
+    onEditEvent(garden)
   }
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Typography
-        color="textSecondary"
-        gutterBottom
-        variant="body2"
-      >
-        {gardens.length} Records found. Page {page + 1} of{' '}
+    <div {...rest} className={clsx(classes.root, className)}>
+      <Typography color="textSecondary" gutterBottom variant="body2">
+        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title="Danh sách"
-        />
+        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -150,6 +142,8 @@ const Results = props => {
                         onChange={handleSelectAll}
                       />
                     </TableCell>
+                    <TableCell>STT</TableCell>
+                    <TableCell>Mã</TableCell>
                     <TableCell>Tên</TableCell>
                     <TableCell>Địa chỉ</TableCell>
                     <TableCell>Loại cây được trồng</TableCell>
@@ -167,8 +161,7 @@ const Results = props => {
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}
-                      >
+                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
@@ -181,16 +174,17 @@ const Results = props => {
                             value={selectedCustomers.indexOf(garden.id) !== -1}
                           />
                         </TableCell>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>
                           <div className={classes.nameCell}>
                             <div>
                               <Link
                                 color="inherit"
-                                component={RouterLink}
+                                // component={RouterLink}
                                 to="/management/gardens/1"
-                                variant="h6"
-                              >
-                                {garden.name}
+                                variant="h6">
+                                {garden.gardenName}
                               </Link>
                             </div>
                           </div>
@@ -200,9 +194,8 @@ const Results = props => {
                         <TableCell>
                           <Label
                             color={statusColors[garden.status]}
-                            variant="contained"
-                          >
-                            {garden.status}
+                            variant="contained">
+                            {garden.statusName}
                           </Label>
                         </TableCell>
 
@@ -212,20 +205,17 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to="/management/gardens/1"
-                            variant="outlined"
-                          >
+                            to={`/gardenManagement/garden/${garden.id}`}
+                            variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
                           <Button
                             color="secondary"
-                            
-                            onClick={onEditEvent}
+                            onClick={handleEditClick.bind(this, garden)}
                             size="small"
-                            variant="outlined"
-                          >
+                            variant="contained">
                             {' '}
                             {/* <EditIcon className={classes.buttonIcon} /> */}
                             Sửa
@@ -257,7 +247,7 @@ const Results = props => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  gardens: PropTypes.array.isRequired
+  gardens: PropTypes.array
 };
 
 Results.defaultProps = {

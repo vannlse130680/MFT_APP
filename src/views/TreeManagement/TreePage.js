@@ -1,10 +1,9 @@
 import { makeStyles } from '@material-ui/styles';
-
 import { Page, SearchBar } from 'components';
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 
-import Header from './Header';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,7 +63,7 @@ const TreePage = () => {
       className={classes.root}
       title="Tree Management"
     >
-      <Header />
+      
       <SearchBar
         onFilter={handleFilter}
         onSearch={handleSearch}

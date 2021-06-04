@@ -13,6 +13,7 @@ import PresentationView from './views/Presentation';
 import GardenPage from 'views/GardenManagement/GardenPage';
 import TreePage from 'views/TreeManagement/TreePage';
 import PlantTypePage from 'views/PlantTypeManagement/PlantTypePage';
+import GardenDetailPage from 'views/GardenDetailManagement/GardenDetail';
 
 const routes = [
   {
@@ -207,6 +208,16 @@ const routes = [
         path: '/gardenManagement/garden',
         exact: true,
         component: GardenPage
+      },
+      {
+        path: '/gardenManagement/garden/:id',
+        exact: true,
+        component: GardenDetailPage
+      },
+      {
+        path: '/gardenManagement/garden/:id/:tab',
+        exact: true,
+        component: lazy(() => import('views/GardenDetailManagement/GardenDetail'))
       },
       {
         path: '/plantType',
