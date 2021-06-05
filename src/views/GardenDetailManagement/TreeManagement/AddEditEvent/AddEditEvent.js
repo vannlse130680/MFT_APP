@@ -24,21 +24,22 @@ import {
   TableCell,
   TableRow,
   TableBody,
-  Table
+  Table,
+  Backdrop,
+  CircularProgress
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { Autocomplete } from '@material-ui/lab';
 import validate from 'validate.js';
 import callAPI from 'utils/callAPI';
 import { values } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
+import { showLoading } from 'actions/loading';
 const schema = {
   code: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
   price: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
-  },
-  test: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   }
 };
@@ -78,10 +79,10 @@ const AddEditEvent = forwardRef((props, ref) => {
     onAdd,
     onEdit,
     className,
-    selectedGarden,
+    selectedTree,
     ...rest
   } = props;
-
+  const gardenInfor = useSelector(state => state.gardenInfor);
   const classes = useStyles();
 
   // const defaultValue = {
@@ -89,10 +90,14 @@ const AddEditEvent = forwardRef((props, ref) => {
   //   address: '111',
   //   plantType: '11'
   // };
-  const [plantTypesName, setPlantTypesName] = useState([]);
+  // const [plantTypesName, setPlantTypesName] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
-    values: { status: 1 },
+    values: {
+      status: 1,
+      price: gardenInfor.pt.price,
+      gardenId: gardenInfor.id
+    },
     touched: {},
     errors: {}
   });
@@ -106,31 +111,31 @@ const AddEditEvent = forwardRef((props, ref) => {
     }));
   }, [formState.values]);
 
-  useEffect(() => {
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
-      .then(res => {
-        if (res.status === 200) {
-          setPlantTypesName(res.data);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   var username = JSON.parse(localStorage.getItem('USER')).username;
+  //   callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
+  //     .then(res => {
+  //       if (res.status === 200) {
+  //         setPlantTypesName(res.data);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   useEffect(() => {
-    if (selectedGarden)
+    if (selectedTree)
       setFormState(formState => ({
         ...formState,
         values: {
-          name: selectedGarden.gardenName,
-          address: selectedGarden.address,
-          code: selectedGarden.gardenCode,
+          code: selectedTree.treeCode,
+          desc: selectedTree.description,
+          price: selectedTree.price,
 
-          test: 'a',
-          auto: selectedGarden.plantTypeObj,
-          status: selectedGarden.status
+          image: selectedTree.image,
+
+          status: selectedTree.status
         }
       }));
   }, []);
@@ -205,31 +210,32 @@ const AddEditEvent = forwardRef((props, ref) => {
     //   return;
     // }
     var { values } = formState;
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    // var username = JSON.parse(localStorage.getItem('USER')).username;
     var data = {
-      gardenCode: values.code,
-      farmerUsername: username,
-      gardenName: values.name,
-      address: values.address,
-      plantTypeID: values.auto.id
+      treeCode: values.code,
+      gardenId: values.gardenId,
+      price: values.price,
+      image: values.image,
+      description: values.desc
     };
 
-    console.log(formState);
+    console.log(formState.values);
     onAdd(data);
   };
-
+  const dispatch = useDispatch();
   const handleEdit = () => {
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    // console.log(formState.values);
-    // console.log(selectedGarden)
+    // var username = JSON.parse(localStorage.getItem('USER')).username;
+    console.log(formState.values);
+    console.log(selectedTree);
     var data = {
-      gardenId: selectedGarden.id,
-      gardenCode: formState.values.code,
-      farmerUsername: username,
-      gardenName: formState.values.name,
-      address: formState.values.address,
-      gardenDetailId: selectedGarden.gardenDetailId,
-      plantTypeID: formState.values.auto.id,
+      id: selectedTree.id,
+      treeCode: formState.values.code,
+      gardenDetailID: selectedTree.gardenDetailID,
+      price: parseInt(formState.values.price),
+
+      addDate: selectedTree.addDate,
+      image: formState.values.image,
+      description: formState.values.desc,
       status: formState.values.status
     };
     // console.log(data)
@@ -245,13 +251,20 @@ const AddEditEvent = forwardRef((props, ref) => {
       fileReader.onload = function(fileLoadedEvent) {
         var srcData = fileLoadedEvent.target.result; // <--- data: base64
 
-        var newImage = document.createElement('img');
-        newImage.src = srcData;
-        // var image = document.getElementById('haha');
-        // image.src = srcData;
-        newImage.style.cssText = 'width:200px;height:200px;';
+        // var newImage = document.createElement('img');
+        // newImage.src = srcData;
+        var image = document.getElementById('treeImg');
+        image.src = srcData;
+        setFormState(formState => ({
+          ...formState,
+          values: {
+            ...formState.values,
+            image: srcData
+          }
+        }));
+        // newImage.style.cssText = 'width:200px;height:200px;';
 
-        document.getElementById('imgTest').innerHTML = newImage.outerHTML;
+        // document.getElementById('imgTest').innerHTML = newImage.outerHTML;
       };
       fileReader.readAsDataURL(fileToLoad);
     }
@@ -265,7 +278,12 @@ const AddEditEvent = forwardRef((props, ref) => {
           <Typography align="center" gutterBottom variant="h3">
             {mode === 'add' ? 'Thêm cây' : 'Cập nhật cây'}
           </Typography>
-
+          {/* <Backdrop
+            className={classes.backdrop}
+            open={true}
+            >
+            <CircularProgress color="inherit" />
+          </Backdrop> */}
           <TextField
             className={classes.field}
             error={hasError('code')}
@@ -280,26 +298,23 @@ const AddEditEvent = forwardRef((props, ref) => {
 
           <TextField
             className={classes.field}
-            error={hasError('name')}
+            error={hasError('price')}
             fullWidth
-            helperText={hasError('name') ? formState.errors.name[0] : null}
-            label="Tên"
-            name="name"
+            helperText={hasError('price') ? formState.errors.price[0] : null}
+            label="Gía (mặc định là giá của loại cây)"
+            name="price"
+            type="number"
             onChange={handleChange}
-            value={formState.values.name || ''}
+            value={formState.values.price || ''}
             variant="outlined"
           />
           <TextField
             className={classes.field}
-            error={hasError('address')}
             fullWidth
-            helperText={
-              hasError('address') ? formState.errors.address[0] : null
-            }
-            label="Địa chỉ"
-            name="address"
+            label="Mô tả"
+            name="desc"
             onChange={handleChange}
-            value={formState.values.address || ''}
+            value={formState.values.desc || ''}
             variant="outlined"
           />
 
@@ -322,13 +337,19 @@ const AddEditEvent = forwardRef((props, ref) => {
                 </TableCell>
 
                 <TableCell align="right" style={{ borderBottom: 'none' }}>
-                  <div id="imgTest"></div>
+                  <div>
+                    <img
+                      id="treeImg"
+                      src={formState.values.image}
+                      style={{ width: 200, height: 300 }}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
 
-          {selectedGarden ? (
+          {selectedTree ? (
             <FormControl className={classes.field} variant="outlined" fullWidth>
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái

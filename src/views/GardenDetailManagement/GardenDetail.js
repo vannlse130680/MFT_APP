@@ -38,7 +38,7 @@ const GardenDetailPage = props => {
     // var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(username)
     
-    callAPI(`Garden/getGardenById/${id}`, 'GET', null)
+    callAPI(`Garden/getGardenAndPlantTypeById/${id}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
           

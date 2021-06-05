@@ -17,7 +17,7 @@ import { toastError, toastSuccess } from 'utils/toastHelper';
 import TreeHeader from '../Header/TreeHeader';
 import Results from './Result/Results';
 import AddEditEvent from './AddEditEvent';
-import { actFetchTREES } from 'actions/trees';
+import { actFetchTREES, actSearchTREES } from 'actions/trees';
 
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +55,7 @@ const TreePage = props => {
   // const [gardens, setGardens] = useState(initGardensValue);
   const [events, setEvents] = useState([]);
   const [resetPage, setResetPage] = useState(false);
-  const [selectedGarden, setSelectedGarden] = useState({});
+  const [selectedTree, setSelectedTree] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -69,26 +69,27 @@ const TreePage = props => {
   };
   const handleEventAdd = data => {
     // setEvents(events => [...events, event]);
-
-    // callAPI('Garden/addGarden', 'POST', data)
-    //   .then(res => {
-    //     if (res.status === 200) {
-    //       if(res.data) {
-    //         toastSuccess("Tạo vườn thành công !")
-    //         setValue(!value);
-    //         setEventModal({
-    //           open: false,
-    //           event: null
-    //         });
-    //       } else {
-    //         toastError("Mã vườn đã tồn tại !")
-    //       }
+    
+    callAPI('Tree/addTree', 'POST', data)
+      .then(res => {
+        if (res.status === 200) {
+          if(res.data) {
+            
+            toastSuccess("Tạo cây thành công !")
+            setValue(!value);
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            toastError("Mã cây đã tồn tại !")
+          }
          
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const handleEventDelete = event => {
     setEvents(events => events.filter(e => e.id !== event.id));
@@ -99,45 +100,44 @@ const TreePage = props => {
   };
   const handleEventEdit = data => {
     // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
-    // console.log(data)
-    // callAPI('Garden/updateGarden', 'PUT', data).then(res => {
-    //   console.log(res)
-    //   if (res.status === 200) {
-    //     if(res.data) {
-    //       toastSuccess("Cập nhật vườn thành công !")
-    //       setValue(!value);
-    //       setEventModal({
-    //         open: false,
-    //         event: null
-    //       });
-    //     } else {
-    //       toastError("Mã vườn đã tồn tại !")
-    //     }
-    //   }
-    // }).catch((err) => {
-    //   console.log(err)
-    // });
+    
+    callAPI('Tree/updateTree', 'PUT', data).then(res => {
+      console.log(res)
+      if (res.status === 200) {
+        if(res.data) {
+          toastSuccess("Cập nhật cây thành công !")
+          setValue(!value);
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          toastError("Mã cây đã tồn tại !")
+        }
+      }
+    }).catch((err) => {
+      console.log(err)
+    });
   };
 
   
   const handleFilter = () => {};
   const handleSearch = keyword => {
     // setResetPage(!resetPage)
-    // dispatch(actSearchGardens(keyword));
+    dispatch(actSearchTREES(keyword));
   };
   const handleEventNew = () => {
-    setSelectedGarden(null)
+    setSelectedTree(null)
+    
     setEventModal({
       open: true,
       event: null
     });
   };
-  const handleEventOpenEdit = (garden) => {
-    garden.plantTypeObj = {
-      id: garden.plantTypeID,
-      plantTypeName: garden.plantTypeName
-    }
-    setSelectedGarden(garden)
+  const handleEventOpenEdit = (tree) => {
+    
+    console.log(tree)
+    setSelectedTree(tree)
     setEventModal({
       open: true,
       event: {}
@@ -148,7 +148,7 @@ const TreePage = props => {
   return (
     <Page
       className={classes.root}
-      title="Garden Management"
+      title="Quản lý cây"
     >
       
       <AuthGuard roles={['FARMER']} />
@@ -172,7 +172,7 @@ const TreePage = props => {
       >
         <AddEditEvent
           event={eventModal.event}
-          selectedGarden={selectedGarden}
+          selectedTree={selectedTree}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}
           onDelete={handleEventDelete}

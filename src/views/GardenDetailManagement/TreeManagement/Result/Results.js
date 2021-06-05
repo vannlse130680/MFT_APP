@@ -113,8 +113,8 @@ const Results = props => {
     rejected: colors.red[600]
   };
 
-  const handleEditClick = garden => {
-    onEditEvent(garden);
+  const handleEditClick = tree => {
+    onEditEvent(tree);
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -158,21 +158,17 @@ const Results = props => {
                 <TableBody>
                   {trees
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((garden, index) => (
+                    .map((tree, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
+                        selected={selectedCustomers.indexOf(tree.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
-                            checked={
-                              selectedCustomers.indexOf(garden.id) !== -1
-                            }
+                            checked={selectedCustomers.indexOf(tree.id) !== -1}
                             color="primary"
-                            onChange={event =>
-                              handleSelectOne(event, garden.id)
-                            }
-                            value={selectedCustomers.indexOf(garden.id) !== -1}
+                            onChange={event => handleSelectOne(event, tree.id)}
+                            value={selectedCustomers.indexOf(tree.id) !== -1}
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
@@ -186,19 +182,25 @@ const Results = props => {
                               overflow: 'hidden',
                               margin: 0
                             }}
-                            src={garden.image}
+                            src={tree.image}
                           />
                         </TableCell>
-                        <TableCell>{garden.treeCode}</TableCell>
-                        <TableCell>{garden.price}</TableCell>
-                        <TableCell>{garden.description}</TableCell>
-                        <TableCell>{garden.addDate}</TableCell>
+                        <TableCell>{tree.treeCode}</TableCell>
+                        <TableCell>{tree.price}</TableCell>
+                        <TableCell
+                          style={{
+                            
+                            width: 200
+                          }}>
+                          {tree.description}
+                        </TableCell>
+                        <TableCell>{tree.addDate}</TableCell>
 
                         <TableCell>
                           <Label
-                            color={statusColors[garden.status]}
+                            color={statusColors[tree.status]}
                             variant="contained">
-                            {garden.statusName}
+                            {tree.statusName}
                           </Label>
                         </TableCell>
 
@@ -208,7 +210,7 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/gardenManagement/garden/${garden.id}`}
+                            to={`/gardenManagement/garden/${tree.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
@@ -216,7 +218,7 @@ const Results = props => {
                           </Button>
                           <Button
                             color="secondary"
-                            onClick={handleEditClick.bind(this, garden)}
+                            onClick={handleEditClick.bind(this, tree)}
                             size="small"
                             variant="contained">
                             {' '}

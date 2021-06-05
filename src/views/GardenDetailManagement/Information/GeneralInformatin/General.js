@@ -69,7 +69,7 @@ const General = props => {
           <TableBody>
             <TableRow>
               <TableCell style={{ fontWeight: 'bold' }}> Mã</TableCell>
-              <TableCell align="right" style={{ fontWeight: 'bold' }}>
+              <TableCell style={{ fontWeight: 'bold' }}>
                 {gardenInfor.gardenCode}
               </TableCell>
             </TableRow>
