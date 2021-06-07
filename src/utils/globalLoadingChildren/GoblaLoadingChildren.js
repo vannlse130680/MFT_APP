@@ -1,30 +1,32 @@
-import { Modal, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styles from './styles';
 
-import { connect } from 'react-redux';
-
-class GlobalLoading extends Component {
+class GoblaLoadingChildren extends Component {
   render() {
     const { classes, loading } = this.props;
+    
     if (loading)
       return (
         <div className={classes.globalLoading}>
           {loading}
-          <img src="/images/gif-leaf-loading-gif-MAIN.gif" alt="loading" className={classes.icon}></img>
+          <img
+            src="/images/gif-leaf-loading-gif-MAIN.gif"
+            alt="loading"
+            className={classes.icon}></img>
         </div>
       );
     else return null;
   }
 }
 const mapStateToProps = state => {
-  return { loading: state.loading };
+  return { loading: state.childrenLoading };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
   return {};
 };
-
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(GlobalLoading)
+  connect(mapStateToProps, mapDispatchToProps)(GoblaLoadingChildren)
 );

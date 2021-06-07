@@ -20,7 +20,8 @@ import { hideLoading, showLoading } from 'actions/loading';
 
 const schema = {
   username: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    // length: {maximum: 50, message: "Độ dài không cho phép"}
   },
   password: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
@@ -98,11 +99,7 @@ const LoginForm = props => {
         password: formState.values.password
       };
 
-      // Axios.post(
-      //   'https://localhost:44316/api/Account/Login?username=vannl&password=12345'
-      // ).then((params) => {
-      //   console.log(params)
-      // });
+      
       callAPI('Account/Login', 'POST', data)
         .then(response => {
           if (response.data.length > 0) {

@@ -24,8 +24,9 @@ const AuthGuard = props => {
       return;
     }
     if (roles) {
+      var role = JSON.parse(localStorage.getItem('USER')).role;
       console.log(roles);
-      if (!roles.includes('FARMER')) {
+      if (!roles.includes(role)) {
         router.history.push('/errors/error-401');
       }
     }

@@ -19,7 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
+import { Link as RouterLink } from 'react-router-dom';
 import { Label } from 'components';
 import { useSelector } from 'react-redux';
 
@@ -38,8 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   buttonIcon: {
     marginRight: theme.spacing(1)
-  },
- 
+  }
 }));
 
 const General = props => {
@@ -62,7 +61,7 @@ const General = props => {
       style={{ width: 500, marginTop: 20 }}
       {...rest}
       className={clsx(classes.root, className)}>
-      <CardHeader title="Thông tin vườn" className={classes.title}/>
+      <CardHeader title="Thông tin vườn" className={classes.title} />
       <Divider />
       <CardContent className={classes.content}>
         <Table>
@@ -87,11 +86,11 @@ const General = props => {
                 <div>
                   <Label
                     color={
-                      gardenInfor.status === 1 ? colors.green[600] : colors.orange[600]
+                      gardenInfor.status === 1
+                        ? colors.green[600]
+                        : colors.orange[600]
                     }>
-                    {gardenInfor.status === 1
-                      ? 'Hoạt động'
-                      : 'Tạm ngừng'}
+                    {gardenInfor.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
                   </Label>
                 </div>
               </TableCell>
@@ -100,15 +99,13 @@ const General = props => {
         </Table>
       </CardContent>
       <CardActions className={classes.actions}>
-        <Button onClick={handleEditOpen}>
-          <EditIcon className={classes.buttonIcon} />
-          Chỉnh sửa
-        </Button>
-      </CardActions>
-      <CardActions className={classes.actions}>
-        <Button onClick={handleEditOpen}>
-          <EditIcon className={classes.buttonIcon} />
-          Chỉnh sửa
+        <Button
+          
+          
+          component={RouterLink}
+          to="/gardenManagement/garden">
+          <ArrowBackIcon />
+          Về quản lý vườn
         </Button>
       </CardActions>
     </Card>

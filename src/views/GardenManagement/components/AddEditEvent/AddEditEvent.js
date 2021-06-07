@@ -1,33 +1,40 @@
 /* eslint-disable react/display-name */
-import React, { useState, forwardRef, useEffect } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import uuid from 'uuid/v1';
-import { makeStyles } from '@material-ui/styles';
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  TextField,
   Button,
-  IconButton,
-  Divider,
-  FormControlLabel,
-  Switch,
+  Card,
+  CardActions,
+  CardContent,
   colors,
+  Divider,
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
-  MenuItem
+  TextField,
+  Typography
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { Autocomplete } from '@material-ui/lab';
-import validate from 'validate.js';
+import { makeStyles } from '@material-ui/styles';
+import { showLoadingChildren } from 'actions/childrenLoading';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React, { forwardRef, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import callAPI from 'utils/callAPI';
-import { values } from 'lodash';
+import validate from 'validate.js';
 const schema = {
+  code : {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    format: {
+      pattern: "[aA-zZ0-9]+",
+      
+      message: "Mã không được chứa kí tự đặc biệt"
+    },
+    length : {
+      maximum : 10,
+      message : "Tối đa chỉ 10 kí tự"
+    }
+  },
   name: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
@@ -92,6 +99,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     touched: {},
     errors: {}
   });
+  const dispatch = useDispatch();
   useEffect(() => {
     const errors = validate(formState.values, schema, { fullMessages: false });
 
@@ -132,18 +140,8 @@ const AddEditEvent = forwardRef((props, ref) => {
   }, []);
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  // const [values, setValues] = useState(event || defaultEvent);
 
   const mode = event ? 'edit' : 'add';
-
-  // const handleFieldChange = e => {
-  //   e.persist();
-  //   setValues(values => ({
-  //     ...values,
-  //     [e.target.name]:
-  //       e.target.type === 'checkbox' ? e.target.checked : e.target.value
-  //   }));
-  // };
 
   const handleChange = (event, value) => {
     if (!event) return;
@@ -197,9 +195,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    // if (!values.title || !values.desc) {
-    //   return;
-    // }
+    dispatch(showLoadingChildren());
     var { values } = formState;
     var username = JSON.parse(localStorage.getItem('USER')).username;
     var data = {
@@ -215,6 +211,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
+    dispatch(showLoadingChildren());
     var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(formState.values);
     // console.log(selectedGarden)
@@ -275,8 +272,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.code || ''}
             variant="outlined"
           />
-         
-          
+
           <TextField
             className={classes.field}
             error={hasError('name')}

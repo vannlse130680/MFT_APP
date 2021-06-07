@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   Card,
   CardActions,
@@ -23,12 +24,15 @@ import {
   colors
 } from '@material-ui/core';
 
-import { GenericMoreButton, Label, TableEditBar } from 'components';
+import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
     padding: 0
+  },
+  alert :{
+    marginBottom : 10
   },
   inner: {
     minWidth: 700
@@ -53,11 +57,11 @@ const Results = props => {
   // console.log(plantTypes);
   const classes = useStyles();
   useEffect(() => {
-    if(resetPage) {
-      console.log(resetPage)
-      setPage(0)
+    if (resetPage) {
+      console.log(resetPage);
+      setPage(0);
     }
-  }, [resetPage])
+  }, [resetPage]);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -90,8 +94,6 @@ const Results = props => {
         selectedCustomers.slice(0, selectedIndex),
         selectedCustomers.slice(selectedIndex + 1)
       );
-
-      
     }
 
     setSelectedCustomers(newSelectedCustomers);
@@ -113,15 +115,21 @@ const Results = props => {
     rejected: colors.red[600]
   };
 
-
-  const handleEditClick = (plantType) => {
-    onEditEvent(plantType)
-  }
+  const handleEditClick = plantType => {
+    onEditEvent(plantType);
+  };
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
+      {plantTypes.length < 1 ? (
+        <Alert
+          
+          className={classes.alert}
+          message="Bạn vẫn chưa có loại cây trồng nào ! Nhấp vào thêm loại cây mới để bắt đầu quản lí !"
+        />
+      ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {plantTypes.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
+        {plantTypes.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
         {Math.ceil(plantTypes.length / rowsPerPage)}
       </Typography>
       <Card>
@@ -150,7 +158,7 @@ const Results = props => {
                     <TableCell>Năng suất bình quân (kg/vụ)</TableCell>
                     <TableCell>Số mùa vụ (vụ/năm)</TableCell>
                     <TableCell>Nhà cung cấp</TableCell>
-                    <TableCell>Giá (vnđ)</TableCell>
+                    <TableCell>Giá (VNĐ)</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -197,10 +205,10 @@ const Results = props => {
                           </div>
                         </TableCell>
                         <TableCell>{plantType.t.typeName}</TableCell>
-                        <TableCell>{plantType.yield}</TableCell>
+                        <TableCell>{new Intl.NumberFormat('vi-VN').format(plantType.yield)}</TableCell>
                         <TableCell>{plantType.crops}</TableCell>
                         <TableCell>{plantType.supplier}</TableCell>
-                        <TableCell>{plantType.price}</TableCell>
+                        <TableCell>{new Intl.NumberFormat('vi-VN').format(plantType.price)}</TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[plantType.status]}
@@ -211,11 +219,10 @@ const Results = props => {
 
                         <TableCell align="center">
                           <Button
-                            color="primary"
-                            
+                            color="secondary"
                             size="small"
                             onClick={handleEditClick.bind(this, plantType)}
-                            variant="outlined">
+                            variant="contained">
                             Sửa
                           </Button>
                         </TableCell>

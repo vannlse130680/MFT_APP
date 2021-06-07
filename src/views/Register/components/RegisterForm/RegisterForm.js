@@ -22,6 +22,8 @@ import useRouter from 'utils/useRouter';
 import callAPI from 'utils/callAPI';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { hideLoading, HIDE_LOADING, showLoading } from 'actions/loading';
 
 validate.extend(validate.validators.datetime, {
   // The value is guaranteed not to be null or undefined but otherwise it
@@ -39,19 +41,22 @@ const schema = {
   fullName: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 32
+      maximum: 100,
+      message: "Tối đa chỉ 100 kí tự "
     }
   },
   username: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 32
+      maximum: 50,
+      message: "Tối đa chỉ 50 kí tự"
     }
   },
   address: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 32
+      maximum: 100,
+      message: "Tối đa chỉ 100 kí tự "
     }
   },
   // email: {
@@ -81,13 +86,15 @@ const schema = {
   password: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 128
+      maximum: 50,
+      message: "Tối đa chỉ 50 kí tự"
     }
   },
   confirmPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 128
+      maximum: 50,
+      message: "Tối đa chỉ 50 kí tự"
     },
     equality: {
       attribute: 'password',
@@ -128,6 +135,7 @@ const RegisterForm = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const dispatch = useDispatch()
   const { history } = useRouter();
 
   const [formState, setFormState] = useState({
@@ -167,6 +175,7 @@ const RegisterForm = props => {
   };
 
   const handleSubmit = async event => {
+    dispatch(showLoading())
     event.preventDefault();
     console.log(formState.values);
     var data = {
@@ -184,9 +193,11 @@ const RegisterForm = props => {
     callAPI('Account/register', 'POST', data)
       .then(response => {
         if (response.status === 200 && response.data) {
+          dispatch(hideLoading())
           toastSuccess('Đăng kí tài khoản thành công');
           history.push('/');
         } else {
+          dispatch(hideLoading())
           toastError('Tên tài khoản đã tồn tại !');
         }
       })

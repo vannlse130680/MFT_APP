@@ -25,8 +25,9 @@ import {
   colors
 } from '@material-ui/core';
 
-import { GenericMoreButton, Label, TableEditBar } from 'components';
+import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -54,6 +55,10 @@ const useStyles = makeStyles(theme => ({
   },
   actionIcon: {
     marginRight: theme.spacing(1)
+  },
+  alert : {
+    marginTop : 50,
+    marginBottom: 10
   }
 }));
 
@@ -118,6 +123,13 @@ const Results = props => {
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
+      {trees.length < 1 ? (
+        <Alert
+          
+          className={classes.alert}
+          message="Bạn vẫn chưa có cây nào trong vườn này ! Nhấp vào thêm cây mới để bắt đầu quản lí !"
+        />
+      ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
         {trees.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
         {Math.ceil(trees.length / rowsPerPage)}
@@ -186,15 +198,16 @@ const Results = props => {
                           />
                         </TableCell>
                         <TableCell>{tree.treeCode}</TableCell>
-                        <TableCell>{tree.price}</TableCell>
+                        <TableCell>{new Intl.NumberFormat('vi-VN').format(tree.price)}</TableCell>
                         <TableCell
                           style={{
-                            
                             width: 200
                           }}>
                           {tree.description}
                         </TableCell>
-                        <TableCell>{tree.addDate}</TableCell>
+                        <TableCell>
+                          {moment(tree.addDate).format('DD/MM/YYYY')}
+                        </TableCell>
 
                         <TableCell>
                           <Label

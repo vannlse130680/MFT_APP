@@ -15,6 +15,7 @@ import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchGardens, actSearchGardens } from 'actions/gardens';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import { actSearchPlantTypes } from 'actions/plantType';
+import { hideLoadingChildren } from 'actions/childrenLoading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -69,6 +70,7 @@ const GardenPage = () => {
       .then(res => {
         if (res.status === 200) {
           if(res.data) {
+            dispatch(hideLoadingChildren())
             toastSuccess("Tạo vườn thành công !")
             setValue(!value);
             setEventModal({
@@ -76,6 +78,7 @@ const GardenPage = () => {
               event: null
             });
           } else {
+            dispatch(hideLoadingChildren())
             toastError("Mã vườn đã tồn tại !")
           }
          
@@ -99,6 +102,7 @@ const GardenPage = () => {
       console.log(res)
       if (res.status === 200) {
         if(res.data) {
+          dispatch(hideLoadingChildren())
           toastSuccess("Cập nhật vườn thành công !")
           setValue(!value);
           setEventModal({
@@ -106,6 +110,7 @@ const GardenPage = () => {
             event: null
           });
         } else {
+          dispatch(hideLoadingChildren())
           toastError("Mã vườn đã tồn tại !")
         }
       }
@@ -145,7 +150,7 @@ const GardenPage = () => {
       className={classes.root}
       title="Garden Management"
     >
-      <AuthGuard roles={['FARMER']} />
+      <AuthGuard roles={['Nông dân']} />
       <Header onAddEvent={handleEventNew} />
       <SearchBar
         onFilter={handleFilter}

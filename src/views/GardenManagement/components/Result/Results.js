@@ -6,6 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import ViewIcon from '@material-ui/icons/VisibilityOutlined';
+
 import {
   Card,
   CardActions,
@@ -25,7 +26,7 @@ import {
   colors
 } from '@material-ui/core';
 
-import { GenericMoreButton, Label, TableEditBar } from 'components';
+import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -53,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   },
   actionIcon: {
     marginRight: theme.spacing(1)
+  },
+  alert : {
+    marginBottom: 10
   }
 }));
 
@@ -111,15 +115,21 @@ const Results = props => {
     1: colors.green[600],
     rejected: colors.red[600]
   };
-  
 
-  const handleEditClick = (garden) => {
-    onEditEvent(garden)
-  }
+  const handleEditClick = garden => {
+    onEditEvent(garden);
+  };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
+      {gardens.length < 1 ? (
+        <Alert
+         
+          className={classes.alert}
+          message="Bạn vẫn chưa có vườn cây nào ! Nhấp vào thêm vườn mới để bắt đầu quản lí !"
+        />
+      ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên {' '}
+        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>

@@ -1,5 +1,6 @@
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { hideLoadingChildren } from 'actions/childrenLoading';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
 
@@ -62,10 +63,11 @@ const PlantTypePage = () => {
   const handleEventAdd = data => {
     // setEvents(events => [...events, event]);
     console.log(data);
-    callAPI('PlantType/addPlantTree', 'POST', data)
+    callAPI('PlantType/addPlantType', 'POST', data)
       .then(res => {
         if (res.status === 200) {
           if(res.data) {
+            dispatch(hideLoadingChildren())
             toastSuccess("Thêm thành công !")
             setValue(!value);
             setEventModal({
@@ -73,6 +75,7 @@ const PlantTypePage = () => {
               event: null
             });
           } else {
+            dispatch(hideLoadingChildren())
             toastError("Thêm thất bại !")
           }
         }
@@ -94,6 +97,7 @@ const PlantTypePage = () => {
     callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
       if (res.status === 200) {
         if(res.data) {
+          dispatch(hideLoadingChildren())
           toastSuccess("Cập nhật thành công !")
           setValue(!value);
           setEventModal({
@@ -101,6 +105,7 @@ const PlantTypePage = () => {
             event: null
           });
         } else {
+          dispatch(hideLoadingChildren())
           toastError("Cập nhật thất bại !")
         }
       }
@@ -130,7 +135,7 @@ const PlantTypePage = () => {
  
   return (
     <Page className={classes.root} title="Quản lý loại cây">
-      <AuthGuard roles={['FARMER']}></AuthGuard>
+      <AuthGuard roles={['Nông dân']}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {plantTypesStore && (

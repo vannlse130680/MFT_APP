@@ -27,12 +27,22 @@ import { Autocomplete } from '@material-ui/lab';
 import validate from 'validate.js';
 import callAPI from 'utils/callAPI';
 import { values } from 'lodash';
+import { useDispatch } from 'react-redux';
+import { showLoadingChildren } from 'actions/childrenLoading';
 const schema = {
   name: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 100,
+      message: "Tối đa chỉ 100 kí tự "
+    }
   },
   supplier: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 200,
+      message: "Tối đa chỉ 200 kí tự "
+    }
   },
   test: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
@@ -107,11 +117,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const classes = useStyles();
 
-  // const defaultValue = {
-  //   name: '111',
-  //   address: '111',
-  //   plantType: '11'
-  // };
+  const dispatch = useDispatch()
   const [treeTypes, setTreeTypes] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
@@ -128,16 +134,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       errors: errors || {}
     }));
   }, [formState.values]);
-  // useEffect(() => {
 
-  //   if(sel)
-  //   setFormState(formState => ({
-  //     ...formState,
-  //     values: {
-  //       name: selectedPlantType.plantTypeName
-  //     }
-  //   }));
-  // }, []);
   useEffect(() => {
     callAPI('treetype', 'GET', null)
       .then(res => {
@@ -172,14 +169,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const mode = event ? 'edit' : 'add';
 
-  // const handleFieldChange = e => {
-  //   e.persist();
-  //   setValues(values => ({
-  //     ...values,
-  //     [e.target.name]:
-  //       e.target.type === 'checkbox' ? e.target.checked : e.target.value
-  //   }));
-  // };
+ 
 
   const handleChange = (event, value) => {
     if (!event) return;
@@ -233,9 +223,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    // if (!values.title || !values.desc) {
-    //   return;
-    // }
+    dispatch(showLoadingChildren())
     var { values } = formState;
     var username = JSON.parse(localStorage.getItem('USER')).username;
     var data = {
@@ -245,7 +233,8 @@ const AddEditEvent = forwardRef((props, ref) => {
       supplier: values.supplier,
       crops: parseInt(values.crops),
       yield: parseFloat(values.yield),
-      price: parseInt(values.price)
+      price: parseInt(values.price),
+      
     };
 
     console.log(formState);
@@ -253,6 +242,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
+    dispatch(showLoadingChildren())
     var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(formState.values);
     var data = {

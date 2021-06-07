@@ -15,10 +15,11 @@ import {
   TableCell,
   colors
 } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
 import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
 import PersonIcon from '@material-ui/icons/PersonOutline';
-
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Label } from 'components';
 import { useSelector } from 'react-redux';
 
@@ -67,10 +68,7 @@ const PlantTypeInformation = props => {
           <TableBody>
             <TableRow>
               <TableCell>Phân loại:</TableCell>
-              <TableCell>
-                {gardenInfor.tt.typeName}
-                
-              </TableCell>
+              <TableCell>{gardenInfor.tt.typeName}</TableCell>
             </TableRow>
             <TableRow
               // style={{
@@ -83,7 +81,7 @@ const PlantTypeInformation = props => {
             </TableRow>
             <TableRow>
               <TableCell>Năng suất bình quân:</TableCell>
-              <TableCell>{gardenInfor.pt.yield}</TableCell>
+              <TableCell>{new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.yield)}</TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Số vụ/năm:</TableCell>
@@ -95,7 +93,7 @@ const PlantTypeInformation = props => {
             </TableRow>
             <TableRow selected>
               <TableCell>Giá:</TableCell>
-              <TableCell>{gardenInfor.pt.price} VNĐ</TableCell>
+              <TableCell>{new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.price)} VNĐ</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Trạng thái:</TableCell>
@@ -116,9 +114,9 @@ const PlantTypeInformation = props => {
         </Table>
       </CardContent>
       <CardActions className={classes.actions}>
-        <Button onClick={handleEditOpen}>
-          <EditIcon className={classes.buttonIcon} />
-          Edit
+        <Button component={RouterLink} to="/plantType">
+          <ArrowBackIcon />
+          Về quản lý loại cây trồng
         </Button>
       </CardActions>
     </Card>

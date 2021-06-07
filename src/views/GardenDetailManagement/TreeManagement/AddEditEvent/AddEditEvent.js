@@ -1,46 +1,60 @@
 /* eslint-disable react/display-name */
-import React, { useState, forwardRef, useEffect } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import uuid from 'uuid/v1';
-import { makeStyles } from '@material-ui/styles';
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  TextField,
   Button,
-  IconButton,
-  Divider,
-  FormControlLabel,
-  Switch,
+  Card,
+  CardActions,
+  CardContent,
+  CircularProgress,
   colors,
+  Divider,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
+  Table,
+  TableBody,
   TableCell,
   TableRow,
-  TableBody,
-  Table,
-  Backdrop,
-  CircularProgress
+  TextField,
+  Typography
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
-import { Autocomplete } from '@material-ui/lab';
-import validate from 'validate.js';
-import callAPI from 'utils/callAPI';
-import { values } from 'lodash';
+import RemoveIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import AddPhotoIcon from '@material-ui/icons/AddPhotoAlternate';
+import { makeStyles } from '@material-ui/styles';
+import { showLoadingChildren } from 'actions/childrenLoading';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { showLoading } from 'actions/loading';
+import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
+import validate from 'validate.js';
+import firebase from '../../../../firebase/firebase';
+
 const schema = {
   code: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    format: {
+      pattern: '[aA-zZ0-9]+',
+      flags: 'i',
+      message: 'Mã không được chứa kí tự đặc biệt'
+    },
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 10,
+      message: 'Tối đa chỉ 10 kí tự'
+    }
   },
   price: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+
+      greaterThan: 0,
+      lessThanOrEqualTo: 100000000,
+      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+    }
+  },
+  desc: {
+    length: { maximum: 500, message: 'Mô tả không được vượt quá 500 kí tự' }
   }
 };
 const useStyles = makeStyles(theme => ({
@@ -68,6 +82,23 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: colors.green[900]
     }
+  },
+  // attachImageButton: {
+  //   color:colors.blue[600],
+  //   // backgroundColor: colors.blue[600],
+  //   // '&:hover': {
+  //   //   backgroundColor: colors.blue[900]
+  //   // }
+  // },
+  // removeImageButton : {
+  //   color:  colors.red[600],
+  //   // backgroundColor: colors.red[600],
+  //   // '&:hover': {
+  //   //   backgroundColor: colors.red[900]
+  //   // }
+  // },
+  circularProgress: {
+    marginRight: 10
   }
 }));
 
@@ -84,13 +115,12 @@ const AddEditEvent = forwardRef((props, ref) => {
   } = props;
   const gardenInfor = useSelector(state => state.gardenInfor);
   const classes = useStyles();
+  const [imageState, setImageState] = useState({
+    image: null,
+    progress: 0,
+    downloadURL: null
+  });
 
-  // const defaultValue = {
-  //   name: '111',
-  //   address: '111',
-  //   plantType: '11'
-  // };
-  // const [plantTypesName, setPlantTypesName] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
@@ -110,19 +140,6 @@ const AddEditEvent = forwardRef((props, ref) => {
       errors: errors || {}
     }));
   }, [formState.values]);
-
-  // useEffect(() => {
-  //   var username = JSON.parse(localStorage.getItem('USER')).username;
-  //   callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         setPlantTypesName(res.data);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }, []);
 
   useEffect(() => {
     if (selectedTree)
@@ -145,33 +162,11 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const mode = event ? 'edit' : 'add';
 
-  // const handleFieldChange = e => {
-  //   e.persist();
-  //   setValues(values => ({
-  //     ...values,
-  //     [e.target.name]:
-  //       e.target.type === 'checkbox' ? e.target.checked : e.target.value
-  //   }));
-  // };
-
   const handleChange = (event, value) => {
     if (!event) return;
     event.persist();
 
-    if (event.target.name === 'test') {
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          test: ''
-        },
-        touched: {
-          ...formState.touched,
-          [event.target.name]: true
-        }
-      }));
-    } else if (event.target.name) {
-      console.log('status');
+    if (event.target.name) {
       setFormState(formState => ({
         ...formState,
         values: {
@@ -188,102 +183,172 @@ const AddEditEvent = forwardRef((props, ref) => {
           [event.target.name]: true
         }
       }));
-    } else {
-      // console.log('auto');
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          auto: value,
-          test: 'ád'
-        }
-      }));
     }
   };
 
-  const handleDelete = () => {
-    onDelete && onDelete(event);
-  };
+  // const handleDelete = () => {
+  //   onDelete && onDelete(event);
+  // };
 
   const handleAdd = () => {
-    // if (!values.title || !values.desc) {
-    //   return;
-    // }
-    var { values } = formState;
-    // var username = JSON.parse(localStorage.getItem('USER')).username;
-    var data = {
-      treeCode: values.code,
-      gardenId: values.gardenId,
-      price: values.price,
-      image: values.image,
-      description: values.desc
-    };
+    dispatch(showLoadingChildren());
+    let file = imageState.image;
+    if (file) {
+      var storage = firebase.storage();
+      var storageRef = storage.ref();
+      var uploadTask = storageRef.child('folder/' + file.name).put(file);
 
-    console.log(formState.values);
-    onAdd(data);
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        snapshot => {
+          var progress =
+            Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setFormState(formState => ({
+            ...formState,
+            values: {
+              ...formState.values,
+              progress: progress
+            }
+          }));
+        },
+        error => {
+          throw error;
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(url => {
+            var { values } = formState;
+            var data = {
+              treeCode: values.code,
+              gardenId: values.gardenId,
+              price: parseInt(values.price),
+              image: url,
+              description: values.desc
+            };
+
+            onAdd(data);
+          });
+          // document.getElementById('file').value = null;
+        }
+      );
+    } else {
+      var { values } = formState;
+      var data = {
+        treeCode: values.code,
+        gardenId: values.gardenId,
+        price: parseInt(values.price),
+        image: '',
+        description: values.desc
+      };
+
+      onAdd(data);
+    }
+    // console.log(formState);
+    // // var username = JSON.parse(localStorage.getItem('USER')).username;
   };
   const dispatch = useDispatch();
   const handleEdit = () => {
-    // var username = JSON.parse(localStorage.getItem('USER')).username;
-    console.log(formState.values);
-    console.log(selectedTree);
-    var data = {
-      id: selectedTree.id,
-      treeCode: formState.values.code,
-      gardenDetailID: selectedTree.gardenDetailID,
-      price: parseInt(formState.values.price),
+    dispatch(showLoadingChildren());
+    let file = imageState.image;
+    if (file) {
+      var storage = firebase.storage();
+      var storageRef = storage.ref();
+      var uploadTask = storageRef.child('folder/' + file.name).put(file);
 
-      addDate: selectedTree.addDate,
-      image: formState.values.image,
-      description: formState.values.desc,
-      status: formState.values.status
-    };
-    // console.log(data)
-    onEdit(data);
-  };
-  function encodeImageFileAsURL() {
-    var filesSelected = document.getElementById('inputFileToLoad').files;
-    if (filesSelected.length > 0) {
-      var fileToLoad = filesSelected[0];
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        snapshot => {
+          var progress =
+            Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setFormState(formState => ({
+            ...formState,
+            values: {
+              ...formState.values,
+              progress: progress
+            }
+          }));
+        },
+        error => {
+          throw error;
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(url => {
+            var data = {
+              id: selectedTree.id,
+              treeCode: formState.values.code,
+              gardenDetailID: selectedTree.gardenDetailID,
+              price: parseInt(formState.values.price),
 
-      var fileReader = new FileReader();
+              addDate: selectedTree.addDate,
+              image: url,
+              description: formState.values.desc,
+              status: formState.values.status
+            };
 
-      fileReader.onload = function(fileLoadedEvent) {
-        var srcData = fileLoadedEvent.target.result; // <--- data: base64
+            onEdit(data);
+          });
+          // document.getElementById('file').value = null;
+        }
+      );
+    } else {
+      var data = {
+        id: selectedTree.id,
+        treeCode: formState.values.code,
+        gardenDetailID: selectedTree.gardenDetailID,
+        price: parseInt(formState.values.price),
 
-        // var newImage = document.createElement('img');
-        // newImage.src = srcData;
-        var image = document.getElementById('treeImg');
-        image.src = srcData;
-        setFormState(formState => ({
-          ...formState,
-          values: {
-            ...formState.values,
-            image: srcData
-          }
-        }));
-        // newImage.style.cssText = 'width:200px;height:200px;';
-
-        // document.getElementById('imgTest').innerHTML = newImage.outerHTML;
+        addDate: selectedTree.addDate,
+        image: formState.values.image,
+        description: formState.values.desc,
+        status: formState.values.status
       };
-      fileReader.readAsDataURL(fileToLoad);
-    }
-  }
 
+      onEdit(data);
+    }
+  };
+
+  const handleUpload = () => {
+    // console.log(this.state.image);
+  };
+  const handleImageChange = e => {
+    if (e.target.files[0]) {
+      setImageState(imageState => ({
+        ...imageState,
+        image: e.target.files[0]
+      }));
+
+      var oFReader = new FileReader();
+      oFReader.readAsDataURL(e.target.files[0]);
+      oFReader.onload = function(oFREvent) {
+        document.getElementById('treeImg').src = oFREvent.target.result;
+      };
+    }
+    console.log(e.target.files[0]);
+  };
   // console.log(selectedPlantType);
+  const handleRemoveImage = () => {
+    document.getElementById('inputFileToLoad').value = null;
+    setImageState(imageState => ({
+      ...imageState,
+      image: null
+    }));
+    document.getElementById('treeImg').src = null;
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        image: null
+      }
+    }));
+  };
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
+      <GoblaLoadingChildren />
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
             {mode === 'add' ? 'Thêm cây' : 'Cập nhật cây'}
           </Typography>
-          {/* <Backdrop
-            className={classes.backdrop}
-            open={true}
-            >
-            <CircularProgress color="inherit" />
-          </Backdrop> */}
+
           <TextField
             className={classes.field}
             error={hasError('code')}
@@ -298,10 +363,10 @@ const AddEditEvent = forwardRef((props, ref) => {
 
           <TextField
             className={classes.field}
-            error={hasError('price')}
             fullWidth
+            error={hasError('price')}
             helperText={hasError('price') ? formState.errors.price[0] : null}
-            label="Gía (mặc định là giá của loại cây)"
+            label="Giá (mặc định là giá của loại cây)"
             name="price"
             type="number"
             onChange={handleChange}
@@ -311,6 +376,9 @@ const AddEditEvent = forwardRef((props, ref) => {
           <TextField
             className={classes.field}
             fullWidth
+            multiline
+            error={hasError('desc')}
+            helperText={hasError('desc') ? formState.errors.desc[0] : null}
             label="Mô tả"
             name="desc"
             onChange={handleChange}
@@ -323,17 +391,28 @@ const AddEditEvent = forwardRef((props, ref) => {
             <TableBody>
               <TableRow>
                 <TableCell style={{ borderBottom: 'none' }}>
-                  Tải ảnh lên
-                  <div>
-                    {' '}
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    className={classes.attachImageButton}>
+                    <AddPhotoIcon />
+                    Tải ảnh lên
                     <input
                       id="inputFileToLoad"
                       type="file"
                       accept="image/*"
-                      onChange={encodeImageFileAsURL}
+                      onChange={handleImageChange}
+                      hidden
                     />
-                  </div>
-                  Xóa
+                  </Button>{' '}
+                  <Button
+                    onClick={handleRemoveImage}
+                    variant="outlined"
+                    component="label"
+                    className={classes.removeImageButton}>
+                    <RemoveIcon />
+                    Gỡ
+                  </Button>{' '}
                 </TableCell>
 
                 <TableCell align="right" style={{ borderBottom: 'none' }}>
@@ -369,9 +448,6 @@ const AddEditEvent = forwardRef((props, ref) => {
         </CardContent>
         <Divider />
         <CardActions>
-          {/* <IconButton edge="start" onClick={handleDelete}>
-            <DeleteIcon />
-          </IconButton> */}
           <Button
             className={classes.cancelButton}
             onClick={onCancel}
