@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const Settings = props => {
   const { match, history } = props;
   const classes = useStyles();
@@ -40,11 +41,13 @@ const Settings = props => {
     history.push(value);
   };
 
+
+  
   const tabs = [
-    { value: 'general', label: 'General' },
-    { value: 'subscription', label: 'Subscription' },
-    { value: 'notifications', label: 'Notifications' },
-    { value: 'security', label: 'Security' }
+    { value: 'general', label: 'Tổng quát' },
+    // { value: 'subscription', label: 'Subscription' },
+    // { value: 'notifications', label: 'Notifications' },
+    { value: 'security', label: 'Bảo mật' }
   ];
 
   if (!tab) {
@@ -58,7 +61,7 @@ const Settings = props => {
   return (
     <Page
       className={classes.root}
-      title="Settings"
+      title="Cài đặt"
     >
       <Header />
       <Tabs
@@ -79,8 +82,8 @@ const Settings = props => {
       <Divider className={classes.divider} />
       <div className={classes.content}>
         {tab === 'general' && <General />}
-        {tab === 'subscription' && <Subscription />}
-        {tab === 'notifications' && <Notifications />}
+        {/* {tab === 'subscription' && <Subscription />}
+        {tab === 'notifications' && <Notifications />} */}
         {tab === 'security' && <Security />}
       </div>
     </Page>

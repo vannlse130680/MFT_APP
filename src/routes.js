@@ -220,6 +220,11 @@ const routes = [
         component: lazy(() => import('views/GardenDetailManagement/GardenDetail'))
       },
       {
+        path: '/gardenManagement/garden/:id/:tab/:treeId',
+        exact: true,
+        component: lazy(() => import('views/GardenDetailManagement/TreeManagement/TreePageDetail/TreePageDetail'))
+      },
+      {
         path: '/plantType',
         exact: true,
         component: PlantTypePage

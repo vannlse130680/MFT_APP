@@ -28,6 +28,7 @@ import {
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
 import moment from 'moment';
+import useRouter from 'utils/useRouter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -64,6 +65,8 @@ const useStyles = makeStyles(theme => ({
 
 const Results = props => {
   const { className, trees, onEditEvent, ...rest } = props;
+  const router = useRouter();
+  
   console.log(trees);
   const classes = useStyles();
 
@@ -223,7 +226,7 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/gardenManagement/garden/${tree.id}`}
+                            to={`${router.history.location.pathname}/${tree.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}

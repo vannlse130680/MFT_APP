@@ -23,13 +23,13 @@ const Header = props => {
         gutterBottom
         variant="overline"
       >
-        Settings
+        Cài đặt
       </Typography>
       <Typography
         component="h1"
         variant="h3"
       >
-        Change account information
+        Cập nhật thông tin tài khoản 
       </Typography>
     </div>
   );

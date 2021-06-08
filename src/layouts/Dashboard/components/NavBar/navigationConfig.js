@@ -66,29 +66,29 @@ export default [
       //   href: '/tree',
       //   icon: TreeIcon 
       // },
-      {
-        title: 'Profile',
-        href: '/profile',
-        icon: PersonIcon,
-        children: [
-          {
-            title: 'Timeline',
-            href: '/profile/1/timeline'
-          },
-          {
-            title: 'Connections',
-            href: '/profile/1/connections'
-          },
-          {
-            title: 'Projects',
-            href: '/profile/1/projects'
-          },
-          {
-            title: 'Reviews',
-            href: '/profile/1/reviews'
-          }
-        ]
-      },
+      // {
+      //   title: 'Profile',
+      //   href: '/profile',
+      //   icon: PersonIcon,
+      //   children: [
+      //     {
+      //       title: 'Timeline',
+      //       href: '/profile/1/timeline'
+      //     },
+      //     {
+      //       title: 'Connections',
+      //       href: '/profile/1/connections'
+      //     },
+      //     {
+      //       title: 'Projects',
+      //       href: '/profile/1/projects'
+      //     },
+      //     {
+      //       title: 'Reviews',
+      //       href: '/profile/1/reviews'
+      //     }
+      //   ]
+      // },
       // {
       //   title: 'Management',
       //   href: '/management',
@@ -189,29 +189,29 @@ export default [
       //   icon: CalendarTodayIcon,
       //   label: () => <Label color={colors.green[500]}>New</Label>
       // },
-      // {
-      //   title: 'Settings',
-      //   href: '/settings',
-      //   icon: SettingsIcon,
-      //   children: [
-      //     {
-      //       title: 'General',
-      //       href: '/settings/general'
-      //     },
-      //     {
-      //       title: 'Subscription',
-      //       href: '/settings/subscription'
-      //     },
-      //     {
-      //       title: 'Notifications',
-      //       href: '/settings/notifications'
-      //     },
-      //     {
-      //       title: 'Security',
-      //       href: '/settings/security'
-      //     }
-      //   ]
-      // },
+      {
+        title: 'Cài đặt',
+        href: '/settings',
+        icon: SettingsIcon,
+        children: [
+          {
+            title: 'Thông tin cá nhân',
+            href: '/settings/general'
+          },
+          // {
+          //   title: 'Subscription',
+          //   href: '/settings/subscription'
+          // },
+          // {
+          //   title: 'Notifications',
+          //   href: '/settings/notifications'
+          // },
+          {
+            title: 'Bảo mật',
+            href: '/settings/security'
+          }
+        ]
+      },
       // {
       //   title: 'Authentication',
       //   href: '/auth',

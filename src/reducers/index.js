@@ -7,6 +7,7 @@ import gardens from './gardens'
 import trees from './trees'
 import gardenInfor from './gardenInfor'
 import childrenLoading from './childrenLoading'
+import userInfor from './userInformation'
 const rootReducer = combineReducers({
   session: sessionReducer,
   loading,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   plantTypes,
   gardens,
   trees,
-  gardenInfor
+  gardenInfor,
+  userInfor
 });
 
 export default rootReducer;

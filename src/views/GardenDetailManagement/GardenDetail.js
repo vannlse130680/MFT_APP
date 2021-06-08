@@ -2,7 +2,7 @@ import { Divider, Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { actFetchGardensAllInfor } from 'actions/gardenInfor';
 import { hideLoading, showLoading } from 'actions/loading';
-import { Page } from 'components';
+import { AuthGuard, Page } from 'components';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
@@ -31,18 +31,16 @@ const GardenDetailPage = props => {
   const dispatch = useDispatch();
   const { id, tab } = match.params;
   console.log(id);
-  
-  useEffect(() => {
 
+  useEffect(() => {
     dispatch(showLoading());
     // var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(username)
-    
+
     callAPI(`Garden/getGardenAndPlantTypeById/${id}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
-          
-          dispatch(actFetchGardensAllInfor(res.data[0]))
+          dispatch(actFetchGardensAllInfor(res.data[0]));
           dispatch(hideLoading());
         }
       })
@@ -50,7 +48,6 @@ const GardenDetailPage = props => {
         console.log(err);
       });
   }, []);
-
 
   const handleTabsChange = (event, value) => {
     history.push(value);
@@ -72,8 +69,6 @@ const GardenDetailPage = props => {
   // const [value, setValue] = useState(true); //
   // const [allInfor, setAllInfor] = useState({}); //
   // const gardensStore = useSelector(state => state.gardens);
- 
-  
 
   // const [gardens, setGardens] = useState(initGardensValue);
   // const [events, setEvents] = useState([]);
@@ -165,12 +160,9 @@ const GardenDetailPage = props => {
   //   });
   // };
 
-  
-
   return (
     <Page className={classes.root} title="Quản lý vườn">
-    
-      
+      <AuthGuard roles={['Nông dân']} />
       <Header />
       <Tabs
         style={{ marginTop: 20 }}

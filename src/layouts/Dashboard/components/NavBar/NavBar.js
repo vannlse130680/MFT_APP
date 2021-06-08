@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Drawer, Divider, Paper, Avatar, Typography } from '@material-ui/core';
 import { Hidden } from '@material-ui/core';
@@ -12,6 +12,9 @@ import { Navigation } from 'components';
 import navigationConfig from './navigationConfig';
 import navShipper from './navigationConfigShipper';
 import navAdmin from './navigationConfigAdmin';
+import callAPI from 'utils/callAPI';
+import { ConversationToolbar } from 'views/Chat/components/ConversationDetails/components';
+import { actFetchUserInfor } from 'actions/userInformation';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,18 +46,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavBar = props => {
-  
   const [profile, setProfile] = useState({});
+  const userInforStore = useSelector(state => state.userInfor);
+  const dispatch = useDispatch()
   useEffect(() => {
+    // var user = localStorage.getItem('USER');
+    // if (user) {
+    //   var data = JSON.parse(user);
+    //   // console.log(data);
+    //   setProfile(data);
+
+    // }
     
-    var user = localStorage.getItem('USER');
-    if (user) {
-      var data = JSON.parse(user);
-      // console.log(data);
-      setProfile(data);
-      
-    }
+    
+    var username = JSON.parse(localStorage.getItem('USER')).username;
+    callAPI(`Account/${username}`, 'GET', null).then(res => {
+      if(res.status === 200) {
+        dispatch(actFetchUserInfor(res.data))
+      }
+    });
   }, []);
+  
   const { openMobile, onMobileClose, className, ...rest } = props;
 
   const classes = useStyles();
@@ -76,24 +88,21 @@ const NavBar = props => {
           alt="Person"
           className={classes.avatar}
           component={RouterLink}
-          src={session.user.avatar}
+          src={userInforStore.avatar}
           to="/profile/1/timeline"
         />
-        <Typography
-          className={classes.name}
-          variant="h4"
-        >
-          {profile.fullname}
+        <Typography className={classes.name} variant="h4">
+          {userInforStore.fullname}
         </Typography>
-        <Typography variant="body2">{profile.role}</Typography>
+        <Typography variant="body2">{userInforStore.role}</Typography>
       </div>
       <Divider className={classes.divider} />
       <nav className={classes.navigation}>
-        {(profile.role === 'Nông dân'
+        {(userInforStore.role === 'Nông dân'
           ? navigationConfig
           : profile.role === 'Shipper'
-            ? navShipper
-            : navAdmin
+          ? navShipper
+          : navAdmin
         ).map(list => (
           <Navigation
             component="div"
@@ -113,12 +122,8 @@ const NavBar = props => {
           anchor="left"
           onClose={onMobileClose}
           open={openMobile}
-          variant="temporary"
-        >
-          <div
-            {...rest}
-            className={clsx(classes.root, className)}
-          >
+          variant="temporary">
+          <div {...rest} className={clsx(classes.root, className)}>
             {navbarContent}
           </div>
         </Drawer>
@@ -128,8 +133,7 @@ const NavBar = props => {
           {...rest}
           className={clsx(classes.root, className)}
           elevation={1}
-          square
-        >
+          square>
           {navbarContent}
         </Paper>
       </Hidden>

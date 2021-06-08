@@ -42,21 +42,21 @@ const schema = {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 100,
-      message: "Tối đa chỉ 100 kí tự "
+      message: 'Tối đa chỉ 100 kí tự '
     }
   },
   username: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 50,
-      message: "Tối đa chỉ 50 kí tự"
+      message: 'Tối đa chỉ 50 kí tự'
     }
   },
   address: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 100,
-      message: "Tối đa chỉ 100 kí tự "
+      message: 'Tối đa chỉ 100 kí tự '
     }
   },
   // email: {
@@ -87,14 +87,14 @@ const schema = {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 50,
-      message: "Tối đa chỉ 50 kí tự"
+      message: 'Tối đa chỉ 50 kí tự'
     }
   },
   confirmPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 50,
-      message: "Tối đa chỉ 50 kí tự"
+      message: 'Tối đa chỉ 50 kí tự'
     },
     equality: {
       attribute: 'password',
@@ -135,7 +135,7 @@ const RegisterForm = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { history } = useRouter();
 
   const [formState, setFormState] = useState({
@@ -175,7 +175,7 @@ const RegisterForm = props => {
   };
 
   const handleSubmit = async event => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     event.preventDefault();
     console.log(formState.values);
     var data = {
@@ -193,11 +193,11 @@ const RegisterForm = props => {
     callAPI('Account/register', 'POST', data)
       .then(response => {
         if (response.status === 200 && response.data) {
-          dispatch(hideLoading())
+          dispatch(hideLoading());
           toastSuccess('Đăng kí tài khoản thành công');
           history.push('/');
         } else {
-          dispatch(hideLoading())
+          dispatch(hideLoading());
           toastError('Tên tài khoản đã tồn tại !');
         }
       })
