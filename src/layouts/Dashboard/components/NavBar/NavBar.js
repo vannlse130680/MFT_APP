@@ -50,13 +50,13 @@ const NavBar = props => {
   const userInforStore = useSelector(state => state.userInfor);
   const dispatch = useDispatch()
   useEffect(() => {
-    // var user = localStorage.getItem('USER');
-    // if (user) {
-    //   var data = JSON.parse(user);
-    //   // console.log(data);
-    //   setProfile(data);
+    var user = localStorage.getItem('USER');
+    if (user) {
+      var data = JSON.parse(user);
+      // console.log(data);
+      setProfile(data);
 
-    // }
+    }
     
     
     var username = JSON.parse(localStorage.getItem('USER')).username;
@@ -98,7 +98,7 @@ const NavBar = props => {
       </div>
       <Divider className={classes.divider} />
       <nav className={classes.navigation}>
-        {(userInforStore.role === 'Nông dân'
+        {(profile.role === 'Nông dân'
           ? navigationConfig
           : profile.role === 'Shipper'
           ? navShipper

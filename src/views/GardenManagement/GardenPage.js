@@ -148,7 +148,7 @@ const GardenPage = () => {
   return (
     <Page
       className={classes.root}
-      title="Garden Management"
+      title="Quản lý vườn"
     >
       <AuthGuard roles={['Nông dân']} />
       <Header onAddEvent={handleEventNew} />

@@ -23,10 +23,16 @@ import { FormControl } from '@material-ui/core';
 import { InputLabel } from '@material-ui/core';
 import { Select } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
+import callAPI from 'utils/callAPI';
+import { hideLoading, showLoading } from 'actions/loading';
+import { useDispatch } from 'react-redux';
+import { toastError, toastSuccess } from 'utils/toastHelper';
+import { actUpdateUserInfor } from 'actions/userInformation';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   saveButton: {
+    marginLeft: 10,
     color: theme.palette.white,
     backgroundColor: colors.green[600],
     '&:hover': {
@@ -54,13 +60,7 @@ const schema = {
       message: 'Tối đa chỉ 100 kí tự '
     }
   },
-  // username: {
-  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-  //   length: {
-  //     maximum: 50,
-  //     message: 'Tối đa chỉ 50 kí tự'
-  //   }
-  // },
+
   address: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
@@ -69,12 +69,12 @@ const schema = {
     }
   },
   email: {
-    presence: { allowEmpty: true, message: 'Không thể bỏ trống' },
     email: {
       message: 'Email không hợp lệ'
     },
     length: {
-      maximum: 64
+      maximum: 50,
+      message: 'Tố đa chỉ 50 kí tự'
     }
   },
   birthday: {
@@ -121,24 +121,15 @@ const GeneralSettings = props => {
   const { profile, className, ...rest } = props;
 
   const classes = useStyles();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  // const [values, setValues] = useState({
-  //   firstName: profile.firstName,
-  //   lastName: profile.lastName,
-  //   email: profile.email,
-  //   phone: profile.phone,
-  //   state: profile.state,
-  //   country: profile.country,
-  //   isPublic: profile.isPublic,
-  //   canHire: profile.canHire
-  // });
 
+  const dispatch = useDispatch();
+  const [isUpdate, setIsUpdate] = useState(false);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
       fullName: profile.fullname,
       gender: profile.gender,
-      email: profile.email,
+      email: profile.email && profile.email !== '' ? profile.email : null,
       phone: profile.phone,
       address: profile.address,
       birthday: profile.dateOfBirth
@@ -188,16 +179,55 @@ const GeneralSettings = props => {
       }
     }));
   };
-  const handleSubmit = event => {
-    event.preventDefault();
-    setOpenSnackbar(true);
-  };
 
-  const handleSnackbarClose = () => {
-    setOpenSnackbar(false);
+  const handleClickUpdate = () => {
+    setIsUpdate(true);
   };
   const handleSave = () => {
-    console.log('hahahaha');
+    dispatch(showLoading());
+    console.log(formState.values);
+    var data = {
+      username: profile.username,
+      password: profile.password,
+      fullname: formState.values.fullName,
+      gender: formState.values.gender,
+      dateOfBirth: formState.values.birthday,
+      address: formState.values.address,
+      phone: formState.values.phone,
+      email: formState.values.email,
+      avatar: profile.avatar
+    };
+    callAPI('Account/updateAccount', 'PUT', data)
+      .then(res => {
+        if (res.data === true) {
+          dispatch(hideLoading());
+          toastSuccess('Cập nhật thành công !');
+          dispatch(actUpdateUserInfor(data));
+          setIsUpdate(false);
+        } else {
+          dispatch(hideLoading());
+          toastError('Cập nhật thất bại!');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const handleCancelClick = () => {
+    setFormState({
+      isValid: false,
+      values: {
+        fullName: profile.fullname,
+        gender: profile.gender,
+        email: profile.email,
+        phone: profile.phone,
+        address: profile.address,
+        birthday: profile.dateOfBirth
+      },
+      touched: {},
+      errors: {}
+    });
+    setIsUpdate(false);
   };
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
@@ -210,6 +240,9 @@ const GeneralSettings = props => {
           <Grid container spacing={4}>
             <Grid item md={6} xs={12}>
               <TextField
+                InputProps={{
+                  readOnly: !isUpdate
+                }}
                 error={hasError('fullName')}
                 helperText={
                   hasError('fullName') ? formState.errors.fullName[0] : null
@@ -226,6 +259,9 @@ const GeneralSettings = props => {
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
+                InputProps={{
+                  readOnly: !isUpdate
+                }}
                 error={hasError('birthday')}
                 helperText={
                   hasError('birthday') ? formState.errors.birthday[0] : null
@@ -248,6 +284,9 @@ const GeneralSettings = props => {
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
+                InputProps={{
+                  readOnly: !isUpdate
+                }}
                 label="Địa chỉ Email"
                 error={hasError('email')}
                 helperText={
@@ -256,18 +295,25 @@ const GeneralSettings = props => {
                 name="email"
                 onChange={handleChange}
                 required
-                value={formState.values.email || ""}
+                value={formState.values.email || ''}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
+                error={hasError('phone')}
+                helperText={
+                  hasError('phone') ? formState.errors.phone[0] : null
+                }
                 fullWidth
+                InputProps={{
+                  readOnly: !isUpdate
+                }}
                 label="Số điện thoại"
                 name="phone"
                 onChange={handleChange}
                 type="text"
-                value={formState.values.phone || ""}
+                value={formState.values.phone || ''}
                 variant="outlined"
               />
             </Grid>
@@ -280,6 +326,7 @@ const GeneralSettings = props => {
                   Giới tính
                 </InputLabel>
                 <Select
+                  inputProps={{ readOnly: !isUpdate }}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   name="gender"
@@ -293,12 +340,17 @@ const GeneralSettings = props => {
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
+                error={hasError('address')}
+                helperText={
+                  hasError('address') ? formState.errors.address[0] : null
+                }
+                inputProps={{ readOnly: !isUpdate }}
                 fullWidth
                 label="Địa chỉ"
                 name="address"
                 onChange={handleChange}
                 required
-                value={formState.values.address || ""}
+                value={formState.values.address || ''}
                 variant="outlined"
               />
             </Grid>
@@ -334,13 +386,27 @@ const GeneralSettings = props => {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button
-            className={classes.saveButton}
-            disabled={!formState.isValid}
-            variant="contained"
-            onClick={handleSave}>
-            Save Changes
-          </Button>
+          {isUpdate ? (
+            <div>
+              <Button variant="contained" onClick={handleCancelClick}>
+                Hủy bỏ
+              </Button>
+              <Button
+                className={classes.saveButton}
+                disabled={!formState.isValid}
+                variant="contained"
+                onClick={handleSave}>
+                Lưu
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClickUpdate}>
+              Sửa
+            </Button>
+          )}
         </CardActions>
       </form>
       {/* <SuccessSnackbar onClose={handleSnackbarClose} open={openSnackbar} /> */}

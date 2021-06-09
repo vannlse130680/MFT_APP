@@ -29,7 +29,7 @@ const Header = props => {
         component="h1"
         variant="h3"
       >
-        Cập nhật thông tin tài khoản 
+        Quản lý thông tin tài khoản 
       </Typography>
     </div>
   );

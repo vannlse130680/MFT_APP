@@ -29,19 +29,20 @@ import callAPI from 'utils/callAPI';
 import { values } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { showLoadingChildren } from 'actions/childrenLoading';
+import NumberFormat from 'react-number-format';
 const schema = {
   name: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 100,
-      message: "Tối đa chỉ 100 kí tự "
+      message: 'Tối đa chỉ 100 kí tự '
     }
   },
   supplier: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
       maximum: 200,
-      message: "Tối đa chỉ 200 kí tự "
+      message: 'Tối đa chỉ 200 kí tự '
     }
   },
   test: {
@@ -75,6 +76,27 @@ const schema = {
     }
   }
 };
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      isNumericString
+      onValueChange={values => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value
+          }
+        });
+      }}
+      thousandSeparator={'.'}
+      decimalSeparator={','}
+    />
+  );
+}
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'absolute',
@@ -103,6 +125,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// eslint-disable-next-line react/no-multi-comp
 const AddEditEvent = forwardRef((props, ref) => {
   const {
     event,
@@ -117,7 +140,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const classes = useStyles();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [treeTypes, setTreeTypes] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
@@ -169,11 +192,12 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const mode = event ? 'edit' : 'add';
 
- 
-
   const handleChange = (event, value) => {
     if (!event) return;
-    event.persist();
+    /// changehere
+    if (event.target.name !== 'price') {
+      event.persist();
+    }
 
     if (event.target.name === 'test') {
       setFormState(formState => ({
@@ -223,7 +247,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    dispatch(showLoadingChildren())
+    dispatch(showLoadingChildren());
     var { values } = formState;
     var username = JSON.parse(localStorage.getItem('USER')).username;
     var data = {
@@ -233,8 +257,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       supplier: values.supplier,
       crops: parseInt(values.crops),
       yield: parseFloat(values.yield),
-      price: parseInt(values.price),
-      
+      price: parseInt(values.price)
     };
 
     console.log(formState);
@@ -242,7 +265,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
-    dispatch(showLoadingChildren())
+    dispatch(showLoadingChildren());
     var username = JSON.parse(localStorage.getItem('USER')).username;
     // console.log(formState.values);
     var data = {
@@ -251,9 +274,9 @@ const AddEditEvent = forwardRef((props, ref) => {
       plantTypeName: formState.values.name,
       farmerUsername: username,
       supplier: formState.values.supplier,
-      crops: parseInt(formState.values.crops) ,
-      yield: parseFloat( formState.values.yield),
-      price: parseInt(formState.values.price) ,
+      crops: parseInt(formState.values.crops),
+      yield: parseFloat(formState.values.yield),
+      price: parseInt(formState.values.price),
       status: formState.values.status
     };
     // console.log(data)
@@ -347,24 +370,27 @@ const AddEditEvent = forwardRef((props, ref) => {
             error={hasError('price')}
             fullWidth
             fullWidth
+            InputProps={{
+              inputComponent: NumberFormatCustom
+            }}
             helperText={hasError('price') ? formState.errors.price[0] : null}
             label="Giá"
             name="price"
             onChange={handleChange}
-            type="number"
+            // type="number"
             value={formState.values.price || ''}
             variant="outlined"
           />
-          
+
           {selectedPlantType ? (
-            <FormControl className={classes.field} variant="outlined" fullWidth>
+            <FormControl className={classes.field} fullWidth variant="outlined">
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái
               </InputLabel>
               <Select
-                labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
                 label="Trạng thái"
+                labelId="demo-simple-select-outlined-label"
                 name="status"
                 onChange={handleChange}
                 value={formState.values.status}>

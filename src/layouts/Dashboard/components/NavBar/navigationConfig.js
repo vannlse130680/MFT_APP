@@ -22,6 +22,7 @@ import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import GardenIcon from '@material-ui/icons/Streetview';
 import TreeIcon from '@material-ui/icons/LocalFloristOutlined';
 import PlantTypeIcon from '@material-ui/icons/NaturePeopleOutlined';
+import ContractIcon from '@material-ui/icons/SupervisedUserCircle';
 
 import { Label } from 'components';
 
@@ -35,7 +36,7 @@ export default [
         icon: HomeIcon
       },
       {
-        title: 'Loại cây được trồng',
+        title: 'Loại cây trồng',
         href: '/plantType',
         icon: PlantTypeIcon 
       },
@@ -48,11 +49,27 @@ export default [
             title: 'Vườn',
             href: '/gardenManagement/garden'
           },
-          {
-            title: 'Cây',
-            href: '/dashboards/analytics',
+          // {
+          //   title: 'Cây',
+          //   href: '/dashboards/analytics',
             
-          }
+          // }
+        ]
+      },
+      {
+        title: 'Quản lý hợp đồng',
+        href: '/contract',
+        icon: ContractIcon,
+        children: [
+          {
+            title: 'Vườn',
+            href: '/gardenManagement/garden'
+          },
+          // {
+          //   title: 'Cây',
+          //   href: '/dashboards/analytics',
+            
+          // }
         ]
       },
       

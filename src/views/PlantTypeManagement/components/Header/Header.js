@@ -39,7 +39,7 @@ const Header = props => {
             component="h1"
             variant="h3"
           >
-            Loại cây được trồng
+            Loại cây trồng
           </Typography>
         </Grid>
         <Grid item>

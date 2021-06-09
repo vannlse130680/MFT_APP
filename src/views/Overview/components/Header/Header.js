@@ -22,15 +22,16 @@ const useStyles = makeStyles(theme => ({
 
 const Header = props => {
   const [profile, setProfile] = useState({});
-  useEffect(() => {
-    var user = localStorage.getItem('USER');
-    if (user) {
-      var data = JSON.parse(user);
-      // console.log(data);
-      setProfile(data);
+  const userInforStore = useSelector(state => state.userInfor);
+  // useEffect(() => {
+  //   var user = localStorage.getItem('USER');
+  //   if (user) {
+  //     var data = JSON.parse(user);
+  //     // console.log(data);
+  //     setProfile(data);
       
-    }
-  }, []);
+  //   }
+  // }, []);
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -64,7 +65,7 @@ const Header = props => {
             gutterBottom
             variant="h3"
           >
-            Xin chào, {profile.fullname}
+            Xin chào, {userInforStore.fullname}
           </Typography>
           <Typography
             gutterBottom

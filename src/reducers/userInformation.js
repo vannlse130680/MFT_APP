@@ -1,4 +1,9 @@
-import { FETCH_USER_INFOR, UPDATE_USER_AVATAR } from 'actions/userInformation';
+import {
+  FETCH_USER_INFOR,
+  UPDATE_USER_AVATAR,
+  UPDATE_USER_INFOR
+} from 'actions/userInformation';
+
 
 const initialState = {};
 
@@ -12,7 +17,22 @@ const userInformation = (state = initialState, action) => {
     case UPDATE_USER_AVATAR: {
       return {
         ...state,
-        avatar : action.avatar
+        avatar: action.avatar
+      };
+    }
+    case UPDATE_USER_INFOR: {
+      var { infor } = action;
+      return {
+        ...state,
+
+        fullname: infor.fullname,
+        gender: infor.gender,
+        dateOfBirth: infor.dateOfBirth,
+        address: infor.address,
+        phone: infor.phone,
+        email: infor.email,
+        
+        
       };
     }
 

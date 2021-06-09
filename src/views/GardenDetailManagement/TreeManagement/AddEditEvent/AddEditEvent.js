@@ -29,7 +29,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import validate from 'validate.js';
 import firebase from '../../../../firebase/firebase';
+import NumberFormat from 'react-number-format';
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
 
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      isNumericString
+      onValueChange={values => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value
+          }
+        });
+      }}
+      thousandSeparator={'.'}
+      decimalSeparator={','}
+    />
+  );
+}
 const schema = {
   code: {
     format: {
@@ -102,6 +123,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// eslint-disable-next-line react/no-multi-comp
 const AddEditEvent = forwardRef((props, ref) => {
   const {
     event,
@@ -164,7 +186,10 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const handleChange = (event, value) => {
     if (!event) return;
-    event.persist();
+    if (event.target.name !== 'price') {
+      event.persist();
+    }
+    
 
     if (event.target.name) {
       setFormState(formState => ({
@@ -331,7 +356,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       ...imageState,
       image: null
     }));
-    document.getElementById('treeImg').src = null;
+    document.getElementById('treeImg').src = '/images/treeDefault.png';
     setFormState(formState => ({
       ...formState,
       values: {
@@ -368,7 +393,9 @@ const AddEditEvent = forwardRef((props, ref) => {
             helperText={hasError('price') ? formState.errors.price[0] : null}
             label="Giá (mặc định là giá của loại cây)"
             name="price"
-            type="number"
+            InputProps={{
+              inputComponent: NumberFormatCustom
+            }}
             onChange={handleChange}
             value={formState.values.price || ''}
             variant="outlined"
@@ -419,7 +446,11 @@ const AddEditEvent = forwardRef((props, ref) => {
                   <div>
                     <img
                       id="treeImg"
-                      src={formState.values.image}
+                      src={
+                        formState.values.image && formState.values.image !== ''
+                          ? formState.values.image
+                          : '/images/treeDefault.png'
+                      }
                       style={{ width: 200, height: 300 }}
                     />
                   </div>

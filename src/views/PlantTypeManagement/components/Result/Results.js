@@ -125,7 +125,7 @@ const Results = props => {
         <Alert
           
           className={classes.alert}
-          message="Bạn vẫn chưa có loại cây trồng nào ! Nhấp vào thêm loại cây mới để bắt đầu quản lí !"
+          message="Không tìm thấy loại cây trồng nào ! Nhấp vào thêm loại cây mới để bắt đầu quản lí !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">

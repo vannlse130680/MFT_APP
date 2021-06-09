@@ -190,14 +190,14 @@ const Results = props => {
                         <TableCell>
                           <img
                             style={{
-                              width: '100px',
+                              width: '120px',
                               height: '150px',
                               position: 'relative',
                               display: 'inline-block',
                               overflow: 'hidden',
                               margin: 0
                             }}
-                            src={tree.image}
+                            src={tree.image ? tree.image : "/images/treeDefault.png"}
                           />
                         </TableCell>
                         <TableCell>{tree.treeCode}</TableCell>

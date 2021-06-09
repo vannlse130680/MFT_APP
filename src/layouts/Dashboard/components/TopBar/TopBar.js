@@ -20,7 +20,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ClickAwayListener
+  ClickAwayListener,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
@@ -90,6 +95,9 @@ const useStyles = makeStyles(theme => ({
   },
   logoutIcon: {
     marginRight: theme.spacing(1)
+  },
+  dialogTitle : {
+    fontSize : 100
   }
 }));
 
@@ -109,7 +117,7 @@ const TopBar = props => {
 
   useEffect(() => {
     let mounted = true;
-
+    
     const fetchNotifications = () => {
       axios.get('/api/account/notifications').then(response => {
         if (mounted) {
@@ -124,11 +132,20 @@ const TopBar = props => {
       mounted = false;
     };
   }, []);
+  const [open, setOpen] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleLogout = () => {
-    localStorage.clear()
+    
+    localStorage.clear();
     history.push('/auth/login');
-    toastSuccess("Đăng xuất thành công !")
+    toastSuccess('Đăng xuất thành công !');
     dispatch(logout());
   };
 
@@ -175,6 +192,26 @@ const TopBar = props => {
   return (
     <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
       <Toolbar>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>
+          <p style={{fontSize : 20}}>Bạn có chắc chắn muốn đăng xuất không?</p>  
+          </DialogTitle>
+         
+          <DialogActions style={{justifyContent: 'center'}} >
+            
+            <Button onClick={handleLogout} color="primary" variant="contained" style={{width : 100}}>
+              Đồng ý
+            </Button>
+          </DialogActions>
+          <DialogActions style={{justifyContent: 'center'}} >
+            <Button onClick={handleClose} variant="contained" style={{width : 100}}>Ở lại</Button>
+            
+          </DialogActions>
+        </Dialog>
         <RouterLink to="/">
           <img
             style={{ height: '40px' }}
@@ -241,7 +278,7 @@ const TopBar = props => {
           <Button
             className={classes.logoutButton}
             color="inherit"
-            onClick={handleLogout}>
+            onClick={handleClickOpen}>
             <InputIcon className={classes.logoutIcon} />
             Đăng xuất
           </Button>
