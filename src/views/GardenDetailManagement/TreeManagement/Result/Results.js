@@ -161,7 +161,7 @@ const Results = props => {
                     <TableCell>Hình đại diện</TableCell>
                     <TableCell>Mã</TableCell>
                     <TableCell>Giá thuê(/năm)</TableCell>
-                    <TableCell>Mô tả</TableCell>
+                  
                     <TableCell>Ngày tạo</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
@@ -202,12 +202,7 @@ const Results = props => {
                         </TableCell>
                         <TableCell>{tree.treeCode}</TableCell>
                         <TableCell>{new Intl.NumberFormat('vi-VN').format(tree.price)}</TableCell>
-                        <TableCell
-                          style={{
-                            width: 200
-                          }}>
-                          {tree.description}
-                        </TableCell>
+                       
                         <TableCell>
                           {moment(tree.addDate).format('DD/MM/YYYY')}
                         </TableCell>
@@ -226,7 +221,7 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`${router.history.location.pathname}/${tree.id}`}
+                            to={`/tree/${tree.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}

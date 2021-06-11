@@ -34,28 +34,13 @@ const useStyles = makeStyles(theme => ({
 
 const Overview = () => {
   const classes = useStyles();
-  const [todoList, setTodoList] = useState([]);
-  useEffect(() => {
-    const todoRef = firebase.database().ref('todo');
-
-    todoRef.on('value', snapshot => {
-      const todos = snapshot.val();
-      const todoList = [];
-      console.log(todos);
-      for (const key in todos) {
-        todoList.push(todos[key]);
-      }
-      console.log(todoList)
-     
-      setTodoList(todoList);
-    });
-  }, []);
+  
 
   return (
     <Page className={classes.root} title="Trang chủ">
-      {todoList ? todoList.map((item, index) => 
-        <div key={index}>{item.name}</div>
-      ) : null}
+      {/* {todoList ? todoList.map((item, index) => 
+        <div key={index}>{item.title}</div>
+      ) : null} */}
       <Header />
       <Statistics className={classes.statistics} />
       <Notifications className={classes.notifications} />

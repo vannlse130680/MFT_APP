@@ -9,12 +9,15 @@ import { Redirect } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import callAPI from 'utils/callAPI';
 import { Logs } from 'views/CustomerManagementDetails/components';
+import Header from '../Header';
+import HeaderBack from '../Header/HeaderBack';
+import CustomerInformation from './CustomerInformation/CustomerInformation';
+import GeneralInformation from './GeneralInformation/GeneralInformation';
 
-import Header from './Header/Header';
-import GardenInformation from './Information/GardenInformation';
 
-import Results from './TreeManagement/Result/Results';
-import TreePage from './TreeManagement/TreePage';
+import TreeInformation from './TreeInformation/TreeInformation';
+
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,28 +28,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const GardenDetailPage = props => {
+const ContractInformation = props => {
   const { match, history } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id, tab } = match.params;
+  const { id, tab, username } = match.params;
   console.log(id);
 
   useEffect(() => {
-    dispatch(showLoading());
-    // var username = JSON.parse(localStorage.getItem('USER')).username;
-    // console.log(username)
+    // dispatch(showLoading());
+    // // var username = JSON.parse(localStorage.getItem('USER')).username;
+    // // console.log(username)
 
-    callAPI(`Garden/getGardenAndPlantTypeById/${id}`, 'GET', null)
-      .then(res => {
-        if (res.status === 200) {
-          dispatch(actFetchGardensAllInfor(res.data[0]));
-          dispatch(hideLoading());
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // callAPI(`Garden/getGardenAndPlantTypeById/${id}`, 'GET', null)
+    //   .then(res => {
+    //     if (res.status === 200) {
+    //       dispatch(actFetchGardensAllInfor(res.data[0]));
+    //       dispatch(hideLoading());
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
   }, []);
 
   const handleTabsChange = (event, value) => {
@@ -54,24 +57,24 @@ const GardenDetailPage = props => {
   };
 
   const tabs = [
-    { value: 'information', label: 'Tổng quát' },
-    { value: 'trees', label: 'Danh sách cây' }
+    { value: 'general', label: 'Tổng quát' },
+    { value: 'customer', label: 'Khách hàng' },
+    { value: 'tree', label: 'Tiến độ cây' },
+    { value: 'crop', label: 'Mùa vụ' }
   ];
 
   if (!tab) {
-    return <Redirect to={`/gardenManagement/garden/${id}/information`} />;
+    return <Redirect to={`/contract/${id}/${username}/customer`} />;
   }
 
   if (!tabs.find(t => t.value === tab)) {
     return <Redirect to="/errors/error-404" />;
   }
 
- 
-
   return (
     <Page className={classes.root} title="Quản lý vườn">
       <AuthGuard roles={['Nông dân']} />
-      <Header />
+      <HeaderBack />
       <Tabs
         style={{ marginTop: 20 }}
         className={classes.tabs}
@@ -85,12 +88,13 @@ const GardenDetailPage = props => {
       </Tabs>
       <Divider className={classes.divider} />
       <div className={classes.content}>
-        {tab === 'information' && <GardenInformation customer={{}} />}
-        {tab === 'trees' && <TreePage gardenId={id} />}
+        {tab === 'customer' && <CustomerInformation />}
+        {tab === 'tree' && <TreeInformation />}
+        {tab === 'general' && <GeneralInformation />}
         {/* {tab === 'logs' && <Logs />} */}
       </div>
     </Page>
   );
 };
 
-export default GardenDetailPage;
+export default ContractInformation;

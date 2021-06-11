@@ -38,7 +38,7 @@ import useRouter from 'utils/useRouter';
 import { PricingModal, NotificationsPopover, Label } from 'components';
 import { logout } from 'actions';
 import { toastSuccess } from 'utils/toastHelper';
-
+import firebase from '../../../../firebase/firebase';
 const useStyles = makeStyles(theme => ({
   root: {
     boxShadow: 'none'
@@ -96,8 +96,8 @@ const useStyles = makeStyles(theme => ({
   logoutIcon: {
     marginRight: theme.spacing(1)
   },
-  dialogTitle : {
-    fontSize : 100
+  dialogTitle: {
+    fontSize: 100
   }
 }));
 
@@ -114,24 +114,38 @@ const TopBar = props => {
   const [searchValue, setSearchValue] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [openNotifications, setOpenNotifications] = useState(false);
-
+  const [todoList, setTodoList] = useState([]);
   useEffect(() => {
-    let mounted = true;
-    
-    const fetchNotifications = () => {
-      axios.get('/api/account/notifications').then(response => {
-        if (mounted) {
-          setNotifications(response.data.notifications);
-        }
-      });
-    };
+    const todoRef = firebase.database().ref('notification');
 
-    fetchNotifications();
+    todoRef.on('value', snapshot => {
+      const todos = snapshot.val();
+      const todoList = [];
 
-    return () => {
-      mounted = false;
-    };
+      for (const key in todos) {
+        todoList.push(todos[key]);
+      }
+
+      setNotifications(todoList);
+    });
   }, []);
+  // useEffect(() => {
+  //   let mounted = true;
+
+  //   const fetchNotifications = () => {
+  //     axios.get('/api/account/notifications').then(response => {
+  //       if (mounted) {
+  //         console.log(response.data.notifications);
+  //       }
+  //     });
+  //   };
+
+  //   fetchNotifications();
+
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, []);
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -142,7 +156,6 @@ const TopBar = props => {
     setOpen(false);
   };
   const handleLogout = () => {
-    
     localStorage.clear();
     history.push('/auth/login');
     toastSuccess('Đăng xuất thành công !');
@@ -158,6 +171,14 @@ const TopBar = props => {
   };
 
   const handleNotificationsOpen = () => {
+    let dbCon = firebase.database().ref('/notification/');
+    dbCon.once('value', function(snapshot) {
+      snapshot.forEach(function(child) {
+        child.ref.update({
+          isSeen: true
+        });
+      });
+    });
     setOpenNotifications(true);
   };
 
@@ -188,7 +209,19 @@ const TopBar = props => {
     'Project',
     'Pages'
   ];
+  const handleClickNoti = () => {
+    console.log('hahahah');
+  };
 
+  const getNumNoti = arr => {
+    var result = 0;
+    for (let index = 0; index < arr.length; index++) {
+      if (!arr[index].isSeen) {
+        result += 1;
+      }
+    }
+    return result;
+  };
   return (
     <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
       <Toolbar>
@@ -198,18 +231,27 @@ const TopBar = props => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description">
           <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>
-          <p style={{fontSize : 20}}>Bạn có chắc chắn muốn đăng xuất không?</p>  
+            <p style={{ fontSize: 20 }}>
+              Bạn có chắc chắn muốn đăng xuất không?
+            </p>
           </DialogTitle>
-         
-          <DialogActions style={{justifyContent: 'center'}} >
-            
-            <Button onClick={handleLogout} color="primary" variant="contained" style={{width : 100}}>
+
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={handleLogout}
+              color="primary"
+              variant="contained"
+              style={{ width: 100 }}>
               Đồng ý
             </Button>
           </DialogActions>
-          <DialogActions style={{justifyContent: 'center'}} >
-            <Button onClick={handleClose} variant="contained" style={{width : 100}}>Ở lại</Button>
-            
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              style={{ width: 100 }}>
+              Ở lại
+            </Button>
           </DialogActions>
         </Dialog>
         <RouterLink to="/">
@@ -269,10 +311,10 @@ const TopBar = props => {
             onClick={handleNotificationsOpen}
             ref={notificationsRef}>
             <Badge
-              badgeContent={notifications.length}
-              classes={{ badge: classes.notificationsBadge }}
-              variant="dot">
-              <NotificationsIcon />
+              badgeContent={getNumNoti(notifications)}
+              classes={{ badge: classes.notificationsBadge }}>
+              {' '}
+              <NotificationsIcon onClick={handleClickNoti} />
             </Badge>
           </IconButton>
           <Button

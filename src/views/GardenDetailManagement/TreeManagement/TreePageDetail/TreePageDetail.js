@@ -1,15 +1,182 @@
-import React, { Component } from 'react';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Collapse,
+  colors,
+  Divider,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+  Typography
+} from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
+import { makeStyles } from '@material-ui/styles';
+import { hideLoading, showLoading } from 'actions/loading';
+import { Alert, AuthGuard, Label, Page } from 'components';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import callAPI from 'utils/callAPI';
+import Header from 'views/GardenDetailManagement/Header/Header';
+import TreeDetailHeader from './TreeDetailHeader/TreeDetailHeader';
 
-class TreePageDetail extends Component {
-
-  render() {
-    console.log(this.props)
-    return (
-      <div>
-        Tree page
-      </div>
-    );
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(3)
+  },
+  nameCell: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  results: {
+    marginTop: theme.spacing(3)
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlgin: 'center'
+  },
+  parentGird: {
+    marginTop: 10
+  },
+  alert: {
+    marginTop: 10
   }
-}
+}));
+
+const TreePageDetail = props => {
+  const { match, history } = props;
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const { treeId } = match.params;
+  console.log(match);
+  const [selectedTree, setSelectedTree] = useState({});
+
+  useEffect(() => {
+    dispatch(showLoading());
+    callAPI(`Tree/getTreeByTreeId/${treeId}`)
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(hideLoading());
+
+          console.log(res.data);
+          setSelectedTree(res.data[0]);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+  return (
+    <Page className={classes.root} title="Quản lý vườn">
+      <AuthGuard roles={['Nông dân']} />
+      <Header />
+      <Divider />
+      <TreeDetailHeader gardenId={selectedTree.gardenID} style={{ marginTop: 20 }} />
+      <Alert
+        className={classes.alert}
+        message="Để cập nhật thông tin cây, bạn cần về quản lí danh sách cây !"
+      />
+      <Grid container spacing={3} className={classes.parentGird}>
+        <Grid item lg={4} md={6} xl={3} xs={12}>
+          <Card>
+            <CardContent className={classes.content}>
+              {' '}
+              <img
+                style={{ width: 350, height: 500 }}
+                src={
+                  selectedTree.image
+                    ? selectedTree.image
+                    : '/images/treeDefault.png'
+                }
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={8} md={6} xl={9} xs={12}>
+          <Card style={{ width: 800 }}>
+            <CardHeader title="Thông tin chi tiết cây" />
+            <Divider />
+            <CardContent style={{ padding: 0 }}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ width: 200 }}>Mã</TableCell>
+                    <TableCell>{selectedTree.treeCode}</TableCell>
+                  </TableRow>
+                  <TableRow selected>
+                    <TableCell>Ngày Tạo</TableCell>
+                    <TableCell>
+                      {moment(selectedTree.addDate).format('DD/MM/YYYY')}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Mô tả</TableCell>
+                    <TableCell>{selectedTree.description}</TableCell>
+                  </TableRow>
+                  <TableRow selected>
+                    <TableCell>Giá:</TableCell>
+                    <TableCell>
+                      {new Intl.NumberFormat('vi-VN').format(
+                        selectedTree.price
+                      )}{' '}
+                      VNĐ
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Trạng thái:</TableCell>
+                    <TableCell>
+                      <div>
+                        <Label
+                          color={
+                            selectedTree.status === 1
+                              ? colors.green[600]
+                              : colors.orange[600]
+                          }>
+                          {selectedTree.status === 1
+                            ? 'Hoạt động'
+                            : 'Tạm ngừng'}
+                        </Label>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={2}>
+                      <div className={classes.nameCell}>
+                        <div>
+                          <Button
+                            component={RouterLink}
+                            to={`/gardenManagement/garden/${selectedTree.gardenID}/information`}>
+                            Xem chi tiết vườn
+                          </Button>
+                        </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardActions className={classes.actions}>
+              {/* <Button component={RouterLink} to="/plantType">
+                <ArrowBackIcon />
+                Về quản lý loại cây trồng
+              </Button> */}
+            </CardActions>
+          </Card>
+        </Grid>
+      </Grid>
+    </Page>
+  );
+};
 
 export default TreePageDetail;

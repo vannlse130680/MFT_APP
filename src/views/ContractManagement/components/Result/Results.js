@@ -15,7 +15,6 @@ import {
   Checkbox,
   Divider,
   Button,
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -27,6 +26,7 @@ import {
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -55,14 +55,14 @@ const useStyles = makeStyles(theme => ({
   actionIcon: {
     marginRight: theme.spacing(1)
   },
-  alert : {
+  alert: {
     marginBottom: 10
   }
 }));
 
 const Results = props => {
-  const { className, gardens, onEditEvent, ...rest } = props;
-  console.log(gardens);
+  const { className, onEditEvent, contracts, ...rest } = props;
+
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -71,7 +71,7 @@ const Results = props => {
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? gardens.map(garden => garden.id)
+      ? contracts.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -121,16 +121,15 @@ const Results = props => {
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {gardens.length < 1 ? (
+      {contracts.length < 1 ? (
         <Alert
-         
           className={classes.alert}
-          message="Không tìm thấy vườn cây nào ! Nhấp vào thêm vườn mới để bắt đầu quản lí !"
+          message="Không tìm thấy hợp đồng mua mua bán cây nào !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(gardens.length / rowsPerPage)}
+        {contracts.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(contracts.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -143,20 +142,22 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === gardens.length}
+                        checked={selectedCustomers.length === contracts.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < gardens.length
+                          selectedCustomers.length < contracts.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell>
                     <TableCell>STT</TableCell>
-                    <TableCell>Mã</TableCell>
-                    <TableCell>Tên</TableCell>
-                    <TableCell>Địa chỉ</TableCell>
-                    <TableCell>Loại cây được trồng</TableCell>
+                    <TableCell>Số hợp đồng</TableCell>
+                    <TableCell>Tên khách hàng</TableCell>
+                    <TableCell>Mã cây</TableCell>
+                    <TableCell>Số năm thuê</TableCell>
+                    <TableCell>Tổng tiền</TableCell>
+                    <TableCell>Thời gian</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -165,47 +166,47 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {gardens
+                  {contracts
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((garden, index) => (
+                    .map((contract, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
+                        selected={
+                          selectedCustomers.indexOf(contract.id) !== -1
+                        }>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(garden.id) !== -1
+                              selectedCustomers.indexOf(contract.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, garden.id)
+                              handleSelectOne(event, contract.id)
                             }
-                            value={selectedCustomers.indexOf(garden.id) !== -1}
+                            value={
+                              selectedCustomers.indexOf(contract.id) !== -1
+                            }
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{garden.gardenCode}</TableCell>
+                        <TableCell>{contract.contractNumber}</TableCell>
+                        <TableCell>{contract.fullname}</TableCell>
+                        <TableCell>{contract.treeCode}</TableCell>
+                        <TableCell>{contract.numOfYear}</TableCell>
                         <TableCell>
-                          <div className={classes.nameCell}>
-                            <div>
-                              <Link
-                                color="inherit"
-                                component={RouterLink}
-                                to="/management/gardens/1"
-                                variant="h6">
-                                {garden.gardenName}
-                              </Link>
-                            </div>
-                          </div>
+                          {new Intl.NumberFormat('vi-VN').format(
+                            contract.totalPrice
+                          )}
                         </TableCell>
-                        <TableCell>{garden.address}</TableCell>
-                        <TableCell>{garden.plantTypeName}</TableCell>
+                        <TableCell>
+                          {moment(contract.date).format('DD/MM/YYYY')}
+                        </TableCell>
                         <TableCell>
                           <Label
-                            color={statusColors[garden.status]}
+                            color={statusColors[contract.status]}
                             variant="contained">
-                            {garden.statusName}
+                            {contract.statusName}
                           </Label>
                         </TableCell>
 
@@ -215,21 +216,20 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/gardenManagement/garden/${garden.id}`}
+                            to={`/contract/${contract.id}/${contract.customerUsername}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-                          <Button
+                          {/* <Button
                             color="secondary"
-                            onClick={handleEditClick.bind(this, garden)}
+                            onClick={handleEditClick.bind(this, contract)}
                             size="small"
                             variant="contained">
-                            {' '}
-                            {/* <EditIcon className={classes.buttonIcon} /> */}
+                          
                             Sửa
-                          </Button>
+                          </Button> */}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -241,7 +241,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={gardens.length}
+            count={contracts.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}

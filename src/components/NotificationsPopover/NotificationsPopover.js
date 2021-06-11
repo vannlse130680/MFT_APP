@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 
 const NotificationsPopover = props => {
   const { notifications, anchorEl, ...rest } = props;
-
+  console.log(notifications)
   const classes = useStyles();
 
   return (
@@ -39,7 +39,7 @@ const NotificationsPopover = props => {
       }}
     >
       <div className={classes.root}>
-        <CardHeader title="Notifications" />
+        <CardHeader title="Notification" />
         <Divider />
         {notifications.length > 0 ? (
           <NotificationList notifications={notifications} />

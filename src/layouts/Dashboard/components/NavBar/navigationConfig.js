@@ -62,8 +62,8 @@ export default [
         icon: ContractIcon,
         children: [
           {
-            title: 'Vườn',
-            href: '/gardenManagement/garden'
+            title: 'Hợp đồng',
+            href: '/contract'
           },
           // {
           //   title: 'Cây',

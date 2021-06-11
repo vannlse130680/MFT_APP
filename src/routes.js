@@ -11,9 +11,11 @@ import DashboardDefaultView from './views/DashboardDefault';
 import OverviewView from './views/Overview';
 import PresentationView from './views/Presentation';
 import GardenPage from 'views/GardenManagement/GardenPage';
-import TreePage from 'views/TreeManagement/TreePage';
+
 import PlantTypePage from 'views/PlantTypeManagement/PlantTypePage';
 import GardenDetailPage from 'views/GardenDetailManagement/GardenDetail';
+import ContractPage from 'views/ContractManagement/ContractPage'
+import ContractInformation from 'views/ContractManagement/components/ContractInfomation/ContractInformation';
 
 const routes = [
   {
@@ -220,7 +222,7 @@ const routes = [
         component: lazy(() => import('views/GardenDetailManagement/GardenDetail'))
       },
       {
-        path: '/gardenManagement/garden/:id/:tab/:treeId',
+        path: '/tree/:treeId',
         exact: true,
         component: lazy(() => import('views/GardenDetailManagement/TreeManagement/TreePageDetail/TreePageDetail'))
       },
@@ -230,9 +232,19 @@ const routes = [
         component: PlantTypePage
       },
       {
-        path: '/tree',
+        path: '/contract',
         exact: true,
-        component: TreePage
+        component: ContractPage
+      },
+      {
+        path: '/contract/:id/:username',
+        exact: true,
+        component: ContractInformation
+      },
+      {
+        path: '/contract/:id/:username/:tab',
+        exact: true,
+        component: lazy(() => import('views/ContractManagement/components/ContractInfomation/ContractInformation'))
       },
       {
         component: () => <Redirect to="/errors/error-404" />

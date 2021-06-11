@@ -15,6 +15,7 @@ import navAdmin from './navigationConfigAdmin';
 import callAPI from 'utils/callAPI';
 import { ConversationToolbar } from 'views/Chat/components/ConversationDetails/components';
 import { actFetchUserInfor } from 'actions/userInformation';
+import { hideLoading, showLoading } from 'actions/loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,6 +51,7 @@ const NavBar = props => {
   const userInforStore = useSelector(state => state.userInfor);
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(showLoading())
     var user = localStorage.getItem('USER');
     if (user) {
       var data = JSON.parse(user);
@@ -62,8 +64,11 @@ const NavBar = props => {
     var username = JSON.parse(localStorage.getItem('USER')).username;
     callAPI(`Account/${username}`, 'GET', null).then(res => {
       if(res.status === 200) {
+        dispatch(hideLoading())
         dispatch(actFetchUserInfor(res.data))
       }
+    }).catch((err) => {
+      console.log(err)
     });
   }, []);
   
@@ -89,7 +94,7 @@ const NavBar = props => {
           className={classes.avatar}
           component={RouterLink}
           src={userInforStore.avatar}
-          to="/profile/1/timeline"
+          to="/settings/general"
         />
         <Typography className={classes.name} variant="h4">
           {userInforStore.fullname}
