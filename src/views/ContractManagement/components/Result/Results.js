@@ -115,6 +115,12 @@ const Results = props => {
     1: colors.green[600],
     rejected: colors.red[600]
   };
+  const statusName = {
+    canceled: colors.grey[600],
+    0: 'Đang chờ',
+    1: 'Hoạt động',
+    rejected: colors.red[600]
+  };
 
   const handleEditClick = garden => {
     onEditEvent(garden);
@@ -206,7 +212,7 @@ const Results = props => {
                           <Label
                             color={statusColors[contract.status]}
                             variant="contained">
-                            {contract.statusName}
+                            {statusName[contract.status]}
                           </Label>
                         </TableCell>
 

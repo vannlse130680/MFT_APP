@@ -57,8 +57,8 @@ const useStyles = makeStyles(theme => ({
   actionIcon: {
     marginRight: theme.spacing(1)
   },
-  alert : {
-    marginTop : 50,
+  alert: {
+    marginTop: 50,
     marginBottom: 10
   }
 }));
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
 const Results = props => {
   const { className, trees, onEditEvent, ...rest } = props;
   const router = useRouter();
-  
+
   console.log(trees);
   const classes = useStyles();
 
@@ -118,7 +118,13 @@ const Results = props => {
     canceled: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
-    rejected: colors.red[600]
+    2: colors.red[600]
+  };
+  const statusName = {
+    canceled: colors.grey[600],
+    0: 'Tạm ngừng',
+    1: 'Hoạt động',
+    2: 'Đã bán'
   };
 
   const handleEditClick = tree => {
@@ -128,7 +134,6 @@ const Results = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       {trees.length < 1 ? (
         <Alert
-          
           className={classes.alert}
           message="Bạn vẫn chưa có cây nào trong vườn này ! Nhấp vào thêm cây mới để bắt đầu quản lí !"
         />
@@ -161,7 +166,7 @@ const Results = props => {
                     <TableCell>Hình đại diện</TableCell>
                     <TableCell>Mã</TableCell>
                     <TableCell>Giá thuê(/năm)</TableCell>
-                  
+
                     <TableCell>Ngày tạo</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
@@ -197,12 +202,18 @@ const Results = props => {
                               overflow: 'hidden',
                               margin: 0
                             }}
-                            src={tree.image ? tree.image : "/images/treeDefault.png"}
+                            src={
+                              tree.image
+                                ? tree.image
+                                : '/images/treeDefault.png'
+                            }
                           />
                         </TableCell>
                         <TableCell>{tree.treeCode}</TableCell>
-                        <TableCell>{new Intl.NumberFormat('vi-VN').format(tree.price)}</TableCell>
-                       
+                        <TableCell>
+                          {new Intl.NumberFormat('vi-VN').format(tree.price)}
+                        </TableCell>
+
                         <TableCell>
                           {moment(tree.addDate).format('DD/MM/YYYY')}
                         </TableCell>
@@ -211,7 +222,7 @@ const Results = props => {
                           <Label
                             color={statusColors[tree.status]}
                             variant="contained">
-                            {tree.statusName}
+                            {statusName[tree.status]}
                           </Label>
                         </TableCell>
 
@@ -227,7 +238,9 @@ const Results = props => {
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
+                          
                           <Button
+                          disabled={tree.status === 2}
                             color="secondary"
                             onClick={handleEditClick.bind(this, tree)}
                             size="small"

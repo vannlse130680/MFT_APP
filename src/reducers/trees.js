@@ -15,7 +15,7 @@ var trees = (state = initState, action) => {
           ? state[index].description
           : '';
         state[index].statusName =
-          action.trees[index].status === 1 ? 'Hoạt động' : 'Tạm ngưng';
+          action.trees[index].status === 1 ? 'Hoạt động' : action.trees[index].status === 2 ? "Đã bán" : "Tạm ngừng";
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

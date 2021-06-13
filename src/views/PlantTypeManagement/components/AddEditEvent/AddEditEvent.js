@@ -30,6 +30,7 @@ import { values } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { showLoadingChildren } from 'actions/childrenLoading';
 import NumberFormat from 'react-number-format';
+import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 const schema = {
   name: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
@@ -285,6 +286,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
+      <GoblaLoadingChildren/>
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">

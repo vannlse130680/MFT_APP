@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import callAPI from 'utils/callAPI';
+import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import validate from 'validate.js';
 const schema = {
   code : {
@@ -231,6 +232,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
+      <GoblaLoadingChildren/>
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">

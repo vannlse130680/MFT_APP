@@ -53,7 +53,18 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10
   }
 }));
-
+const statusColors = {
+  canceled: colors.grey[600],
+  0: colors.orange[600],
+  1: colors.green[600],
+  2: colors.red[600]
+};
+const statusName = {
+  canceled: colors.grey[600],
+  0: 'Tạm ngừng',
+  1: 'Hoạt động',
+  2: "Đã bán"
+};
 const TreePageDetail = props => {
   const { match, history } = props;
   const classes = useStyles();
@@ -138,14 +149,8 @@ const TreePageDetail = props => {
                     <TableCell>
                       <div>
                         <Label
-                          color={
-                            selectedTree.status === 1
-                              ? colors.green[600]
-                              : colors.orange[600]
-                          }>
-                          {selectedTree.status === 1
-                            ? 'Hoạt động'
-                            : 'Tạm ngừng'}
+                          color={statusColors[selectedTree.status]}>
+                          {statusName[selectedTree.status]}
                         </Label>
                       </div>
                     </TableCell>

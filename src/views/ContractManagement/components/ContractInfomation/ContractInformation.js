@@ -64,7 +64,7 @@ const ContractInformation = props => {
   ];
 
   if (!tab) {
-    return <Redirect to={`/contract/${id}/${username}/customer`} />;
+    return <Redirect to={`/contract/${id}/${username}/general`} />;
   }
 
   if (!tabs.find(t => t.value === tab)) {
