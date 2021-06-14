@@ -106,7 +106,7 @@ const Login = () => {
         </CardContent>
         <CardMedia
           className={classes.media}
-          image="/images/auth.png"
+          image="/images/fruit.jpeg"
           title="Cover"></CardMedia>
       </Card>
     </Page>

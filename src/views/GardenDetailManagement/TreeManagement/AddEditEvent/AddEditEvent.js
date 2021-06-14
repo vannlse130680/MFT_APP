@@ -76,6 +76,9 @@ const schema = {
   },
   desc: {
     length: { maximum: 500, message: 'Mô tả không được vượt quá 500 kí tự' }
+  },
+  standard : {
+    length: { maximum: 50, message: 'Mô tả không được vượt quá 50 kí tự' }
   }
 };
 const useStyles = makeStyles(theme => ({
@@ -104,20 +107,7 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: colors.green[900]
     }
   },
-  // attachImageButton: {
-  //   color:colors.blue[600],
-  //   // backgroundColor: colors.blue[600],
-  //   // '&:hover': {
-  //   //   backgroundColor: colors.blue[900]
-  //   // }
-  // },
-  // removeImageButton : {
-  //   color:  colors.red[600],
-  //   // backgroundColor: colors.red[600],
-  //   // '&:hover': {
-  //   //   backgroundColor: colors.red[900]
-  //   // }
-  // },
+  
   circularProgress: {
     marginRight: 10
   }
@@ -171,7 +161,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           code: selectedTree.treeCode,
           desc: selectedTree.description,
           price: selectedTree.price,
-
+          standard: selectedTree.standard,
           image: selectedTree.image,
 
           status: selectedTree.status
@@ -189,7 +179,6 @@ const AddEditEvent = forwardRef((props, ref) => {
     if (event.target.name !== 'price') {
       event.persist();
     }
-    
 
     if (event.target.name) {
       setFormState(formState => ({
@@ -247,7 +236,8 @@ const AddEditEvent = forwardRef((props, ref) => {
               gardenId: values.gardenId,
               price: parseInt(values.price),
               image: url,
-              description: values.desc
+              description: values.desc,
+              standard: values.standard
             };
 
             onAdd(data);
@@ -262,7 +252,8 @@ const AddEditEvent = forwardRef((props, ref) => {
         gardenId: values.gardenId,
         price: parseInt(values.price),
         image: '',
-        description: values.desc
+        description: values.desc,
+        standard: values.standard
       };
 
       onAdd(data);
@@ -302,7 +293,7 @@ const AddEditEvent = forwardRef((props, ref) => {
               treeCode: formState.values.code,
               gardenDetailID: selectedTree.gardenDetailID,
               price: parseInt(formState.values.price),
-
+              standard: formState.values.standard,
               addDate: selectedTree.addDate,
               image: url,
               description: formState.values.desc,
@@ -320,7 +311,7 @@ const AddEditEvent = forwardRef((props, ref) => {
         treeCode: formState.values.code,
         gardenDetailID: selectedTree.gardenDetailID,
         price: parseInt(formState.values.price),
-
+        standard: formState.values.standard,
         addDate: selectedTree.addDate,
         image: formState.values.image,
         description: formState.values.desc,
@@ -410,6 +401,18 @@ const AddEditEvent = forwardRef((props, ref) => {
             name="desc"
             onChange={handleChange}
             value={formState.values.desc || ''}
+            variant="outlined"
+          />
+          <TextField
+            className={classes.field}
+            fullWidth
+            
+            error={hasError('standard')}
+            helperText={hasError('standard') ? formState.errors.standard[0] : null}
+            label="Tiêu chuẩn"
+            name="standard"
+            onChange={handleChange}
+            value={formState.values.standard || ''}
             variant="outlined"
           />
 

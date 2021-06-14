@@ -49,29 +49,29 @@ const useStyles = makeStyles(theme => ({
 const NavBar = props => {
   const [profile, setProfile] = useState({});
   const userInforStore = useSelector(state => state.userInfor);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     var user = localStorage.getItem('USER');
     if (user) {
       var data = JSON.parse(user);
       // console.log(data);
       setProfile(data);
-
+      callAPI(`Account/${data.username}`, 'GET', null)
+        .then(res => {
+          if (res.status === 200) {
+            dispatch(hideLoading());
+            dispatch(actFetchUserInfor(res.data));
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      dispatch(hideLoading());
     }
-    
-    
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    callAPI(`Account/${username}`, 'GET', null).then(res => {
-      if(res.status === 200) {
-        dispatch(hideLoading())
-        dispatch(actFetchUserInfor(res.data))
-      }
-    }).catch((err) => {
-      console.log(err)
-    });
   }, []);
-  
+
   const { openMobile, onMobileClose, className, ...rest } = props;
 
   const classes = useStyles();

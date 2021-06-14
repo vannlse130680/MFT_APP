@@ -14,10 +14,7 @@ import HeaderBack from '../Header/HeaderBack';
 import CustomerInformation from './CustomerInformation/CustomerInformation';
 import GeneralInformation from './GeneralInformation/GeneralInformation';
 
-
 import TreeInformation from './TreeInformation/TreeInformation';
-
-
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,22 +31,29 @@ const ContractInformation = props => {
   const dispatch = useDispatch();
   const { id, tab, username } = match.params;
   console.log(id);
-
+  const [contractInfomation, setContractInformation] = useState({});
   useEffect(() => {
-    // dispatch(showLoading());
-    // // var username = JSON.parse(localStorage.getItem('USER')).username;
-    // // console.log(username)
+    let mounted = true;
+    dispatch(showLoading());
+    callAPI(`Contract/GetContractById/${id}`, 'GET', null)
+      .then(res => {
+        if (mounted) {
+          if (res.status === 200) {
+            dispatch(hideLoading());
+            setContractInformation(res.data[0]);
+            console.log(res.data);
+          }
+        }
+      })
+      .catch(err => {
+        if (mounted) {
+          console.log(err);
+        }
+      });
 
-    // callAPI(`Garden/getGardenAndPlantTypeById/${id}`, 'GET', null)
-    //   .then(res => {
-    //     if (res.status === 200) {
-    //       dispatch(actFetchGardensAllInfor(res.data[0]));
-    //       dispatch(hideLoading());
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const handleTabsChange = (event, value) => {
@@ -58,10 +62,14 @@ const ContractInformation = props => {
 
   const tabs = [
     { value: 'general', label: 'Tổng quát' },
-    { value: 'customer', label: 'Khách hàng' },
-    { value: 'tree', label: 'Tiến độ cây' },
-    { value: 'crop', label: 'Mùa vụ' }
+    { value: 'customer', label: 'Khách hàng' }
   ];
+  if (contractInfomation.status === 1) {
+    tabs.push(
+      { value: 'tree', label: 'Tiến độ cây' },
+      { value: 'crop', label: 'Mùa vụ' }
+    );
+  }
 
   if (!tab) {
     return <Redirect to={`/contract/${id}/${username}/general`} />;
@@ -70,7 +78,13 @@ const ContractInformation = props => {
   if (!tabs.find(t => t.value === tab)) {
     return <Redirect to="/errors/error-404" />;
   }
-
+  const onAccept = data => {
+    console.log(data);
+    setContractInformation({
+      ...contractInfomation,
+      status: 1
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý vườn">
       <AuthGuard roles={['Nông dân']} />
@@ -90,7 +104,12 @@ const ContractInformation = props => {
       <div className={classes.content}>
         {tab === 'customer' && <CustomerInformation />}
         {tab === 'tree' && <TreeInformation />}
-        {tab === 'general' && <GeneralInformation />}
+        {tab === 'general' && (
+          <GeneralInformation
+            contractInfomation={contractInfomation}
+            onAccept={onAccept}
+          />
+        )}
         {/* {tab === 'logs' && <Logs />} */}
       </div>
     </Page>

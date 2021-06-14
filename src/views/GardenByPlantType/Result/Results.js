@@ -6,6 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import ViewIcon from '@material-ui/icons/VisibilityOutlined';
+
 import {
   Card,
   CardActions,
@@ -26,9 +27,6 @@ import {
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
-import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
-import moment from 'moment';
-import useRouter from 'utils/useRouter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -58,16 +56,13 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   alert: {
-    marginTop: 50,
     marginBottom: 10
   }
 }));
 
 const Results = props => {
-  const { className, trees, onEditEvent, ...rest } = props;
-  const router = useRouter();
-
-  console.log(trees);
+  const { className, gardens, onEditEvent, ...rest } = props;
+  console.log(gardens);
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -76,7 +71,7 @@ const Results = props => {
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? trees.map(garden => garden.id)
+      ? gardens.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -118,29 +113,23 @@ const Results = props => {
     canceled: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
-    2: colors.red[600]
-  };
-  const statusName = {
-    canceled: colors.grey[600],
-    0: 'Tạm ngừng',
-    1: 'Hoạt động',
-    2: 'Đã bán'
+    rejected: colors.red[600]
   };
 
-  const handleEditClick = tree => {
-    onEditEvent(tree);
+  const handleEditClick = garden => {
+    onEditEvent(garden);
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {trees.length < 1 ? (
+      {gardens.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Bạn vẫn chưa có cây nào trong vườn này ! Nhấp vào thêm cây mới để bắt đầu quản lí !"
+          message="Không tìm thấy vườn cây nào !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {trees.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(trees.length / rowsPerPage)}
+        {gardens.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -153,21 +142,20 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === trees.length}
+                        checked={selectedCustomers.length === gardens.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < trees.length
+                          selectedCustomers.length < gardens.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell>
                     <TableCell>STT</TableCell>
-                    <TableCell>Hình đại diện</TableCell>
                     <TableCell>Mã</TableCell>
-                    <TableCell>Giá thuê(/năm)</TableCell>
-                    <TableCell>Tiêu chuẩn</TableCell>
-                    <TableCell>Ngày tạo</TableCell>
+                    <TableCell>Tên</TableCell>
+                    <TableCell>Địa chỉ</TableCell>
+
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -176,53 +164,47 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {trees
+                  {gardens
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((tree, index) => (
+                    .map((garden, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(tree.id) !== -1}>
+                        selected={selectedCustomers.indexOf(garden.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
-                            checked={selectedCustomers.indexOf(tree.id) !== -1}
+                            checked={
+                              selectedCustomers.indexOf(garden.id) !== -1
+                            }
                             color="primary"
-                            onChange={event => handleSelectOne(event, tree.id)}
-                            value={selectedCustomers.indexOf(tree.id) !== -1}
+                            onChange={event =>
+                              handleSelectOne(event, garden.id)
+                            }
+                            value={selectedCustomers.indexOf(garden.id) !== -1}
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>
-                          <img
-                            style={{
-                              width: '120px',
-                              height: '150px',
-                              position: 'relative',
-                              display: 'inline-block',
-                              overflow: 'hidden',
-                              margin: 0
-                            }}
-                            src={
-                              tree.image
-                                ? tree.image
-                                : '/images/treeDefault.png'
-                            }
-                          />
+                          <div className={classes.nameCell}>
+                            <div>
+                              <Link
+                                color="inherit"
+                                component={RouterLink}
+                                to="/management/gardens/1"
+                                variant="h6">
+                                {garden.gardenName}
+                              </Link>
+                            </div>
+                          </div>
                         </TableCell>
-                        <TableCell>{tree.treeCode}</TableCell>
-                        <TableCell>
-                          {new Intl.NumberFormat('vi-VN').format(tree.price)}
-                        </TableCell>
-                        <TableCell>{tree.standard}</TableCell>
-                        <TableCell>
-                          {moment(tree.addDate).format('DD/MM/YYYY')}
-                        </TableCell>
+                        <TableCell>{garden.address}</TableCell>
 
                         <TableCell>
                           <Label
-                            color={statusColors[tree.status]}
+                            color={statusColors[garden.status]}
                             variant="contained">
-                            {statusName[tree.status]}
+                            {garden.statusName}
                           </Label>
                         </TableCell>
 
@@ -232,22 +214,11 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/tree/${tree.id}`}
+                            to={`/gardenManagement/garden/${garden.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
-                          </Button>
-
-                          <Button
-                            disabled={tree.status === 2}
-                            color="secondary"
-                            onClick={handleEditClick.bind(this, tree)}
-                            size="small"
-                            variant="contained">
-                            {' '}
-                            {/* <EditIcon className={classes.buttonIcon} /> */}
-                            Sửa
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -260,7 +231,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={trees.length}
+            count={gardens.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}

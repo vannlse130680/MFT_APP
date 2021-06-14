@@ -1,30 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import React from 'react';
-import { colors } from '@material-ui/core';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ChatIcon from '@material-ui/icons/ChatOutlined';
-import CodeIcon from '@material-ui/icons/Code';
-// import DashboardIcon from '@material-ui/icons/DashboardOutlined';
-import ErrorIcon from '@material-ui/icons/ErrorOutline';
-import FolderIcon from '@material-ui/icons/FolderOutlined';
 import HomeIcon from '@material-ui/icons/HomeOutlined';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
-import MailIcon from '@material-ui/icons/MailOutlined';
-import PresentToAllIcon from '@material-ui/icons/PresentToAll';
-import PeopleIcon from '@material-ui/icons/PeopleOutlined';
-import PersonIcon from '@material-ui/icons/PersonOutlined';
-import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
-import SettingsIcon from '@material-ui/icons/SettingsOutlined';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import GardenIcon from '@material-ui/icons/Streetview';
-import TreeIcon from '@material-ui/icons/LocalFloristOutlined';
 import PlantTypeIcon from '@material-ui/icons/NaturePeopleOutlined';
+import SettingsIcon from '@material-ui/icons/SettingsOutlined';
+import GardenIcon from '@material-ui/icons/Streetview';
 import ContractIcon from '@material-ui/icons/SupervisedUserCircle';
-
-import { Label } from 'components';
+import PolicyIcon from '@material-ui/icons/Policy';
 
 export default [
   {
@@ -38,8 +19,15 @@ export default [
       {
         title: 'Loại cây trồng',
         href: '/plantType',
-        icon: PlantTypeIcon 
+        icon: PlantTypeIcon,
+        children: [
+          {
+            title: 'Loại cây',
+            href: '/plantType'
+          }
+        ]
       },
+
       {
         title: 'Quản lý vườn',
         href: '/gardenManagement',
@@ -48,11 +36,11 @@ export default [
           {
             title: 'Vườn',
             href: '/gardenManagement/garden'
-          },
+          }
           // {
           //   title: 'Cây',
           //   href: '/dashboards/analytics',
-            
+
           // }
         ]
       },
@@ -64,24 +52,24 @@ export default [
           {
             title: 'Hợp đồng',
             href: '/contract'
-          },
+          }
           // {
           //   title: 'Cây',
           //   href: '/dashboards/analytics',
-            
+
           // }
         ]
       },
-      
+
       // {
       //   title: 'Vườn',
       //   href: '/garden',
-      //   icon: GardenIcon 
+      //   icon: GardenIcon
       // },
       // {
       //   title: 'Cây',
       //   href: '/tree',
-      //   icon: TreeIcon 
+      //   icon: TreeIcon
       // },
       // {
       //   title: 'Profile',
@@ -138,7 +126,7 @@ export default [
       //   href: '/social-feed',
       //   icon: PeopleIcon
       // },
-     
+
       // {
       //   title: 'Project',
       //   href: '/projects',
@@ -229,6 +217,29 @@ export default [
           }
         ]
       },
+      {
+        title: 'Chính sách',
+        href: '/policy',
+        icon: PolicyIcon,
+        children: [
+          {
+            title: 'Mua bán cây',
+            href: '/policy/tree'
+          },
+          // {
+          //   title: 'Subscription',
+          //   href: '/settings/subscription'
+          // },
+          // {
+          //   title: 'Notifications',
+          //   href: '/settings/notifications'
+          // },
+          // {
+          //   title: 'Bảo mật',
+          //   href: '/settings/security'
+          // }
+        ]
+      }
       // {
       //   title: 'Authentication',
       //   href: '/auth',
@@ -264,7 +275,7 @@ export default [
       //   ]
       // }
     ]
-  },
+  }
   // {
   //   title: 'Support',
   //   pages: [

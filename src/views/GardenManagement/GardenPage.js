@@ -34,7 +34,7 @@ const GardenPage = () => {
   useEffect(() => {
     
     dispatch(showLoading());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(localStorage.getItem('USER')) ? JSON.parse(localStorage.getItem('USER')).username : null;
     // console.log(username)
     callAPI(`garden/${username}`, 'GET', null)
       .then(res => {

@@ -31,11 +31,14 @@ const useStyles = makeStyles(theme => ({
   content: {
     padding: 0
   },
-  alert :{
-    marginBottom : 10
+  alert: {
+    marginBottom: 10
   },
   inner: {
     minWidth: 700
+  },
+  actionIcon: {
+    marginRight: theme.spacing(1)
   },
   nameCell: {
     display: 'flex',
@@ -123,7 +126,6 @@ const Results = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       {plantTypes.length < 1 ? (
         <Alert
-          
           className={classes.alert}
           message="Không tìm thấy loại cây trồng nào ! Nhấp vào thêm loại cây mới để bắt đầu quản lí !"
         />
@@ -205,10 +207,18 @@ const Results = props => {
                           </div>
                         </TableCell>
                         <TableCell>{plantType.t.typeName}</TableCell>
-                        <TableCell>{new Intl.NumberFormat('vi-VN').format(plantType.yield)}</TableCell>
+                        <TableCell>
+                          {new Intl.NumberFormat('vi-VN').format(
+                            plantType.yield
+                          )}
+                        </TableCell>
                         <TableCell>{plantType.crops}</TableCell>
                         <TableCell>{plantType.supplier}</TableCell>
-                        <TableCell>{new Intl.NumberFormat('vi-VN').format(plantType.price)}</TableCell>
+                        <TableCell>
+                          {new Intl.NumberFormat('vi-VN').format(
+                            plantType.price
+                          )}
+                        </TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[plantType.status]}
@@ -218,6 +228,17 @@ const Results = props => {
                         </TableCell>
 
                         <TableCell align="center">
+                          <Button
+                            className={classes.actionIcon}
+                            color="primary"
+                            component={RouterLink}
+                            size="small"
+                            to={`/plantType/${plantType.id}`}
+                            variant="contained">
+                            {' '}
+                            {/* <ViewIcon className={classes.buttonIcon} /> */}
+                            Xem
+                          </Button>
                           <Button
                             color="secondary"
                             size="small"

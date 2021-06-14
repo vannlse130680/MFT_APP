@@ -6,6 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import ViewIcon from '@material-ui/icons/VisibilityOutlined';
+
 import {
   Card,
   CardActions,
@@ -22,13 +23,17 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  colors
+  colors,
+  Dialog,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+  DialogContent
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
-import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
-import moment from 'moment';
-import useRouter from 'utils/useRouter';
+import { Avatar } from '@material-ui/core';
+import callAPI from 'utils/callAPI';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -37,6 +42,13 @@ const useStyles = makeStyles(theme => ({
   },
   inner: {
     minWidth: 700
+  },
+  redButton: {
+    color: theme.palette.white,
+    backgroundColor: colors.red[600],
+    '&:hover': {
+      backgroundColor: colors.red[900]
+    }
   },
   nameCell: {
     display: 'flex',
@@ -58,25 +70,24 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   alert: {
-    marginTop: 50,
     marginBottom: 10
   }
 }));
 
 const Results = props => {
-  const { className, trees, onEditEvent, ...rest } = props;
-  const router = useRouter();
+  const { className, accounts, onEditEvent, onBan, ...rest } = props;
 
-  console.log(trees);
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  
 
+  
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? trees.map(garden => garden.id)
+      ? accounts.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -116,31 +127,28 @@ const Results = props => {
   };
   const statusColors = {
     canceled: colors.grey[600],
-    0: colors.orange[600],
+    2: colors.orange[600],
     1: colors.green[600],
-    2: colors.red[600]
-  };
-  const statusName = {
-    canceled: colors.grey[600],
-    0: 'Tạm ngừng',
-    1: 'Hoạt động',
-    2: 'Đã bán'
+    0: colors.red[600]
   };
 
-  const handleEditClick = tree => {
-    onEditEvent(tree);
+  // const handleEditClick = garden => {
+  //   onEditEvent(garden);
+  // };
+  const handleBanAccount = customer => {
+    onBan(customer);
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {trees.length < 1 ? (
+      {accounts.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Bạn vẫn chưa có cây nào trong vườn này ! Nhấp vào thêm cây mới để bắt đầu quản lí !"
+          message="Không tìm thấy tài khoản nào !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {trees.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(trees.length / rowsPerPage)}
+        {accounts.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(accounts.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -153,102 +161,96 @@ const Results = props => {
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === trees.length}
+                        checked={selectedCustomers.length === accounts.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < trees.length
+                          selectedCustomers.length < accounts.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell>
                     <TableCell>STT</TableCell>
-                    <TableCell>Hình đại diện</TableCell>
-                    <TableCell>Mã</TableCell>
-                    <TableCell>Giá thuê(/năm)</TableCell>
-                    <TableCell>Tiêu chuẩn</TableCell>
-                    <TableCell>Ngày tạo</TableCell>
+                    <TableCell>Khách hàng</TableCell>
+                    <TableCell>Tên tài khoản</TableCell>
+                    <TableCell>Mật khẩu</TableCell>
+
+                    <TableCell>Số điện thoại</TableCell>
+                    <TableCell>Địa chỉ</TableCell>
                     <TableCell>Trạng thái</TableCell>
-                    {/* <TableCell>Type</TableCell>
-                    <TableCell>Projects held</TableCell>
-                    <TableCell>Reviews</TableCell> */}
+
                     <TableCell align="center">Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {trees
+                  {accounts
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((tree, index) => (
+                    .map((account, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(tree.id) !== -1}>
+                        selected={
+                          selectedCustomers.indexOf(account.id) !== -1
+                        }>
                         <TableCell padding="checkbox">
                           <Checkbox
-                            checked={selectedCustomers.indexOf(tree.id) !== -1}
+                            checked={
+                              selectedCustomers.indexOf(account.id) !== -1
+                            }
                             color="primary"
-                            onChange={event => handleSelectOne(event, tree.id)}
-                            value={selectedCustomers.indexOf(tree.id) !== -1}
+                            onChange={event =>
+                              handleSelectOne(event, account.id)
+                            }
+                            value={
+                              selectedCustomers.indexOf(account.id) !== -1
+                            }
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
-                          <img
-                            style={{
-                              width: '120px',
-                              height: '150px',
-                              position: 'relative',
-                              display: 'inline-block',
-                              overflow: 'hidden',
-                              margin: 0
-                            }}
-                            src={
-                              tree.image
-                                ? tree.image
-                                : '/images/treeDefault.png'
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>{tree.treeCode}</TableCell>
-                        <TableCell>
-                          {new Intl.NumberFormat('vi-VN').format(tree.price)}
-                        </TableCell>
-                        <TableCell>{tree.standard}</TableCell>
-                        <TableCell>
-                          {moment(tree.addDate).format('DD/MM/YYYY')}
-                        </TableCell>
+                          <div className={classes.nameCell}>
+                            <Avatar
+                              className={classes.avatar}
+                              src={account.avatar}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>
+                                {account.fullname}
+                              </div>
 
+                              <div>{account.email}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{account.username}</TableCell>
+                        <TableCell>{account.password}</TableCell>
+
+                        <TableCell>{account.phone}</TableCell>
+                        <TableCell>{account.address}</TableCell>
                         <TableCell>
                           <Label
-                            color={statusColors[tree.status]}
+                            color={statusColors[account.status]}
                             variant="contained">
-                            {statusName[tree.status]}
+                            {account.statusName}
                           </Label>
                         </TableCell>
 
                         <TableCell align="center">
                           <Button
-                            className={classes.actionIcon}
-                            color="primary"
-                            component={RouterLink}
+                            className={
+                              account.status === 1 ? classes.redButton : ''
+                            }
                             size="small"
-                            to={`/tree/${tree.id}`}
+                            onClick={handleBanAccount.bind(
+                              this,
+                              account
+                            )}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
-                            Xem
+                            {account.status === 1 ? 'Khóa' : 'Mở khóa'}
                           </Button>
-
-                          <Button
-                            disabled={tree.status === 2}
-                            color="secondary"
-                            onClick={handleEditClick.bind(this, tree)}
-                            size="small"
-                            variant="contained">
-                            {' '}
-                            {/* <EditIcon className={classes.buttonIcon} /> */}
-                            Sửa
-                          </Button>
+                        
                         </TableCell>
                       </TableRow>
                     ))}
@@ -260,7 +262,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={trees.length}
+            count={accounts.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -270,17 +272,9 @@ const Results = props => {
         </CardActions>
       </Card>
       <TableEditBar selected={selectedCustomers} />
+   
     </div>
   );
-};
-
-Results.propTypes = {
-  className: PropTypes.string,
-  gardens: PropTypes.array
-};
-
-Results.defaultProps = {
-  gardens: []
 };
 
 export default Results;

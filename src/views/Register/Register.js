@@ -108,7 +108,7 @@ const Register = () => {
         </CardContent>
         <CardMedia
           className={classes.media}
-          image="/images/auth.png"
+          image="/images/fruit2.jpg"
           title="Cover">
           
         </CardMedia>

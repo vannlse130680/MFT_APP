@@ -132,6 +132,10 @@ const TreePageDetail = props => {
                     </TableCell>
                   </TableRow>
                   <TableRow>
+                    <TableCell>Tiêu chuẩn</TableCell>
+                    <TableCell>{selectedTree.standard}</TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell>Mô tả</TableCell>
                     <TableCell>{selectedTree.description}</TableCell>
                   </TableRow>

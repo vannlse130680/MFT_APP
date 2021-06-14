@@ -36,7 +36,10 @@ import { hideLoading, showLoading } from 'actions/loading';
 import moment from 'moment';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
-import { hideLoadingChildren, showLoadingChildren } from 'actions/childrenLoading';
+import {
+  hideLoadingChildren,
+  showLoadingChildren
+} from 'actions/childrenLoading';
 
 const useStyles = makeStyles(theme => ({
   root: { marginTop: 10 },
@@ -82,12 +85,12 @@ const statusName = {
   2: 'Đã hủy'
 };
 const GeneralInformation = props => {
-  const { className, ...rest } = props;
+  const { className, contractInfomation, onAccept, ...rest } = props;
 
   const classes = useStyles();
 
   const router = useRouter();
-  const [contractInfomation, setContractInformation] = useState({});
+  // const [contractInfomation, setContractInformation] = useState({});
   console.log(router);
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
@@ -99,36 +102,35 @@ const GeneralInformation = props => {
   const handleClose = () => {
     setOpen(false);
   };
-  useEffect(() => {
-    dispatch(showLoading());
-    callAPI(`Contract/GetContractById/${router.match.params.id}`, 'GET', null)
-      .then(res => {
-        if (res.status === 200) {
-          dispatch(hideLoading());
-          setContractInformation(res.data[0]);
-          console.log(res.data);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   dispatch(showLoading());
+  //   callAPI(`Contract/GetContractById/${router.match.params.id}`, 'GET', null)
+  //     .then(res => {
+  //       if (res.status === 200) {
+  //         dispatch(hideLoading());
+  //         setContractInformation(res.data[0]);
+  //         console.log(res.data);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // }, []);
   const handleConfirmContract = () => {
+   
     dispatch(showLoadingChildren());
     var data = {
       treeID: contractInfomation.treeID,
       contractID: contractInfomation.id
     };
+   
     callAPI('Contract/AcceptContract', 'PUT', data)
       .then(res => {
         if (res.data) {
           toastSuccess('Xác nhận hợp đồng thành công !');
           dispatch(hideLoadingChildren());
           handleClose();
-          setContractInformation({
-            ...contractInfomation,
-            status: 1
-          });
+          onAccept(data)
         } else {
           dispatch(hideLoadingChildren());
           toastError('Xác nhận hợp đồng không thành công !');
@@ -205,6 +207,10 @@ const GeneralInformation = props => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
+                  <TableCell>Tổng mùa vụ:</TableCell>
+                  <TableCell>{contractInfomation.totalCrop}</TableCell>
+                </TableRow>
+                <TableRow>
                   <TableCell>Tổng sản lượng:</TableCell>
                   <TableCell>{contractInfomation.totalYield}</TableCell>
                 </TableRow>
@@ -233,8 +239,7 @@ const GeneralInformation = props => {
                 <Button
                   className={classes.redButton}
                   variant="contained"
-                  variant="contained"
-                  >
+                  variant="contained">
                   Hủy hợp đồng
                 </Button>
               )}
@@ -293,7 +298,7 @@ const GeneralInformation = props => {
             Đồng ý
           </Button>
         </DialogActions>
-        <GoblaLoadingChildren/>
+        <GoblaLoadingChildren />
       </Dialog>
     </Grid>
   );

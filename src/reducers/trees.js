@@ -9,13 +9,19 @@ var trees = (state = initState, action) => {
 
       for (let index = 0; index < action.trees.length; index++) {
         // state[index].treeTypeName = action.plantTypes[index].t.typeName;
-        state[index].standard = '';
+        state[index].standard = state[index].standard
+          ? state[index].standard
+          : '';
         state[index].image = state[index].image ? state[index].image : '';
         state[index].description = state[index].description
           ? state[index].description
           : '';
         state[index].statusName =
-          action.trees[index].status === 1 ? 'Hoạt động' : action.trees[index].status === 2 ? "Đã bán" : "Tạm ngừng";
+          action.trees[index].status === 1
+            ? 'Hoạt động'
+            : action.trees[index].status === 2
+            ? 'Đã bán'
+            : 'Tạm ngừng';
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

@@ -14,15 +14,19 @@ import GardenPage from 'views/GardenManagement/GardenPage';
 
 import PlantTypePage from 'views/PlantTypeManagement/PlantTypePage';
 import GardenDetailPage from 'views/GardenDetailManagement/GardenDetail';
-import ContractPage from 'views/ContractManagement/ContractPage'
+import ContractPage from 'views/ContractManagement/ContractPage';
 import ContractInformation from 'views/ContractManagement/components/ContractInfomation/ContractInformation';
+import GardenByPlantType from 'views/GardenByPlantType/GardenByPlantType';
+import BuyTreePolicy from 'views/BuyTreePolicy/BuyTreePolicy';
+import CustomerAccountsPage from 'views/CustomerAccountManagement/CustomerAccountsPage';
+import FarmerAccountsPage from 'views/FarmerAccountManagement/FarmerAccountsPage';
+import ShippAccountPage from 'views/ShipperAccountsManagement/ShippAccountPage';
 
 const routes = [
   {
     path: '/',
     exact: true,
     component: () => <Redirect to="/overview" />
-    
   },
   {
     path: '/auth',
@@ -219,17 +223,28 @@ const routes = [
       {
         path: '/gardenManagement/garden/:id/:tab',
         exact: true,
-        component: lazy(() => import('views/GardenDetailManagement/GardenDetail'))
+        component: lazy(() =>
+          import('views/GardenDetailManagement/GardenDetail')
+        )
       },
       {
         path: '/tree/:treeId',
         exact: true,
-        component: lazy(() => import('views/GardenDetailManagement/TreeManagement/TreePageDetail/TreePageDetail'))
+        component: lazy(() =>
+          import(
+            'views/GardenDetailManagement/TreeManagement/TreePageDetail/TreePageDetail'
+          )
+        )
       },
       {
         path: '/plantType',
         exact: true,
         component: PlantTypePage
+      },
+      {
+        path: '/plantType/:id',
+        exact: true,
+        component: GardenByPlantType
       },
       {
         path: '/contract',
@@ -244,7 +259,31 @@ const routes = [
       {
         path: '/contract/:id/:username/:tab',
         exact: true,
-        component: lazy(() => import('views/ContractManagement/components/ContractInfomation/ContractInformation'))
+        component: lazy(() =>
+          import(
+            'views/ContractManagement/components/ContractInfomation/ContractInformation'
+          )
+        )
+      },
+      {
+        path: '/policy/tree',
+        exact: true,
+        component: BuyTreePolicy
+      },
+      {
+        path: '/managementAccount/customers',
+        exact: true,
+        component: CustomerAccountsPage
+      },
+      {
+        path: '/managementAccount/farmers',
+        exact: true,
+        component: FarmerAccountsPage
+      },
+      {
+        path: '/managementAccount/shippers',
+        exact: true,
+        component: ShippAccountPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

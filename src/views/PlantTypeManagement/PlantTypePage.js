@@ -29,7 +29,7 @@ const PlantTypePage = () => {
   useEffect(() => {
     console.log('reden');
     dispatch(showLoading());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(localStorage.getItem('USER')) ? JSON.parse(localStorage.getItem('USER')).username : null;
     // console.log(username)
     callAPI(`planttype/${username}`, 'GET', null)
       .then(res => {
