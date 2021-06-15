@@ -25,7 +25,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Divider
 } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
@@ -231,26 +232,18 @@ const TopBar = props => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description">
           <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>
-            <p style={{ fontSize: 20 }}>
-              Bạn có chắc chắn muốn đăng xuất không?
-            </p>
+            <p style={{ fontSize: 20 }}>Đăng xuất</p>
           </DialogTitle>
-
-          <DialogActions style={{ justifyContent: 'center' }}>
-            <Button
-              onClick={handleLogout}
-              color="primary"
-              variant="contained"
-              style={{ width: 100 }}>
+          <Divider />
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Bạn có chắc chắn muốn đăng xuất không?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Ở lại</Button>
+            <Button onClick={handleLogout} color="primary">
               Đồng ý
-            </Button>
-          </DialogActions>
-          <DialogActions style={{ justifyContent: 'center' }}>
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              style={{ width: 100 }}>
-              Ở lại
             </Button>
           </DialogActions>
         </Dialog>

@@ -73,14 +73,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 const statusColors = {
-  canceled: colors.grey[600],
+  3: colors.grey[600],
   0: colors.orange[600],
   1: colors.green[600],
   rejected: colors.red[600]
 };
 const statusName = {
-  canceled: colors.grey[600],
-  0: 'Đang chờ',
+  3: 'Chờ xác nhận',
+  0: 'Đang xử lý',
   1: 'Hoạt động',
   2: 'Đã hủy'
 };
@@ -117,23 +117,22 @@ const GeneralInformation = props => {
   //     });
   // }, []);
   const handleConfirmContract = () => {
-   
     dispatch(showLoadingChildren());
-    var data = {
-      treeID: contractInfomation.treeID,
-      contractID: contractInfomation.id
-    };
-   
-    callAPI('Contract/AcceptContract', 'PUT', data)
+    // var data = {
+    //   treeID: contractInfomation.treeID,
+    //   contractID: contractInfomation.id
+    // };
+
+    callAPI(`Contract/SendContract/${contractInfomation.id}`, 'PUT', null)
       .then(res => {
         if (res.data) {
-          toastSuccess('Xác nhận hợp đồng thành công !');
+          toastSuccess('Gửi hợp đồng thành công !');
           dispatch(hideLoadingChildren());
           handleClose();
-          onAccept(data)
+          onAccept();
         } else {
           dispatch(hideLoadingChildren());
-          toastError('Xác nhận hợp đồng không thành công !');
+          toastError('Gửi hợp đồng không thành công !');
         }
       })
       .catch(err => {
@@ -188,10 +187,43 @@ const GeneralInformation = props => {
                   </TableCell>
                 </TableRow>
                 <TableRow selected>
+                  <TableCell>Giá thuê:</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat('vi-VN').format(
+                      contractInfomation.treePrice
+                    )}{' '}
+                    VNĐ
+                  </TableCell>
+                </TableRow>
+                <TableRow>
                   <TableCell>Số năm thuê:</TableCell>
                   <TableCell>{contractInfomation.numOfYear}</TableCell>
                 </TableRow>
+
+                <TableRow selected>
+                  <TableCell>Tổng mùa vụ:</TableCell>
+                  <TableCell>{contractInfomation.totalCrop}</TableCell>
+                </TableRow>
                 <TableRow>
+                  <TableCell>Tổng sản lượng:</TableCell>
+                  <TableCell>{contractInfomation.totalYield}</TableCell>
+                </TableRow>
+                <TableRow selected>
+                  <TableCell>Tiền vận chuyển:</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat('vi-VN').format(
+                      contractInfomation.shipFee
+                    )}{' '}
+                    VNĐ
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Thời gian:</TableCell>
+                  <TableCell>
+                    {moment(contractInfomation.date).format('DD/MM/YYYY')}
+                  </TableCell>
+                </TableRow>
+                <TableRow selected>
                   <TableCell>Tổng tiền:</TableCell>
                   <TableCell>
                     {new Intl.NumberFormat('vi-VN').format(
@@ -200,22 +232,7 @@ const GeneralInformation = props => {
                     VNĐ
                   </TableCell>
                 </TableRow>
-                <TableRow selected>
-                  <TableCell>Thời gian:</TableCell>
-                  <TableCell>
-                    {moment(contractInfomation.date).format('DD/MM/YYYY')}
-                  </TableCell>
-                </TableRow>
                 <TableRow>
-                  <TableCell>Tổng mùa vụ:</TableCell>
-                  <TableCell>{contractInfomation.totalCrop}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Tổng sản lượng:</TableCell>
-                  <TableCell>{contractInfomation.totalYield}</TableCell>
-                </TableRow>
-
-                <TableRow selected>
                   <TableCell>Trạng thái:</TableCell>
                   <TableCell>
                     <div>
@@ -233,16 +250,18 @@ const GeneralInformation = props => {
                   color="secondary"
                   variant="contained"
                   onClick={handleClickOpen}>
-                  Xác nhận hợp đồng
+                  Gửi khách hàng
                 </Button>
-              ) : (
+              ) : null}
+
+              {contractInfomation.status === 1 ? (
                 <Button
                   className={classes.redButton}
                   variant="contained"
                   variant="contained">
                   Hủy hợp đồng
                 </Button>
-              )}
+              ) : null}
             </CardActions>
           </CardContent>
         </Card>
@@ -260,12 +279,7 @@ const GeneralInformation = props => {
                     {contractInfomation.cancelParty}
                   </TableCell>
                 </TableRow>
-                <TableRow
-                  // style={{
-                  //   whiteSpace: 'normal',
-                  //   wordWrap: 'break-word'
-                  // }}
-                  selected>
+                <TableRow selected>
                   <TableCell>Nguyên nhân:</TableCell>
                   <TableCell>{contractInfomation.cancelReason}</TableCell>
                 </TableRow>
@@ -283,15 +297,17 @@ const GeneralInformation = props => {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description">
-        <DialogTitle id="alert-dialog-title">{'Xác nhận hợp đồng'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {''} <p style={{ fontSize: 18 }}>Gửi hợp đồng</p>
+        </DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn có chắc chắn muốn xác nhận hợp đồng này !
+            Bạn có chắc chắn muốn gửi hợp đồng này cho khác hàng !
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} >
             Hủy bỏ
           </Button>
           <Button onClick={handleConfirmContract} color="primary" autoFocus>

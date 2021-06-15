@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Divider } from '@material-ui/core';
 
 import axios from 'utils/axios';
-import { Page } from 'components';
+import { AuthGuard, Page } from 'components';
 import Header from './Header';
 import Details from './Detail/Details';
 
@@ -51,6 +51,7 @@ const InvoiceDetails = () => {
       className={classes.root}
       title="Chính sách mua bán cây"
     >
+      <AuthGuard roles={['Nông dân']}/>
       <Header  />
       <Divider className={classes.divider} />
       <Details/>

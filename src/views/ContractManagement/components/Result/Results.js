@@ -117,13 +117,13 @@ const Results = props => {
   };
   const statusName = {
     canceled: colors.grey[600],
-    0: 'Đang chờ',
+    0: 'Đang xử lý',
     1: 'Hoạt động',
-    rejected: colors.red[600]
+    3: 'Chờ xác nhận'
   };
 
-  const handleEditClick = garden => {
-    onEditEvent(garden);
+  const handleEditClick = contract => {
+    onEditEvent(contract);
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -228,14 +228,15 @@ const Results = props => {
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-                          {/* <Button
-                            color="secondary"
-                            onClick={handleEditClick.bind(this, contract)}
-                            size="small"
-                            variant="contained">
-                          
-                            Sửa
-                          </Button> */}
+                          {contract.status === 0 ? (
+                            <Button
+                              color="secondary"
+                              onClick={handleEditClick.bind(this, contract)}
+                              size="small"
+                              variant="contained">
+                              Sửa
+                            </Button>
+                          ) : null}
                         </TableCell>
                       </TableRow>
                     ))}

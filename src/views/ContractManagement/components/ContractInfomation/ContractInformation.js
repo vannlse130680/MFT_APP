@@ -66,8 +66,8 @@ const ContractInformation = props => {
   ];
   if (contractInfomation.status === 1) {
     tabs.push(
-      { value: 'tree', label: 'Tiến độ cây' },
-      { value: 'crop', label: 'Mùa vụ' }
+      { value: 'tree', label: 'Chăm sóc cây' },
+      { value: 'crop', label: 'Chi tiết hợp đồng' }
     );
   }
 
@@ -78,11 +78,11 @@ const ContractInformation = props => {
   if (!tabs.find(t => t.value === tab)) {
     return <Redirect to="/errors/error-404" />;
   }
-  const onAccept = data => {
-    console.log(data);
+  const onAccept = () => {
+    
     setContractInformation({
       ...contractInfomation,
-      status: 1
+      status: 3
     });
   };
   return (

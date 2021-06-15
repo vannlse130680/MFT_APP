@@ -54,7 +54,7 @@ const ContractPage = () => {
   // const [gardens, setGardens] = useState(initGardensValue);
   const [events, setEvents] = useState([]);
   const [resetPage, setResetPage] = useState(false);
-  const [selectedGarden, setSelectedGarden] = useState({});
+  const [selectedContract, setSelectedContract] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -98,29 +98,29 @@ const ContractPage = () => {
   //     event: null
   //   });
   // };
-  // const handleEventEdit = data => {
-  //   // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
-  //   console.log(data)
-  //   callAPI('Garden/updateGarden', 'PUT', data).then(res => {
-  //     console.log(res)
-  //     if (res.status === 200) {
-  //       if(res.data) {
-  //         dispatch(hideLoadingChildren())
-  //         toastSuccess("Cập nhật vườn thành công !")
-  //         setValue(!value);
-  //         setEventModal({
-  //           open: false,
-  //           event: null
-  //         });
-  //       } else {
-  //         dispatch(hideLoadingChildren())
-  //         toastError("Mã vườn đã tồn tại !")
-  //       }
-  //     }
-  //   }).catch((err) => {
-  //     console.log(err)
-  //   });
-  // };
+  const handleEventEdit = data => {
+    
+    console.log(data)
+    callAPI('Contract/UpdateContract', 'PUT', data).then(res => {
+      console.log(res)
+      if (res.status === 200) {
+        if(res.data) {
+          dispatch(hideLoadingChildren())
+          toastSuccess("Cập nhật vườn thành công !")
+          setValue(!value);
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          dispatch(hideLoadingChildren())
+          toastError("Mã vườn đã tồn tại !")
+        }
+      }
+    }).catch((err) => {
+      console.log(err)
+    });
+  };
 
   
   const handleFilter = () => {};
@@ -129,18 +129,15 @@ const ContractPage = () => {
     dispatch(actSearchContracts(keyword));
   };
   const handleEventNew = () => {
-    setSelectedGarden(null)
+    setSelectedContract(null)
     setEventModal({
       open: true,
       event: null
     });
   };
-  const handleEventOpenEdit = (garden) => {
-    garden.plantTypeObj = {
-      id: garden.plantTypeID,
-      plantTypeName: garden.plantTypeName
-    }
-    setSelectedGarden(garden)
+  const handleEventOpenEdit = (contract) => {
+  
+    setSelectedContract(contract)
     setEventModal({
       open: true,
       event: {}
@@ -151,7 +148,7 @@ const ContractPage = () => {
   return (
     <Page
       className={classes.root}
-      title="Quản lý vườn"
+      title="Quản lý hợp đồng"
     >
       
       <AuthGuard roles={['Nông dân']} />
@@ -169,19 +166,20 @@ const ContractPage = () => {
           onEditEvent={handleEventOpenEdit}
         />
       )}
-      {/* <Modal
+      <Modal
         onClose={handleModalClose}
         open={eventModal.open}
       >
+        
         <AddEditEvent
           event={eventModal.event}
-          selectedGarden={selectedGarden}
-          onAdd={handleEventAdd}
+          selectedContract={selectedContract}
+          // onAdd={handleEventAdd}
           onCancel={handleModalClose}
-          onDelete={handleEventDelete}
+          // onDelete={handleEventDelete}
           onEdit={handleEventEdit}
         />
-      </Modal> */}
+      </Modal>
       {/* <Button variant="text" color="default" onClick={handleonClick}> a</Button> */}
     </Page>
   );

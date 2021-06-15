@@ -19,32 +19,54 @@ import { showLoadingChildren } from 'actions/childrenLoading';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
+import NumberFormat from 'react-number-format';
 import { useDispatch } from 'react-redux';
 import callAPI from 'utils/callAPI';
+import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import validate from 'validate.js';
 const schema = {
-  code : {
+  treePrice: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    format: {
-      pattern: "[aA-zZ0-9]+",
-      
-      message: "Mã không được chứa kí tự đặc biệt"
-    },
-    length : {
-      maximum : 10,
-      message : "Tối đa chỉ 10 kí tự"
+    numericality: {
+      onlyInteger: true,
+
+      greaterThan: 0,
+      lessThanOrEqualTo: 100000000,
+      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
     }
   },
-  name: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
-  },
-  address: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
-  },
-  test: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  shipFee: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+
+      greaterThan: -1,
+      lessThanOrEqualTo: 100000000,
+      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+    }
   }
 };
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      isNumericString
+      onValueChange={values => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value
+          }
+        });
+      }}
+      thousandSeparator={'.'}
+      decimalSeparator={','}
+    />
+  );
+}
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'absolute',
@@ -73,6 +95,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// eslint-disable-next-line react/no-multi-comp
 const AddEditEvent = forwardRef((props, ref) => {
   const {
     event,
@@ -81,7 +104,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     onAdd,
     onEdit,
     className,
-    selectedGarden,
+    selectedContract,
     ...rest
   } = props;
 
@@ -124,17 +147,12 @@ const AddEditEvent = forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    if (selectedGarden)
+    if (selectedContract)
       setFormState(formState => ({
         ...formState,
         values: {
-          name: selectedGarden.gardenName,
-          address: selectedGarden.address,
-          code: selectedGarden.gardenCode,
-
-          test: 'a',
-          auto: selectedGarden.plantTypeObj,
-          status: selectedGarden.status
+          treePrice: selectedContract.treePrice,
+          shipFee: selectedContract.shipFee
         }
       }));
   }, []);
@@ -144,23 +162,9 @@ const AddEditEvent = forwardRef((props, ref) => {
   const mode = event ? 'edit' : 'add';
 
   const handleChange = (event, value) => {
-    if (!event) return;
-    event.persist();
+    
 
-    if (event.target.name === 'test') {
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          test: ''
-        },
-        touched: {
-          ...formState.touched,
-          [event.target.name]: true
-        }
-      }));
-    } else if (event.target.name) {
-      console.log('status');
+    if (event.target.name) {
       setFormState(formState => ({
         ...formState,
         values: {
@@ -175,16 +179,6 @@ const AddEditEvent = forwardRef((props, ref) => {
         touched: {
           ...formState.touched,
           [event.target.name]: true
-        }
-      }));
-    } else {
-      // console.log('auto');
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          auto: value,
-          test: 'ád'
         }
       }));
     }
@@ -211,94 +205,81 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
+    
     dispatch(showLoadingChildren());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    // console.log(formState.values);
-    // console.log(selectedGarden)
+    
     var data = {
-      gardenId: selectedGarden.id,
-      gardenCode: formState.values.code,
-      farmerUsername: username,
-      gardenName: formState.values.name,
-      address: formState.values.address,
-      gardenDetailId: selectedGarden.gardenDetailId,
-      plantTypeID: formState.values.auto.id,
-      status: formState.values.status
+      contractID: selectedContract.id,
+      treePrice:  parseInt(formState.values.treePrice),
+      shipFee:  parseInt(formState.values.shipFee),
+      totalPrice:
+        parseInt(formState.values.treePrice) *
+          parseInt(selectedContract.numOfYear) +
+        parseInt(formState.values.shipFee)
     };
-    // console.log(data)
+    console.log(data)
     onEdit(data);
   };
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
+      <GoblaLoadingChildren/>
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm vườn' : 'Cập nhật vườn'}
+            {mode === 'add' ? 'Thêm vườn' : 'Cập nhật hợp đồng'}
           </Typography>
-          <Autocomplete
-            // onChange={handleChange}
-            // value={selectedPlantType.t}
-            // disableClearable="true"
-            defaultValue={selectedGarden ? selectedGarden.plantTypeObj : null}
-            // inputValue={formState.values.test}
-            getOptionLabel={option => option.plantTypeName}
-            // value={formState.values.test}
-            getOptionSelected={(option, value) => option.id === value.id}
-            onChange={(event, value) => handleChange(event, value)}
-            onInputChange={handleChange} // prints the selected value
-            options={plantTypesName}
-            renderInput={params => (
-              <TextField
-                {...params}
-                className={classes.field}
-                error={hasError('test')}
-                helperText={hasError('test') ? formState.errors.test[0] : null}
-                label="Loại trái cây"
-                name="test"
-                value={formState.values.test || ''}
-                variant="outlined"
-              />
-            )}
-          />
-          <TextField
-            className={classes.field}
-            error={hasError('code')}
-            fullWidth
-            helperText={hasError('code') ? formState.errors.code[0] : null}
-            label="Mã"
-            name="code"
-            onChange={handleChange}
-            value={formState.values.code || ''}
-            variant="outlined"
-          />
 
           <TextField
             className={classes.field}
-            error={hasError('name')}
-            fullWidth
-            helperText={hasError('name') ? formState.errors.name[0] : null}
-            label="Tên"
-            name="name"
-            onChange={handleChange}
-            value={formState.values.name || ''}
-            variant="outlined"
-          />
-          <TextField
-            className={classes.field}
-            error={hasError('address')}
+            error={hasError('treePrice')}
             fullWidth
             helperText={
-              hasError('address') ? formState.errors.address[0] : null
+              hasError('treePrice') ? formState.errors.treePrice[0] : null
             }
-            label="Địa chỉ"
-            name="address"
+            label="Giá cây"
+            name="treePrice"
             onChange={handleChange}
-            value={formState.values.address || ''}
+            value={formState.values.treePrice || ''}
+            variant="outlined"
+            InputProps={{
+              inputComponent: NumberFormatCustom
+            }}
+          />
+
+          <TextField
+            className={classes.field}
+            error={hasError('shipFee')}
+            fullWidth
+            helperText={
+              hasError('shipFee') ? formState.errors.shipFee[0] : null
+            }
+            label="Giá vận chuyển"
+            name="shipFee"
+            onChange={handleChange}
+            value={formState.values.shipFee || 0}
+            variant="outlined"
+            InputProps={{
+              inputComponent: NumberFormatCustom
+            }}
+          />
+          <TextField
+            className={classes.field}
+            label="Tổng tiền"
+            fullWidth
+            InputProps={{
+              readOnly: true,
+              inputComponent: NumberFormatCustom
+            }}
+            value={
+              parseInt(formState.values.treePrice) *
+                parseInt(selectedContract.numOfYear) +
+                parseInt(formState.values.shipFee) || ''
+            }
             variant="outlined"
           />
 
-          {selectedGarden ? (
+          {/* {selectedGarden ? (
             <FormControl className={classes.field} variant="outlined" fullWidth>
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái
@@ -314,7 +295,7 @@ const AddEditEvent = forwardRef((props, ref) => {
                 <MenuItem value={0}>Tạm ngừng</MenuItem>
               </Select>
             </FormControl>
-          ) : null}
+          ) : null} */}
         </CardContent>
         <Divider />
         <CardActions>
