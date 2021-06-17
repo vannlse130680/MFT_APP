@@ -33,16 +33,17 @@ const ContractPage = () => {
   // const [contractList , setContractList] = useState([])
   const dispatch = useDispatch();
   useEffect(() => {
-    
     dispatch(showLoading());
-    var username = JSON.parse(localStorage.getItem('USER')) ? JSON.parse(localStorage.getItem('USER')).username : null;
+    var username = JSON.parse(localStorage.getItem('USER'))
+      ? JSON.parse(localStorage.getItem('USER')).username
+      : null;
     // console.log(username)
     callAPI(`contract/${username}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
           // dispatch(actFetchGardens(res.data));
-          dispatch(actFetchContracts(res.data))
-          console.log(res.data)
+          dispatch(actFetchContracts(res.data));
+          console.log(res.data);
           dispatch(hideLoading());
         }
       })
@@ -50,7 +51,7 @@ const ContractPage = () => {
         console.log(err);
       });
   }, [value]);
-  
+
   // const [gardens, setGardens] = useState(initGardensValue);
   const [events, setEvents] = useState([]);
   const [resetPage, setResetPage] = useState(false);
@@ -84,7 +85,7 @@ const ContractPage = () => {
   //           dispatch(hideLoadingChildren())
   //           toastError("Mã vườn đã tồn tại !")
   //         }
-         
+
   //       }
   //     })
   //     .catch(err => {
@@ -99,78 +100,64 @@ const ContractPage = () => {
   //   });
   // };
   const handleEventEdit = data => {
-    
-    console.log(data)
-    callAPI('Contract/UpdateContract', 'PUT', data).then(res => {
-      console.log(res)
-      if (res.status === 200) {
-        if(res.data) {
-          dispatch(hideLoadingChildren())
-          toastSuccess("Cập nhật vườn thành công !")
-          setValue(!value);
-          setEventModal({
-            open: false,
-            event: null
-          });
-        } else {
-          dispatch(hideLoadingChildren())
-          toastError("Mã vườn đã tồn tại !")
+    console.log(data);
+    callAPI('Contract/UpdateContract', 'PUT', data)
+      .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          if (res.data) {
+            dispatch(hideLoadingChildren());
+            toastSuccess('Cập nhật vườn thành công !');
+            setValue(!value);
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            dispatch(hideLoadingChildren());
+            toastError('Mã vườn đã tồn tại !');
+          }
         }
-      }
-    }).catch((err) => {
-      console.log(err)
-    });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
-  
   const handleFilter = () => {};
   const handleSearch = keyword => {
-    setResetPage(!resetPage)
+    setResetPage(!resetPage);
     dispatch(actSearchContracts(keyword));
   };
   const handleEventNew = () => {
-    setSelectedContract(null)
+    setSelectedContract(null);
     setEventModal({
       open: true,
       event: null
     });
   };
-  const handleEventOpenEdit = (contract) => {
-  
-    setSelectedContract(contract)
+  const handleEventOpenEdit = contract => {
+    setSelectedContract(contract);
     setEventModal({
       open: true,
       event: {}
     });
   };
 
- 
   return (
-    <Page
-      className={classes.root}
-      title="Quản lý hợp đồng"
-    >
-      
+    <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']} />
       <Header onAddEvent={handleEventNew} />
-      
-      <SearchBar
-        onFilter={handleFilter}
-        onSearch={handleSearch}
-      />
+
+      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {contractsStore && (
         <Results
           contracts={contractsStore}
           className={classes.results}
-          
           onEditEvent={handleEventOpenEdit}
         />
       )}
-      <Modal
-        onClose={handleModalClose}
-        open={eventModal.open}
-      >
-        
+      <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
           event={eventModal.event}
           selectedContract={selectedContract}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://localhost:44316/api';
+// const API_URL = 'https://localhost:44316/api';
+const API_URL = 'http://leminhnhan.cosplane.asia/api';
 
 export default function callAPI(endpoint, method = 'GET', body) {
   return axios({

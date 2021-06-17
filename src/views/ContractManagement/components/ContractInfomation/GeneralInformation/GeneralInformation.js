@@ -242,6 +242,19 @@ const GeneralInformation = props => {
                     </div>
                   </TableCell>
                 </TableRow>
+                {contractInfomation.status === 1 ? (
+                  <TableRow >
+                    <TableCell selected style={{ fontWeight: 'bold' }}>Giá trị hợp đồng hiện tại:</TableCell>
+                    <TableCell selected style={{ fontWeight: 'bold' }}>
+                      {new Intl.NumberFormat('vi-VN').format(
+                        contractInfomation.contractPrice
+                      )}{' '}
+                      VNĐ
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+
+                
               </TableBody>
             </Table>
             <CardActions>
@@ -307,9 +320,7 @@ const GeneralInformation = props => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} >
-            Hủy bỏ
-          </Button>
+          <Button onClick={handleClose}>Hủy bỏ</Button>
           <Button onClick={handleConfirmContract} color="primary" autoFocus>
             Đồng ý
           </Button>

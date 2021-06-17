@@ -1,7 +1,11 @@
 import {
   Button,
-  Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { actFetchAccounts, actSearchAccounts } from 'actions/accounts';
@@ -16,10 +20,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
-import { toastSuccess } from 'utils/toastHelper';
+import { toastError, toastSuccess } from 'utils/toastHelper';
+import AddEditEvent from './components/AddEditEvent';
+
 import Header from './components/Header';
 import Results from './components/Result/Results';
-
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,6 +38,10 @@ const useStyles = makeStyles(theme => ({
 const ShippAccountPage = () => {
   const [open, setOpen] = React.useState(false);
   const [banUsername, setBanUsername] = useState('');
+  const [eventModal, setEventModal] = useState({
+    open: false,
+    event: null
+  });
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -59,17 +68,15 @@ const ShippAccountPage = () => {
       });
   }, [value]);
 
- 
   const [events, setEvents] = useState([]);
   const [resetPage, setResetPage] = useState(false);
-
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setResetPage(!resetPage);
     dispatch(actSearchAccounts(keyword));
   };
- 
+
   // };
   const handleClickBanAccount = customer => {
     handleClickOpen();
@@ -94,20 +101,65 @@ const ShippAccountPage = () => {
         console.log(err);
       });
   };
+  const handleEventAdd = data => {
+    // setEvents(events => [...events, event]);
+    console.log(data);
+    callAPI('PlantType/addPlantType', 'POST', data)
+      .then(res => {
+        if (res.status === 200) {
+          if (res.data) {
+            dispatch(hideLoadingChildren());
+            toastSuccess('Thêm thành công !');
+            setValue(!value);
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            dispatch(hideLoadingChildren());
+            toastError('Thêm thất bại !');
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const handleEventNew = () => {
+    // setSelectedPlantType(null);
+    setEventModal({
+      open: true,
+      event: null
+    });
+  };
+  const handleModalClose = () => {
+    setEventModal({
+      open: false,
+      event: null
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý vườn">
       <AuthGuard roles={['Quản lý']} />
-      <Header />
+      <Header onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {accountsStore && (
         <Results
           onBan={handleClickBanAccount}
           className={classes.results}
           accounts={accountsStore}
-         
         />
       )}
-      
+      <Modal onClose={handleModalClose} open={eventModal.open}>
+        <AddEditEvent
+          // selectedPlantType={selectedPlantType}
+          event={eventModal.event}
+          onAdd={handleEventAdd}
+          onCancel={handleModalClose}
+          // onDelete={handleEventDelete}
+          // onEdit={handleEventEdit}
+        />
+      </Modal>
 
       <Dialog
         open={open}

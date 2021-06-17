@@ -94,7 +94,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const MyCalendar = () => {
+const VisitCalendarPage = () => {
   const classes = useStyles();
   const calendarRef = useRef(null);
   const theme = useTheme();
@@ -261,4 +261,4 @@ const MyCalendar = () => {
   );
 };
 
-export default MyCalendar;
+export default VisitCalendarPage;

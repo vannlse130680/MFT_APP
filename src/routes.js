@@ -21,6 +21,7 @@ import BuyTreePolicy from 'views/BuyTreePolicy/BuyTreePolicy';
 import CustomerAccountsPage from 'views/CustomerAccountManagement/CustomerAccountsPage';
 import FarmerAccountsPage from 'views/FarmerAccountManagement/FarmerAccountsPage';
 import ShippAccountPage from 'views/ShipperAccountsManagement/ShippAccountPage';
+import VisitCalendarPage from 'views/VisitCalendar/VisitCalendarPage';
 
 const routes = [
   {
@@ -284,6 +285,11 @@ const routes = [
         path: '/managementAccount/shippers',
         exact: true,
         component: ShippAccountPage
+      },
+      {
+        path: '/calendar/visit',
+        exact: true,
+        component: VisitCalendarPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

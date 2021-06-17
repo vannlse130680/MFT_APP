@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const PlantTypePage = () => {
   const [value, setValue] = useState(true); // integer state
+  const [searchValue, setSearchValue] = useState(""); // integer state
   const plantTypesStore = useSelector(state => state.plantTypes);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -35,6 +36,7 @@ const PlantTypePage = () => {
       .then(res => {
         if (res.status === 200) {
           dispatch(actFetchPlantTypes(res.data));
+          dispatch(actSearchPlantTypes(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -97,9 +99,11 @@ const PlantTypePage = () => {
     callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
       if (res.status === 200) {
         if(res.data) {
+
           dispatch(hideLoadingChildren())
           toastSuccess("Cập nhật thành công !")
           setValue(!value);
+          
           setEventModal({
             open: false,
             event: null
@@ -114,6 +118,7 @@ const PlantTypePage = () => {
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
+    setSearchValue(keyword)
     setResetPage(!resetPage)
     dispatch(actSearchPlantTypes(keyword));
    

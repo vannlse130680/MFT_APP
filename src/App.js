@@ -42,13 +42,24 @@ const App = () => {
     }
     return 'GUEST';
   };
-
+  // function myFunction() {
+  //   var myWindow = window.open(
+      
+  //     'https://www.w3schools.com/jsref/met_win_open.asp',
+  //     'width=200,height=100',
+  //     window.location
+  //   );
+  //   var pathname = window.location.href;
+  //   var url_popup = window.close(pathname);
+  //   console.log(window.location.pathname);
+  // }
   return (
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
-          <GlobalLoading/>
+          <GlobalLoading />
           <ToastContainer />
+          {/* <button onClick={myFunction}>Try it</button> */}
           <Router history={history}>
             <AuthGuard></AuthGuard>
             <ScrollReset />

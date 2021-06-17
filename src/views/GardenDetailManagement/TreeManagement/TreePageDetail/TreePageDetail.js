@@ -63,7 +63,8 @@ const statusName = {
   canceled: colors.grey[600],
   0: 'Tạm ngừng',
   1: 'Hoạt động',
-  2: "Đã bán"
+  2: "Đã bán",
+  3: "Đang giao dịch"
 };
 const TreePageDetail = props => {
   const { match, history } = props;

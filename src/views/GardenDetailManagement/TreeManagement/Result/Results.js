@@ -115,16 +115,17 @@ const Results = props => {
     setPage(0);
   };
   const statusColors = {
-    canceled: colors.grey[600],
+    3: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
     2: colors.red[600]
   };
   const statusName = {
-    canceled: colors.grey[600],
+    
     0: 'Tạm ngừng',
     1: 'Hoạt động',
-    2: 'Đã bán'
+    2: 'Đã bán',
+    3: 'Đang giao dịch'
   };
 
   const handleEditClick = tree => {
@@ -240,7 +241,7 @@ const Results = props => {
                           </Button>
 
                           <Button
-                            disabled={tree.status === 2}
+                            disabled={tree.status === 2 || tree.status === 3}
                             color="secondary"
                             onClick={handleEditClick.bind(this, tree)}
                             size="small"

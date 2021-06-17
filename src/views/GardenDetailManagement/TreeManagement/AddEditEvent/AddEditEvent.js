@@ -77,7 +77,7 @@ const schema = {
   desc: {
     length: { maximum: 500, message: 'Mô tả không được vượt quá 500 kí tự' }
   },
-  standard : {
+  standard: {
     length: { maximum: 50, message: 'Mô tả không được vượt quá 50 kí tự' }
   }
 };
@@ -107,7 +107,7 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: colors.green[900]
     }
   },
-  
+
   circularProgress: {
     marginRight: 10
   }
@@ -162,7 +162,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           desc: selectedTree.description,
           price: selectedTree.price,
           standard: selectedTree.standard,
-          image: selectedTree.image,
+          image: selectedTree.image === '' ? null : selectedTree.image,
 
           status: selectedTree.status
         }
@@ -251,7 +251,7 @@ const AddEditEvent = forwardRef((props, ref) => {
         treeCode: values.code,
         gardenId: values.gardenId,
         price: parseInt(values.price),
-        image: '',
+        image: null,
         description: values.desc,
         standard: values.standard
       };
@@ -406,9 +406,10 @@ const AddEditEvent = forwardRef((props, ref) => {
           <TextField
             className={classes.field}
             fullWidth
-            
             error={hasError('standard')}
-            helperText={hasError('standard') ? formState.errors.standard[0] : null}
+            helperText={
+              hasError('standard') ? formState.errors.standard[0] : null
+            }
             label="Tiêu chuẩn"
             name="standard"
             onChange={handleChange}

@@ -24,27 +24,73 @@ import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import validate from 'validate.js';
 const schema = {
-  code : {
+  fullName: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    format: {
-      pattern: "[aA-zZ0-9]+",
-      
-      message: "Mã không được chứa kí tự đặc biệt"
-    },
-    length : {
-      maximum : 10,
-      message : "Tối đa chỉ 10 kí tự"
+    length: {
+      maximum: 100,
+      message: 'Tối đa chỉ 100 kí tự '
     }
   },
-  name: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  username: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự'
+    }
   },
   address: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 100,
+      message: 'Tối đa chỉ 100 kí tự '
+    }
   },
-  test: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  email: {
+    presence: { allowEmpty: true, message: 'Không thể bỏ trống' },
+    email: {
+      message: 'Email không hợp lệ'
+    },
+    length: {
+      maximum: 64
+    }
+  },
+  // birthday: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   datetime: {
+  //     dateOnly: true,
+  //     latest: moment.utc().subtract(18, 'years'),
+  //     message: 'Bạn cần đủ 18 tuổi'
+  //   }
+  // },
+  phoneNum: {
+    format: {
+      pattern: /((09|03|07|08|05)+([0-9]{8})\b)/,
+
+      message: 'Số điện thoại không hợp lệ'
+    }
+  },
+  password: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự'
+    }
+  },
+  confirmPassword: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự'
+    },
+    equality: {
+      attribute: 'password',
+      message: 'Mật khẩu nhập lại không trùng khớp'
+    }
   }
+  // policy: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   checked: true
+  // }
 };
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,6 +107,15 @@ const useStyles = makeStyles(theme => ({
   },
   field: {
     marginTop: theme.spacing(3)
+  },
+  fields: {
+    margin: theme.spacing(-1),
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > *': {
+      flexGrow: 1,
+      margin: theme.spacing(1)
+    }
   },
   cancelButton: {
     marginLeft: 'auto'
@@ -82,7 +137,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     onAdd,
     onEdit,
     className,
-    selectedGarden,
+
     ...rest
   } = props;
 
@@ -124,21 +179,21 @@ const AddEditEvent = forwardRef((props, ref) => {
       });
   }, []);
 
-  useEffect(() => {
-    if (selectedGarden)
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          name: selectedGarden.gardenName,
-          address: selectedGarden.address,
-          code: selectedGarden.gardenCode,
+  // useEffect(() => {
+  //   if (selectedGarden)
+  //     setFormState(formState => ({
+  //       ...formState,
+  //       values: {
+  //         name: selectedGarden.gardenName,
+  //         address: selectedGarden.address,
+  //         code: selectedGarden.gardenCode,
 
-          test: 'a',
-          auto: selectedGarden.plantTypeObj,
-          status: selectedGarden.status
-        }
-      }));
-  }, []);
+  //         test: 'a',
+  //         auto: selectedGarden.plantTypeObj,
+  //         status: selectedGarden.status
+  //       }
+  //     }));
+  // }, []);
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
@@ -196,127 +251,195 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    dispatch(showLoadingChildren());
-    var { values } = formState;
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    var data = {
-      gardenCode: values.code,
-      farmerUsername: username,
-      gardenName: values.name,
-      address: values.address,
-      plantTypeID: values.auto.id
-    };
+    console.log(formState.values)
+    // dispatch(showLoadingChildren());
+    // var { values } = formState;
+    // var username = JSON.parse(localStorage.getItem('USER')).username;
+    // var data = {
+    //   gardenCode: values.code,
+    //   farmerUsername: username,
+    //   gardenName: values.name,
+    //   address: values.address,
+    //   plantTypeID: values.auto.id
+    // };
 
-    console.log(formState);
-    onAdd(data);
+    // console.log(formState);
+    // onAdd(data);
   };
 
-  const handleEdit = () => {
-    dispatch(showLoadingChildren());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    // console.log(formState.values);
-    // console.log(selectedGarden)
-    var data = {
-      gardenId: selectedGarden.id,
-      gardenCode: formState.values.code,
-      farmerUsername: username,
-      gardenName: formState.values.name,
-      address: formState.values.address,
-      gardenDetailId: selectedGarden.gardenDetailId,
-      plantTypeID: formState.values.auto.id,
-      status: formState.values.status
-    };
-    // console.log(data)
-    onEdit(data);
-  };
+  // const handleEdit = () => {
+  //   dispatch(showLoadingChildren());
+  //   var username = JSON.parse(localStorage.getItem('USER')).username;
+  //   // console.log(formState.values);
+  //   // console.log(selectedGarden)
+  //   var data = {
+  //     gardenId: selectedGarden.id,
+  //     gardenCode: formState.values.code,
+  //     farmerUsername: username,
+  //     gardenName: formState.values.name,
+  //     address: formState.values.address,
+  //     gardenDetailId: selectedGarden.gardenDetailId,
+  //     plantTypeID: formState.values.auto.id,
+  //     status: formState.values.status
+  //   };
+  //   // console.log(data)
+  //   onEdit(data);
+  // };
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
-      <GoblaLoadingChildren/>
+      <GoblaLoadingChildren />
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm vườn' : 'Cập nhật vườn'}
+            {mode === 'add' ? 'Tạo tài khoản' : 'Cập nhật vườn'}
           </Typography>
-          <Autocomplete
-            // onChange={handleChange}
-            // value={selectedPlantType.t}
-            // disableClearable="true"
-            defaultValue={selectedGarden ? selectedGarden.plantTypeObj : null}
-            // inputValue={formState.values.test}
-            getOptionLabel={option => option.plantTypeName}
-            // value={formState.values.test}
-            getOptionSelected={(option, value) => option.id === value.id}
-            onChange={(event, value) => handleChange(event, value)}
-            onInputChange={handleChange} // prints the selected value
-            options={plantTypesName}
-            renderInput={params => (
-              <TextField
-                {...params}
-                className={classes.field}
-                error={hasError('test')}
-                helperText={hasError('test') ? formState.errors.test[0] : null}
-                label="Loại trái cây"
-                name="test"
-                value={formState.values.test || ''}
-                variant="outlined"
-              />
-            )}
-          />
-          <TextField
-            className={classes.field}
-            error={hasError('code')}
-            fullWidth
-            helperText={hasError('code') ? formState.errors.code[0] : null}
-            label="Mã"
-            name="code"
-            onChange={handleChange}
-            value={formState.values.code || ''}
-            variant="outlined"
-          />
 
-          <TextField
-            className={classes.field}
-            error={hasError('name')}
-            fullWidth
-            helperText={hasError('name') ? formState.errors.name[0] : null}
-            label="Tên"
-            name="name"
-            onChange={handleChange}
-            value={formState.values.name || ''}
-            variant="outlined"
-          />
-          <TextField
-            className={classes.field}
-            error={hasError('address')}
-            fullWidth
-            helperText={
-              hasError('address') ? formState.errors.address[0] : null
-            }
-            label="Địa chỉ"
-            name="address"
-            onChange={handleChange}
-            value={formState.values.address || ''}
-            variant="outlined"
-          />
-
-          {selectedGarden ? (
-            <FormControl className={classes.field} variant="outlined" fullWidth>
+          <div className={classes.fields}>
+            <TextField
+              error={hasError('fullName')}
+              helperText={
+                hasError('fullName') ? formState.errors.fullName[0] : null
+              }
+              fullWidth
+              label="Công ty vận chuyển"
+              name="fullName"
+              onChange={handleChange}
+              value={formState.values.fullName || ''}
+              variant="outlined"
+            />
+            {/* <TextField
+              error={hasError('birthday')}
+              helperText={
+                hasError('birthday') ? formState.errors.birthday[0] : null
+              }
+              onChange={handleChange}
+              name="birthday"
+              variant="outlined"
+              value={formState.values.birthday || ''}
+              label="Ngày sinh *"
+              type="date"
+              // defaultValue="1999-06-03"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+            <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel id="demo-simple-select-outlined-label">
-                Trạng thái
+                Giới tính
               </InputLabel>
               <Select
-                id="demo-simple-select-outlined"
-                label="Trạng thái"
                 labelId="demo-simple-select-outlined-label"
-                name="status"
+                id="demo-simple-select-outlined"
+                name="gender"
+                value={formState.values.gender}
                 onChange={handleChange}
-                value={formState.values.status}>
-                <MenuItem value={1}>Hoạt động</MenuItem>
-                <MenuItem value={0}>Tạm ngừng</MenuItem>
+                label="Giới tính">
+                <MenuItem value={1}>Nam</MenuItem>
+                <MenuItem value={0}>Nữ</MenuItem>
               </Select>
-            </FormControl>
-          ) : null}
+            </FormControl> */}
+            <TextField
+              error={hasError('email')}
+              fullWidth
+              helperText={hasError('email') ? formState.errors.email[0] : null}
+              label="Địa chỉ email"
+              name="email"
+              onChange={handleChange}
+              value={formState.values.email || ''}
+              variant="outlined"
+            />
+            <TextField
+              error={hasError('phoneNum')}
+              fullWidth
+              helperText={
+                hasError('phoneNum') ? formState.errors.phoneNum[0] : null
+              }
+              label="Số điện thoại *"
+              name="phoneNum"
+              onChange={handleChange}
+              value={formState.values.phoneNum || ''}
+              variant="outlined"
+            />
+            <TextField
+              error={hasError('address')}
+              fullWidth
+              helperText={
+                hasError('address') ? formState.errors.address[0] : null
+              }
+              label="Địa chỉ *"
+              name="address"
+              onChange={handleChange}
+              value={formState.values.address || ''}
+              variant="outlined"
+            />
+            <TextField
+              error={hasError('username')}
+              fullWidth
+              helperText={
+                hasError('username') ? formState.errors.username[0] : null
+              }
+              label="Tên tài khoản *"
+              name="username"
+              onChange={handleChange}
+              value={formState.values.username || ''}
+              variant="outlined"
+            />
+            <TextField
+              error={hasError('password')}
+              fullWidth
+              helperText={
+                hasError('password') ? formState.errors.password[0] : null
+              }
+              label="Mật khẩu *"
+              name="password"
+              onChange={handleChange}
+              type="password"
+              value={formState.values.password || ''}
+              variant="outlined"
+            />
+            <TextField
+              error={hasError('confirmPassword')}
+              fullWidth
+              helperText={
+                hasError('confirmPassword')
+                  ? formState.errors.confirmPassword[0]
+                  : null
+              }
+              label="Xác nhận mật khẩu *"
+              name="confirmPassword"
+              onChange={handleChange}
+              type="password"
+              value={formState.values.confirmPassword || ''}
+              variant="outlined"
+            />
+            {/* <div>
+          <div className={classes.policy}>
+            <Checkbox
+              checked={formState.values.policy || false}
+              className={classes.policyCheckbox}
+              color="primary"
+              name="policy"
+              onChange={handleChange}
+            />
+            <Typography color="textSecondary" variant="body1">
+              Tôi đã đọc{' '}
+              <Link
+                color="secondary"
+                component={RouterLink}
+                to="#"
+                underline="always"
+                variant="h6">
+                chính sách và điều khoản
+              </Link>
+            </Typography>
+          </div>
+          {hasError('policy') && (
+            <FormHelperText error>{formState.errors.policy[0]}</FormHelperText>
+          )}
+        </div> */}
+          </div>
         </CardContent>
         <Divider />
         <CardActions>
@@ -341,7 +464,6 @@ const AddEditEvent = forwardRef((props, ref) => {
             <Button
               className={classes.confirmButton}
               disabled={!formState.isValid}
-              onClick={handleEdit}
               variant="contained">
               Lưu
             </Button>
