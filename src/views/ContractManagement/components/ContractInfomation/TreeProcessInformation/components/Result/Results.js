@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import ViewIcon from '@material-ui/icons/VisibilityOutlined';
-
 import {
   Card,
   CardActions,
@@ -23,32 +21,33 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  colors,
-  Dialog,
-  DialogTitle,
-  DialogContentText,
-  DialogActions,
-  DialogContent
+  colors
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
-import { Avatar } from '@material-ui/core';
-import callAPI from 'utils/callAPI';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
     padding: 0
   },
-  inner: {
-    minWidth: 700
-  },
   redButton: {
+    marginRight: 10,
     color: theme.palette.white,
     backgroundColor: colors.red[600],
     '&:hover': {
       backgroundColor: colors.red[900]
     }
+  },
+  alert: {
+    marginBottom: 10
+  },
+  inner: {
+    minWidth: 700
+  },
+  actionIcon: {
+    marginRight: theme.spacing(1)
   },
   nameCell: {
     display: 'flex',
@@ -62,35 +61,30 @@ const useStyles = makeStyles(theme => ({
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
-  },
-  buttonIcon: {
-    marginRight: theme.spacing(1)
-  },
-  actionIcon: {
-    marginRight: theme.spacing(1)
-  },
-  alert: {
-    marginBottom: 10
   }
 }));
 
 const Results = props => {
-  const { className, accounts, onEditEvent, onBan, ...rest } = props;
-
+  const { className, treeProcesses, onEditEvent, resetPage, onClickDelete, ...rest } = props;
+  // console.log(plantTypes);
   const classes = useStyles();
-
+  useEffect(() => {
+    if (resetPage) {
+      console.log(resetPage);
+      setPage(0);
+    }
+  }, [resetPage]);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  
 
-  
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? accounts.map(garden => garden.id)
+      ? treeProcesses.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleSelectOne = (event, id) => {
@@ -115,6 +109,7 @@ const Results = props => {
     }
 
     setSelectedCustomers(newSelectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleChangePage = (event, page) => {
@@ -127,28 +122,29 @@ const Results = props => {
   };
   const statusColors = {
     canceled: colors.grey[600],
-    2: colors.orange[600],
+    0: colors.orange[600],
     1: colors.green[600],
-    0: colors.red[600]
+    rejected: colors.red[600]
   };
 
-  // const handleEditClick = garden => {
-  //   onEditEvent(garden);
-  // };
-  const handleBanAccount = customer => {
-    onBan(customer);
+  const handleEditClick = plantType => {
+    onEditEvent(plantType);
   };
+
+  const handleClickDelete = (id) => {
+    onClickDelete(id)
+  }
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {accounts.length < 1 ? (
+      {treeProcesses.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Không tìm thấy tài khoản nào !"
+          message="Không tìm thấy lịch sử chăm sóc cây nào"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {accounts.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(accounts.length / rowsPerPage)}
+        {treeProcesses.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(treeProcesses.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -161,96 +157,91 @@ const Results = props => {
                   <TableRow>
                     {/* <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === accounts.length}
+                        checked={selectedCustomers.length === plantTypes.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < accounts.length
+                          selectedCustomers.length < plantTypes.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell> */}
                     <TableCell>STT</TableCell>
-                    <TableCell>Khách hàng</TableCell>
-                    <TableCell>Tên tài khoản</TableCell>
-                    <TableCell>Mật khẩu</TableCell>
+                    <TableCell>Hình ảnh</TableCell>
+                    <TableCell>Mô tả</TableCell>
+                    <TableCell>Thời gian</TableCell>
 
-                    <TableCell>Số điện thoại</TableCell>
-                    <TableCell>Địa chỉ</TableCell>
-                    <TableCell>Trạng thái</TableCell>
-
+                    {/* <TableCell>Type</TableCell>
+                    <TableCell>Projects held</TableCell>
+                    <TableCell>Reviews</TableCell> */}
                     <TableCell align="center">Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {accounts
+                  {treeProcesses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((account, index) => (
+                    .map((treeProcess, index) => (
                       <TableRow
                         hover
                         key={index}
                         selected={
-                          selectedCustomers.indexOf(account.id) !== -1
+                          selectedCustomers.indexOf(treeProcess.id) !== -1
                         }>
                         {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(account.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, account.id)
+                              handleSelectOne(event, plantType.id)
                             }
                             value={
-                              selectedCustomers.indexOf(account.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                           />
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                          <div className={classes.nameCell}>
-                            <Avatar
-                              className={classes.avatar}
-                              src={account.avatar}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 'bold' }}>
-                                {account.fullname}
-                              </div>
 
-                              <div>{account.email}</div>
-                            </div>
-                          </div>
+                        <TableCell>
+                          <img
+                            style={{
+                              width: '120px',
+                              height: '150px',
+                              position: 'relative',
+                              display: 'inline-block',
+                              overflow: 'hidden',
+                              margin: 0
+                            }}
+                            src={
+                              treeProcess.processImage
+                                ? treeProcess.processImage
+                                : '/images/treeDefault.png'
+                            }
+                          />
                         </TableCell>
-                        <TableCell>{account.username}</TableCell>
-                        <TableCell>{account.password}</TableCell>
-
-                        <TableCell>{account.phone}</TableCell>
-                        <TableCell>{account.address}</TableCell>
+                        <TableCell>{treeProcess.description}</TableCell>
                         <TableCell>
-                          <Label
-                            color={statusColors[account.status]}
-                            variant="contained">
-                            {account.statusName}
-                          </Label>
+                          {moment(treeProcess.date).format('DD/MM/YYYY')}
                         </TableCell>
 
                         <TableCell align="center">
                           <Button
-                            className={
-                              account.status === 1 ? classes.redButton : ''
-                            }
+                            className={classes.redButton}
+                            onClick={handleClickDelete.bind(this, treeProcess.id)}
                             size="small"
-                            onClick={handleBanAccount.bind(
-                              this,
-                              account
-                            )}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
-                            {account.status === 1 ? 'Khóa' : 'Mở khóa'}
+                            Xóa
                           </Button>
-                        
+                          <Button
+                            color="secondary"
+                            size="small"
+                            onClick={handleEditClick.bind(this, treeProcess)}
+                            variant="contained">
+                            Sửa
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -262,7 +253,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={accounts.length}
+            count={treeProcesses.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -272,7 +263,6 @@ const Results = props => {
         </CardActions>
       </Card>
       <TableEditBar selected={selectedCustomers} />
-   
     </div>
   );
 };

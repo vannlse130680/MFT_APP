@@ -56,8 +56,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CustomerInformation = props => {
-  const { className, ...rest } = props;
-
+  const {customerUsername, className, ...rest } = props;
+console.log(customerUsername)
   const classes = useStyles();
 
   const router = useRouter();
@@ -66,7 +66,7 @@ const CustomerInformation = props => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoading());
-    callAPI(`account/${router.match.params.username}`, 'GET', null)
+    callAPI(`account/${customerUsername}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
           dispatch(hideLoading());
@@ -76,7 +76,7 @@ const CustomerInformation = props => {
       .catch(err => {
         console.log(err);
       });
-  }, []);
+  }, [customerUsername]);
   return (
     <Grid
       {...rest}

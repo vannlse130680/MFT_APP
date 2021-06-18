@@ -119,7 +119,7 @@ const schema = {
 
 const GeneralSettings = props => {
   const { profile, className, ...rest } = props;
-
+  console.log(profile);
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -148,17 +148,7 @@ const GeneralSettings = props => {
       errors: errors || {}
     }));
   }, [formState.values]);
-  // const handleChange = event => {
-  //   event.persist();
-
-  //   setValues({
-  //     ...values,
-  //     [event.target.name]:
-  //       event.target.type === 'checkbox'
-  //         ? event.target.checked
-  //         : event.target.value
-  //   });
-  // };
+ 
   const handleChange = event => {
     event.persist();
 
@@ -256,31 +246,34 @@ const GeneralSettings = props => {
                 variant="outlined"
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  readOnly: !isUpdate
-                }}
-                error={hasError('birthday')}
-                helperText={
-                  hasError('birthday') ? formState.errors.birthday[0] : null
-                }
-                onChange={handleChange}
-                name="birthday"
-                variant="outlined"
-                value={
-                  moment(formState.values.birthday).format('YYYY-MM-DD') || ''
-                }
-                label="Ngày sinh *"
-                type="date"
-                // defaultValue="1999-06-03"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
+            {profile.role !== 'Shipper' ? (
+              <Grid item md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  InputProps={{
+                    readOnly: !isUpdate
+                  }}
+                  error={hasError('birthday')}
+                  helperText={
+                    hasError('birthday') ? formState.errors.birthday[0] : null
+                  }
+                  onChange={handleChange}
+                  name="birthday"
+                  variant="outlined"
+                  value={
+                    moment(formState.values.birthday).format('YYYY-MM-DD') || ''
+                  }
+                  label="Ngày sinh *"
+                  type="date"
+                  // defaultValue="1999-06-03"
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+            ) : null}
+
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
@@ -317,27 +310,30 @@ const GeneralSettings = props => {
                 variant="outlined"
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <FormControl
-                variant="outlined"
-                fullWidth
-                className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Giới tính
-                </InputLabel>
-                <Select
-                  inputProps={{ readOnly: !isUpdate }}
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  name="gender"
-                  value={formState.values.gender}
-                  onChange={handleChange}
-                  label="Giới tính">
-                  <MenuItem value={1}>Nam</MenuItem>
-                  <MenuItem value={0}>Nữ</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
+            {profile.role !== 'Shipper' ? (
+              <Grid item md={6} xs={12}>
+                <FormControl
+                  variant="outlined"
+                  fullWidth
+                  className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Giới tính
+                  </InputLabel>
+                  <Select
+                    inputProps={{ readOnly: !isUpdate }}
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    name="gender"
+                    value={formState.values.gender}
+                    onChange={handleChange}
+                    label="Giới tính">
+                    <MenuItem value={1}>Nam</MenuItem>
+                    <MenuItem value={0}>Nữ</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            ) : null}
+
             <Grid item md={6} xs={12}>
               <TextField
                 error={hasError('address')}

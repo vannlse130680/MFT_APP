@@ -136,7 +136,7 @@ const Results = props => {
       {trees.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Bạn vẫn chưa có cây nào trong vườn này ! Nhấp vào thêm cây mới để bắt đầu quản lí !"
+          message="Không tìm thấy cây nào ! Nhấp vào thêm mới để bắt đầu quản lý !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
@@ -152,7 +152,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === trees.length}
                         color="primary"
@@ -162,7 +162,7 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Hình đại diện</TableCell>
                     <TableCell>Mã</TableCell>
@@ -184,14 +184,14 @@ const Results = props => {
                         hover
                         key={index}
                         selected={selectedCustomers.indexOf(tree.id) !== -1}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={selectedCustomers.indexOf(tree.id) !== -1}
                             color="primary"
                             onChange={event => handleSelectOne(event, tree.id)}
                             value={selectedCustomers.indexOf(tree.id) !== -1}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           <img
@@ -241,7 +241,7 @@ const Results = props => {
                           </Button>
 
                           <Button
-                            disabled={tree.status === 2 || tree.status === 3}
+                         
                             color="secondary"
                             onClick={handleEditClick.bind(this, tree)}
                             size="small"

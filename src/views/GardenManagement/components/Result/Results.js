@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   actionIcon: {
     marginRight: theme.spacing(1)
   },
-  alert : {
+  alert: {
     marginBottom: 10
   }
 }));
@@ -123,7 +123,6 @@ const Results = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       {gardens.length < 1 ? (
         <Alert
-         
           className={classes.alert}
           message="Không tìm thấy vườn cây nào ! Nhấp vào thêm vườn mới để bắt đầu quản lí !"
         />
@@ -141,7 +140,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === gardens.length}
                         color="primary"
@@ -151,7 +150,7 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Mã</TableCell>
                     <TableCell>Tên</TableCell>
@@ -172,7 +171,7 @@ const Results = props => {
                         hover
                         key={index}
                         selected={selectedCustomers.indexOf(garden.id) !== -1}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
                               selectedCustomers.indexOf(garden.id) !== -1
@@ -183,22 +182,10 @@ const Results = props => {
                             }
                             value={selectedCustomers.indexOf(garden.id) !== -1}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{garden.gardenCode}</TableCell>
-                        <TableCell>
-                          <div className={classes.nameCell}>
-                            <div>
-                              <Link
-                                color="inherit"
-                                component={RouterLink}
-                                to="/management/gardens/1"
-                                variant="h6">
-                                {garden.gardenName}
-                              </Link>
-                            </div>
-                          </div>
-                        </TableCell>
+                        <TableCell>{garden.gardenName}</TableCell>
                         <TableCell>{garden.address}</TableCell>
                         <TableCell>{garden.plantTypeName}</TableCell>
                         <TableCell>

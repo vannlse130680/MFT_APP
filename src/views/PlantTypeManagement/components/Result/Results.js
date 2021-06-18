@@ -143,7 +143,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === plantTypes.length}
                         color="primary"
@@ -153,12 +153,12 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Tên</TableCell>
                     <TableCell>Phân loại</TableCell>
                     <TableCell>Năng suất bình quân (kg/vụ)</TableCell>
-                    <TableCell>Số mùa vụ (vụ/năm)</TableCell>
+                    <TableCell>Số vụ/năm</TableCell>
                     <TableCell>Nhà cung cấp</TableCell>
                     <TableCell>Giá (VNĐ)</TableCell>
                     <TableCell>Trạng thái</TableCell>
@@ -178,7 +178,7 @@ const Results = props => {
                         selected={
                           selectedCustomers.indexOf(plantType.id) !== -1
                         }>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
                               selectedCustomers.indexOf(plantType.id) !== -1
@@ -191,21 +191,9 @@ const Results = props => {
                               selectedCustomers.indexOf(plantType.id) !== -1
                             }
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                          <div className={classes.nameCell}>
-                            <div>
-                              <Link
-                                color="inherit"
-                                component={RouterLink}
-                                to="/management/gardens/1"
-                                variant="h6">
-                                {plantType.plantTypeName}
-                              </Link>
-                            </div>
-                          </div>
-                        </TableCell>
+                        <TableCell>{plantType.plantTypeName}</TableCell>
                         <TableCell>{plantType.t.typeName}</TableCell>
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(

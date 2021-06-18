@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 const CustomerAccountsPage = () => {
   const [open, setOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = useState('')
   const [banUsername, setBanUsername] = useState('');
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,6 +53,7 @@ const CustomerAccountsPage = () => {
         if (res.status === 200) {
           dispatch(hideLoading());
           dispatch(actFetchAccounts(res.data));
+          dispatch(actSearchAccounts(searchValue));
         }
       })
       .catch(err => {
@@ -66,6 +68,7 @@ const CustomerAccountsPage = () => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setResetPage(!resetPage);
+    setSearchValue(keyword)
     dispatch(actSearchAccounts(keyword));
   };
  
@@ -93,7 +96,7 @@ const CustomerAccountsPage = () => {
       });
   };
   return (
-    <Page className={classes.root} title="Quản lý vườn">
+    <Page className={classes.root} title="Quản lý khách hàng">
       <AuthGuard roles={['Quản lý']} />
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />

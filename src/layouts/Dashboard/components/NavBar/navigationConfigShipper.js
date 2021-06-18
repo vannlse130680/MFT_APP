@@ -35,6 +35,30 @@ export default [
         icon: HomeIcon
       },
       {
+        title: 'Cài đặt',
+        href: '/settings',
+        icon: SettingsIcon,
+        children: [
+          {
+            title: 'Tổng quát',
+            href: '/settings/general'
+          },
+          {
+            title: 'Bảo mật',
+            href: '/settings/security'
+          },
+          {
+            title: 'Subscription',
+            href: '/settings/subscription'
+          },
+          {
+            title: 'Notifications',
+            href: '/settings/notifications'
+          },
+          
+        ]
+      },
+      {
         title: 'Dashboards',
         href: '/dashboards',
         icon: DashboardIcon,
@@ -173,29 +197,7 @@ export default [
         icon: CalendarTodayIcon,
         label: () => <Label color={colors.green[500]}>New</Label>
       },
-      {
-        title: 'Settings',
-        href: '/settings',
-        icon: SettingsIcon,
-        children: [
-          {
-            title: 'General',
-            href: '/settings/general'
-          },
-          {
-            title: 'Subscription',
-            href: '/settings/subscription'
-          },
-          {
-            title: 'Notifications',
-            href: '/settings/notifications'
-          },
-          {
-            title: 'Security',
-            href: '/settings/security'
-          }
-        ]
-      },
+      
       {
         title: 'Authentication',
         href: '/auth',

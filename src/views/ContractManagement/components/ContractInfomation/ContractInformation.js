@@ -13,8 +13,7 @@ import Header from '../Header';
 import HeaderBack from '../Header/HeaderBack';
 import CustomerInformation from './CustomerInformation/CustomerInformation';
 import GeneralInformation from './GeneralInformation/GeneralInformation';
-
-import TreeInformation from './TreeInformation/TreeInformation';
+import TreeProcess from './TreeProcessInformation/TreeProcess';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -62,31 +61,28 @@ const ContractInformation = props => {
 
   const tabs = [
     { value: 'general', label: 'Tổng quát' },
-    { value: 'customer', label: 'Khách hàng' }
+    { value: 'customer', label: 'Khách hàng' },
+    { value: 'tree', label: 'Chăm sóc cây' },
+    { value: 'crop', label: 'Chi tiết hợp đồng' },
+    { value: 'exchange', label: 'Phát sinh trao đổi' }
   ];
-  if (contractInfomation.status === 1) {
-    tabs.push(
-      { value: 'tree', label: 'Chăm sóc cây' },
-      { value: 'crop', label: 'Chi tiết hợp đồng' }
-    );
-  }
+
 
   if (!tab) {
-    return <Redirect to={`/contract/${id}/${username}/general`} />;
+    return <Redirect to={`/contract/${id}/general`} />;
   }
 
   if (!tabs.find(t => t.value === tab)) {
     return <Redirect to="/errors/error-404" />;
   }
   const onAccept = () => {
-    
     setContractInformation({
       ...contractInfomation,
       status: 3
     });
   };
   return (
-    <Page className={classes.root} title="Quản lý vườn">
+    <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']} />
       <HeaderBack />
       <Tabs
@@ -96,14 +92,15 @@ const ContractInformation = props => {
         scrollButtons="auto"
         value={tab}
         variant="scrollable">
+           
         {tabs.map(tab => (
           <Tab key={tab.value} label={tab.label} value={tab.value} />
         ))}
       </Tabs>
       <Divider className={classes.divider} />
       <div className={classes.content}>
-        {tab === 'customer' && <CustomerInformation />}
-        {tab === 'tree' && <TreeInformation />}
+        {tab === 'customer' && <CustomerInformation customerUsername={contractInfomation.customerUsername} />}
+        {tab === 'tree' && <TreeProcess contractStatus={contractInfomation.status} treeId={contractInfomation.treeID}/>}
         {tab === 'general' && (
           <GeneralInformation
             contractInfomation={contractInfomation}

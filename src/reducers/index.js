@@ -10,6 +10,7 @@ import childrenLoading from './childrenLoading'
 import userInfor from './userInformation'
 import contracts from'./contracts'
 import accounts from './accounts'
+import treeProcesses from './treeProcesses'
 const rootReducer = combineReducers({
   session: sessionReducer,
   loading,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   gardenInfor,
   userInfor,
   contracts,
-  accounts
+  accounts,
+  treeProcesses
 });
 
 export default rootReducer;

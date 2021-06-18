@@ -159,7 +159,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === accounts.length}
                         color="primary"
@@ -169,7 +169,7 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Khách hàng</TableCell>
                     <TableCell>Tên tài khoản</TableCell>
@@ -192,7 +192,7 @@ const Results = props => {
                         selected={
                           selectedCustomers.indexOf(account.id) !== -1
                         }>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
                               selectedCustomers.indexOf(account.id) !== -1
@@ -205,7 +205,7 @@ const Results = props => {
                               selectedCustomers.indexOf(account.id) !== -1
                             }
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           <div className={classes.nameCell}>

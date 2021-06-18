@@ -65,10 +65,10 @@ const Toolbar = props => {
       <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
         <Grid item>
           <Typography component="h2" gutterBottom variant="overline">
-            Calendar
+            Lịch
           </Typography>
           <Typography component="h1" variant="h3">
-            Here's what you planned
+            Lịch tham quan vườn
           </Typography>
         </Grid>
         <Grid item>

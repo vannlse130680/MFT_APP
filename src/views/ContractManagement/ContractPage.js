@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const ContractPage = () => {
   const classes = useStyles();
+  const [searchValue, setSearchValue] = useState('')
   const [value, setValue] = useState(true); //
   const contractsStore = useSelector(state => state.contracts);
   // const [contractList , setContractList] = useState([])
@@ -43,6 +44,7 @@ const ContractPage = () => {
         if (res.status === 200) {
           // dispatch(actFetchGardens(res.data));
           dispatch(actFetchContracts(res.data));
+          dispatch(actSearchContracts(searchValue))
           console.log(res.data);
           dispatch(hideLoading());
         }
@@ -67,38 +69,7 @@ const ContractPage = () => {
       event: null
     });
   };
-  // const handleEventAdd = data => {
-  //   // setEvents(events => [...events, event]);
-
-  //   callAPI('Garden/addGarden', 'POST', data)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         if(res.data) {
-  //           dispatch(hideLoadingChildren())
-  //           toastSuccess("Tạo vườn thành công !")
-  //           setValue(!value);
-  //           setEventModal({
-  //             open: false,
-  //             event: null
-  //           });
-  //         } else {
-  //           dispatch(hideLoadingChildren())
-  //           toastError("Mã vườn đã tồn tại !")
-  //         }
-
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-  // const handleEventDelete = event => {
-  //   setEvents(events => events.filter(e => e.id !== event.id));
-  //   setEventModal({
-  //     open: false,
-  //     event: null
-  //   });
-  // };
+  
   const handleEventEdit = data => {
     console.log(data);
     callAPI('Contract/UpdateContract', 'PUT', data)
@@ -127,6 +98,7 @@ const ContractPage = () => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setResetPage(!resetPage);
+    setSearchValue(keyword)
     dispatch(actSearchContracts(keyword));
   };
   const handleEventNew = () => {

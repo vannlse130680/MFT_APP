@@ -1,4 +1,12 @@
-import { Modal } from '@material-ui/core';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Modal
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
 import { hideLoading, showLoading } from 'actions/loading';
@@ -24,13 +32,24 @@ const useStyles = makeStyles(theme => ({
 
 const PlantTypePage = () => {
   const [value, setValue] = useState(true); // integer state
-  const [searchValue, setSearchValue] = useState(""); // integer state
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [searchValue, setSearchValue] = useState('');
   const plantTypesStore = useSelector(state => state.plantTypes);
   const dispatch = useDispatch();
   useEffect(() => {
     console.log('reden');
     dispatch(showLoading());
-    var username = JSON.parse(sessionStorage.getItem('USER')) ? JSON.parse(sessionStorage.getItem('USER')).username : null;
+    var username = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).username
+      : null;
     // console.log(username)
     callAPI(`planttype/${username}`, 'GET', null)
       .then(res => {
@@ -68,17 +87,17 @@ const PlantTypePage = () => {
     callAPI('PlantType/addPlantType', 'POST', data)
       .then(res => {
         if (res.status === 200) {
-          if(res.data) {
-            dispatch(hideLoadingChildren())
-            toastSuccess("Thêm thành công !")
+          if (res.data) {
+            dispatch(hideLoadingChildren());
+            toastSuccess('Thêm thành công !');
             setValue(!value);
             setEventModal({
               open: false,
               event: null
             });
           } else {
-            dispatch(hideLoadingChildren())
-            toastError("Thêm thất bại !")
+            dispatch(hideLoadingChildren());
+            toastError('Thêm thất bại !');
           }
         }
       })
@@ -98,19 +117,18 @@ const PlantTypePage = () => {
     console.log(data);
     callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
       if (res.status === 200) {
-        if(res.data) {
-
-          dispatch(hideLoadingChildren())
-          toastSuccess("Cập nhật thành công !")
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Cập nhật thành công !');
           setValue(!value);
-          
+
           setEventModal({
             open: false,
             event: null
           });
         } else {
-          dispatch(hideLoadingChildren())
-          toastError("Cập nhật thất bại !")
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
         }
       }
     });
@@ -118,10 +136,9 @@ const PlantTypePage = () => {
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
-    setSearchValue(keyword)
-    setResetPage(!resetPage)
+    setSearchValue(keyword);
+    setResetPage(!resetPage);
     dispatch(actSearchPlantTypes(keyword));
-   
   };
   const handleEventNew = () => {
     setSelectedPlantType(null);
@@ -131,13 +148,26 @@ const PlantTypePage = () => {
     });
   };
   const handleEventOpenEdit = plantType => {
-    setSelectedPlantType(plantType);
-    setEventModal({
-      open: true,
-      event: {}
+    callAPI(
+      `Contract/GetContractByPlantTypeId/${plantType.id}`,
+      'GET',
+      null
+    ).then(res => {
+      console.log(res.data);
+      if (res.data.length === 0) {
+        setSelectedPlantType(plantType);
+        setEventModal({
+          open: true,
+          event: {}
+        });
+      } else {
+        handleClickOpen()
+      }
+    }).catch((err) => {
+      console.log(err)
     });
   };
- 
+
   return (
     <Page className={classes.root} title="Quản lý loại cây">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -161,6 +191,23 @@ const PlantTypePage = () => {
           onEdit={handleEventEdit}
         />
       </Modal>
+      <Dialog
+        aria-describedby="alert-dialog-description"
+        aria-labelledby="alert-dialog-title"
+        onClose={handleClose}
+        open={open}>
+        <DialogTitle id="alert-dialog-title">Chỉnh sửa loại cây</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây này đang trong hợp đồng với khách hàng!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClose}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Page>
   );
 };

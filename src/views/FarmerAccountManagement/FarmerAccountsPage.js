@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FarmerAccountsPage = () => {
+  const [searchValue, setSearchValue] = useState('')
   const [open, setOpen] = React.useState(false);
   const [banUsername, setBanUsername] = useState('');
   const handleClickOpen = () => {
@@ -51,7 +52,9 @@ const FarmerAccountsPage = () => {
       .then(res => {
         if (res.status === 200) {
           dispatch(hideLoading());
+        
           dispatch(actFetchAccounts(res.data));
+          dispatch(actSearchAccounts(searchValue));
         }
       })
       .catch(err => {
@@ -67,6 +70,7 @@ const FarmerAccountsPage = () => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setResetPage(!resetPage);
+    setSearchValue(keyword)
     dispatch(actSearchAccounts(keyword));
   };
  
@@ -95,7 +99,7 @@ const FarmerAccountsPage = () => {
       });
   };
   return (
-    <Page className={classes.root} title="Quản lý vườn">
+    <Page className={classes.root} title="Quản lý nông dân">
       <AuthGuard roles={['Quản lý']} />
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />

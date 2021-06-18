@@ -1,4 +1,12 @@
-import { Modal, Button } from '@material-ui/core';
+import {
+  Modal,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  DialogContentText
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthGuard, Page, SearchBar } from 'components';
@@ -27,7 +35,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TreePage = props => {
-  
+  const [searchValue, setSearchValue] = useState('');
+  const [open, setOpen] = React.useState(false);
+ 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const { gardenId } = props;
   const classes = useStyles();
   const [value, setValue] = useState(true); //
@@ -41,6 +58,7 @@ const TreePage = props => {
       .then(res => {
         if (res.status === 200) {
           dispatch(actFetchTREES(res.data));
+          dispatch(actSearchTREES(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -71,7 +89,7 @@ const TreePage = props => {
       .then(res => {
         if (res.status === 200) {
           if (res.data) {
-            dispatch(hideLoadingChildren())
+            dispatch(hideLoadingChildren());
             toastSuccess('Tạo cây thành công !');
             setValue(!value);
             setEventModal({
@@ -79,7 +97,7 @@ const TreePage = props => {
               event: null
             });
           } else {
-            dispatch(hideLoadingChildren())
+            dispatch(hideLoadingChildren());
             toastError('Mã cây đã tồn tại !');
           }
         }
@@ -103,7 +121,7 @@ const TreePage = props => {
         console.log(res);
         if (res.status === 200) {
           if (res.data) {
-            dispatch(hideLoadingChildren())
+            dispatch(hideLoadingChildren());
             toastSuccess('Cập nhật cây thành công !');
             setValue(!value);
             setEventModal({
@@ -111,7 +129,7 @@ const TreePage = props => {
               event: null
             });
           } else {
-            dispatch(hideLoadingChildren())
+            dispatch(hideLoadingChildren());
             toastError('Mã cây đã tồn tại !');
           }
         }
@@ -124,6 +142,7 @@ const TreePage = props => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     // setResetPage(!resetPage)
+    setSearchValue(keyword)
     dispatch(actSearchTREES(keyword));
   };
   const handleEventNew = () => {
@@ -136,42 +155,62 @@ const TreePage = props => {
   };
   const handleEventOpenEdit = tree => {
     console.log(tree);
-    setSelectedTree(tree);
-    setEventModal({
-      open: true,
-      event: {}
-    });
+    if (tree.status === 2 || tree.status === 3) {
+      handleClickOpen();
+    } else {
+      setSelectedTree(tree);
+      setEventModal({
+        open: true,
+        event: {}
+      });
+    }
   };
 
   return (
     <Page className={classes.root} title="Quản lý cây">
       <AuthGuard roles={['Nông dân']} />
-      
+
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       <TreeHeader onAddEvent={handleEventNew} />
 
       {treesStore && (
         <Results
           className={classes.results}
-          trees={treesStore}
           onEditEvent={handleEventOpenEdit}
+          trees={treesStore}
         />
       )}
       <Modal
+        disableBackdropClick
         onClose={handleModalClose}
-        open={eventModal.open}
-        disableBackdropClick={true}>
+        open={eventModal.open}>
         <AddEditEvent
           event={eventModal.event}
-          selectedTree={selectedTree}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}
           onDelete={handleEventDelete}
-          onEdit={handleEventEdit}>
-          
-        </AddEditEvent>
-        
+          onEdit={handleEventEdit}
+          selectedTree={selectedTree}
+        />
       </Modal>
+      <Dialog
+        aria-describedby="alert-dialog-description"
+        aria-labelledby="alert-dialog-title"
+        onClose={handleClose}
+        open={open}>
+        <DialogTitle id="alert-dialog-title">Chỉnh sửa cây</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn không thể chỉnh sửa cây trong trạng thái đã bán hoặc đang trong
+            giao dịch!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClose}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* <Button variant="text" color="default" onClick={handleonClick}> a</Button> */}
     </Page>
   );

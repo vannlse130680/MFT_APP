@@ -64,7 +64,7 @@ const Results = props => {
   const { className, onEditEvent, contracts, ...rest } = props;
 
   const classes = useStyles();
-
+  
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -146,7 +146,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === contracts.length}
                         color="primary"
@@ -156,7 +156,7 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Số hợp đồng</TableCell>
                     <TableCell>Tên khách hàng</TableCell>
@@ -181,7 +181,7 @@ const Results = props => {
                         selected={
                           selectedCustomers.indexOf(contract.id) !== -1
                         }>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
                               selectedCustomers.indexOf(contract.id) !== -1
@@ -194,7 +194,7 @@ const Results = props => {
                               selectedCustomers.indexOf(contract.id) !== -1
                             }
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{contract.contractNumber}</TableCell>
                         <TableCell>{contract.fullname}</TableCell>
@@ -222,7 +222,7 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/contract/${contract.id}/${contract.customerUsername}`}
+                            to={`/contract/${contract.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}

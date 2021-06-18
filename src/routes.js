@@ -253,12 +253,12 @@ const routes = [
         component: ContractPage
       },
       {
-        path: '/contract/:id/:username',
+        path: '/contract/:id',
         exact: true,
         component: ContractInformation
       },
       {
-        path: '/contract/:id/:username/:tab',
+        path: '/contract/:id/:tab',
         exact: true,
         component: lazy(() =>
           import(

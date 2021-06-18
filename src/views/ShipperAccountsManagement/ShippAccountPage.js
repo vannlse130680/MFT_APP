@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
 
 const ShippAccountPage = () => {
   const [open, setOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [openDelete, setOpenDelete] = React.useState(false);
   const [banUsername, setBanUsername] = useState('');
   const [deleteUsername, setDeleteUsername] = useState('');
@@ -70,6 +71,7 @@ const ShippAccountPage = () => {
         if (res.status === 200) {
           dispatch(hideLoading());
           dispatch(actFetchAccounts(res.data));
+          dispatch(actSearchAccounts(searchValue));
         }
       })
       .catch(err => {
@@ -82,6 +84,7 @@ const ShippAccountPage = () => {
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
+    setSearchValue(keyword)
     setResetPage(!resetPage);
     dispatch(actSearchAccounts(keyword));
   };
@@ -118,7 +121,7 @@ const ShippAccountPage = () => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Thêm account thành công !');
+            toastSuccess('Thêm tài khoản thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -126,7 +129,7 @@ const ShippAccountPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Thêm account thất bại !');
+            toastError('Tên tài khoản đã tồn tại !');
           }
         }
       })
@@ -168,7 +171,7 @@ const ShippAccountPage = () => {
       });
   };
   return (
-    <Page className={classes.root} title="Quản lý vườn">
+    <Page className={classes.root} title="Quản lý shipper">
       <AuthGuard roles={['Quản lý']} />
       <Header onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
@@ -224,15 +227,11 @@ const ShippAccountPage = () => {
         aria-describedby="alert-dialog-description">
         <GoblaLoadingChildren />
         <DialogTitle id="alert-dialog-title">
-          <p style={{ fontSize: 20 }}>
-            {banUsername.status === 1 ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
-          </p>
+          <p style={{ fontSize: 20 }}>Xóa tài khoản</p>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {banUsername.status === 1
-              ? 'Bạn có chắc chắn muốn khóa tài khoản này! Việc khóa tài khoản đồng nghĩa với việc người dùng không thể sử dụng đăng nhập được vào hệ thống !'
-              : 'Bạn có chắc chắn muốn mở khóa tài khoản này! Việc mở tài khoản đồng nghĩa với việc cho phép người dùng đăng nhập vào được hệ thống !'}
+            Bạn có chắc chắn muốn xóa tài khoản giao hàng này?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
