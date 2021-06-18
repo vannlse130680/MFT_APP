@@ -122,7 +122,7 @@ const Security = props => {
   const handleSave = () => {
     dispatch(showLoading());
     
-    var username = JSON.parse(localStorage.getItem('USER')) ? JSON.parse(localStorage.getItem('USER')).username : null;
+    var username = JSON.parse(sessionStorage.getItem('USER')) ? JSON.parse(sessionStorage.getItem('USER')).username : null;
     var data = {
       username: username,
       oldPassword: formState.values.oldPassword,

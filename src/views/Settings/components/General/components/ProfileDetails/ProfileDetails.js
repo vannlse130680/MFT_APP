@@ -77,7 +77,7 @@ const ProfileDetails = props => {
         },
         () => {
           uploadTask.snapshot.ref.getDownloadURL().then(url => {
-            var username = JSON.parse(localStorage.getItem('USER')).username;
+            var username = JSON.parse(sessionStorage.getItem('USER')).username;
             var data = {
               username: username,
               avatar: url
@@ -103,7 +103,7 @@ const ProfileDetails = props => {
     }
   };
   const handRemoveAvatar = () => {
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     var data = {
       username: username,
       avatar: null

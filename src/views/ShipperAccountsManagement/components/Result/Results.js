@@ -75,16 +75,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, accounts, onEditEvent, onBan, ...rest } = props;
+  const { className, accounts, onEditEvent, onDeleteAccount, onBan, ...rest } = props;
 
   const classes = useStyles();
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  
 
-  
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
       ? accounts.map(garden => garden.id)
@@ -138,6 +136,9 @@ const Results = props => {
   const handleBanAccount = customer => {
     onBan(customer);
   };
+  const handleDeleteAccount = (username) => {
+    onDeleteAccount(username)
+  }
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {accounts.length < 1 ? (
@@ -189,9 +190,7 @@ const Results = props => {
                       <TableRow
                         hover
                         key={index}
-                        selected={
-                          selectedCustomers.indexOf(account.id) !== -1
-                        }>
+                        selected={selectedCustomers.indexOf(account.id) !== -1}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             checked={
@@ -201,9 +200,7 @@ const Results = props => {
                             onChange={event =>
                               handleSelectOne(event, account.id)
                             }
-                            value={
-                              selectedCustomers.indexOf(account.id) !== -1
-                            }
+                            value={selectedCustomers.indexOf(account.id) !== -1}
                           />
                         </TableCell>
                         <TableCell>{index + 1}</TableCell>
@@ -241,16 +238,18 @@ const Results = props => {
                               account.status === 1 ? classes.redButton : ''
                             }
                             size="small"
-                            onClick={handleBanAccount.bind(
-                              this,
-                              account
-                            )}
+                            onClick={handleBanAccount.bind(this, account)}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             {account.status === 1 ? 'Khóa' : 'Mở khóa'}
                           </Button>
-                        
+                          <Button
+                            size="small"
+                            variant="contained"
+                            onClick={handleDeleteAccount.bind(this, account.username)}>
+                            Xóa
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -271,8 +270,8 @@ const Results = props => {
           />
         </CardActions>
       </Card>
+      
       <TableEditBar selected={selectedCustomers} />
-   
     </div>
   );
 };

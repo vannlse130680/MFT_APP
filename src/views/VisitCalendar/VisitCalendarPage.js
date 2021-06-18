@@ -18,6 +18,7 @@ import {
   useTheme,
   useMediaQuery
 } from '@material-ui/core';
+import ReactDOM from 'react-dom';
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
 import '@fullcalendar/timegrid/main.css';
@@ -114,7 +115,11 @@ const VisitCalendarPage = () => {
       if (mounted) {
         axios
           .get('/api/calendar')
-          .then(response => setEvents(response.data.events));
+          .then((res) => {
+            console.log(res.data.events)
+            setEvents(res.data.events)
+          });
+          
       }
     };
 
@@ -208,8 +213,13 @@ const VisitCalendarPage = () => {
     setDate(calendarApi.getDate());
   };
   console.log(esLocale);
+  const EventDetail = ({ event, el }) => {
+    const content = <div>{event.title}<div>{event.extendedProps.desc}</div></div>;
+    ReactDOM.render(content, el);
+    return el;
+  };
   return (
-    <Page className={classes.root} title="Calendar">
+    <Page className={classes.root} title="Lịch tham quan vườn">
       <Toolbar
         date={date}
         onDateNext={handleDateNext}
@@ -228,9 +238,9 @@ const VisitCalendarPage = () => {
             droppable
           
             locale={esLocale}
-            editable
+            eventRender={EventDetail}
             eventClick={handleEventClick}
-            eventResizableFromStart
+            eventResizableFromStart={false}
             events={events}
             header={true}
             height={800}

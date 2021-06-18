@@ -108,8 +108,8 @@ const LoginForm = props => {
             toastSuccess('Đăng nhập thành công !');
             var user = response.data[0];
             user.username = data.username
-            localStorage.setItem('USER', JSON.stringify(user));
-
+            // localStorage.setItem('USER', JSON.stringify(user));
+            sessionStorage.setItem('USER', JSON.stringify(user));
             router.history.push('/');
           } else {
             dispatch(hideLoading());

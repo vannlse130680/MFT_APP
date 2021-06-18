@@ -37,7 +37,9 @@ const useStyles = makeStyles(theme => ({
 
 const ShippAccountPage = () => {
   const [open, setOpen] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
   const [banUsername, setBanUsername] = useState('');
+  const [deleteUsername, setDeleteUsername] = useState('');
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -48,6 +50,13 @@ const ShippAccountPage = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
   };
   const classes = useStyles();
   const [value, setValue] = useState(true); //
@@ -104,12 +113,12 @@ const ShippAccountPage = () => {
   const handleEventAdd = data => {
     // setEvents(events => [...events, event]);
     console.log(data);
-    callAPI('PlantType/addPlantType', 'POST', data)
+    callAPI('Account/addShipper', 'POST', data)
       .then(res => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Thêm thành công !');
+            toastSuccess('Thêm account thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -117,7 +126,7 @@ const ShippAccountPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Thêm thất bại !');
+            toastError('Thêm account thất bại !');
           }
         }
       })
@@ -138,6 +147,26 @@ const ShippAccountPage = () => {
       event: null
     });
   };
+  const handleClickDeleteAccount = username => {
+    handleClickOpenDelete();
+    setDeleteUsername(username);
+  };
+  const handleDeleteAccount = () => {
+    console.log(deleteUsername);
+    dispatch(showLoadingChildren());
+    callAPI(`Account/deleteShipper/${deleteUsername}`, 'DELETE', null)
+      .then(res => {
+        if (res.data) {
+          toastSuccess('Xóa thành công !');
+          dispatch(hideLoadingChildren());
+          setValue(!value);
+          handleCloseDelete();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <Page className={classes.root} title="Quản lý vườn">
       <AuthGuard roles={['Quản lý']} />
@@ -148,6 +177,7 @@ const ShippAccountPage = () => {
           onBan={handleClickBanAccount}
           className={classes.results}
           accounts={accountsStore}
+          onDeleteAccount={handleClickDeleteAccount}
         />
       )}
       <Modal onClose={handleModalClose} open={eventModal.open}>
@@ -156,6 +186,7 @@ const ShippAccountPage = () => {
           event={eventModal.event}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}
+
           // onDelete={handleEventDelete}
           // onEdit={handleEventEdit}
         />
@@ -182,6 +213,31 @@ const ShippAccountPage = () => {
         <DialogActions>
           <Button onClick={handleClose}>Hủy bỏ</Button>
           <Button onClick={handleBanAccount} color="primary" autoFocus>
+            Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDelete}
+        onClose={handleCloseDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <GoblaLoadingChildren />
+        <DialogTitle id="alert-dialog-title">
+          <p style={{ fontSize: 20 }}>
+            {banUsername.status === 1 ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
+          </p>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {banUsername.status === 1
+              ? 'Bạn có chắc chắn muốn khóa tài khoản này! Việc khóa tài khoản đồng nghĩa với việc người dùng không thể sử dụng đăng nhập được vào hệ thống !'
+              : 'Bạn có chắc chắn muốn mở khóa tài khoản này! Việc mở tài khoản đồng nghĩa với việc cho phép người dùng đăng nhập vào được hệ thống !'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>Hủy bỏ</Button>
+          <Button onClick={handleDeleteAccount} color="primary" autoFocus>
             Đồng ý
           </Button>
         </DialogActions>

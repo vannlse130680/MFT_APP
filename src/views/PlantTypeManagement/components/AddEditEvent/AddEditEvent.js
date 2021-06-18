@@ -250,7 +250,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const handleAdd = () => {
     dispatch(showLoadingChildren());
     var { values } = formState;
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     var data = {
       treeTypeID: values.auto.id,
       name: values.name,
@@ -267,7 +267,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const handleEdit = () => {
     dispatch(showLoadingChildren());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     // console.log(formState.values);
     var data = {
       id: selectedPlantType.id,

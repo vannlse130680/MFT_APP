@@ -19,12 +19,12 @@ const AuthGuard = props => {
     )
       return;
 
-    if (!localStorage.getItem('USER')) {
+    if (!sessionStorage.getItem('USER')) {
       router.history.push('/auth/login');
       return;
     }
     if (roles) {
-      var role = JSON.parse(localStorage.getItem('USER')).role;
+      var role = JSON.parse(sessionStorage.getItem('USER')).role;
       console.log(roles);
       if (!roles.includes(role)) {
         router.history.push('/errors/error-401');

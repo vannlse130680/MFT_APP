@@ -112,7 +112,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   }, [formState.values]);
 
   useEffect(() => {
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
@@ -198,7 +198,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const handleAdd = () => {
     dispatch(showLoadingChildren());
     var { values } = formState;
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     var data = {
       gardenCode: values.code,
       farmerUsername: username,
@@ -213,7 +213,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const handleEdit = () => {
     dispatch(showLoadingChildren());
-    var username = JSON.parse(localStorage.getItem('USER')).username;
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
     // console.log(formState.values);
     // console.log(selectedGarden)
     var data = {

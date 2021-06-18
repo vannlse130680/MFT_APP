@@ -20,21 +20,7 @@ const General = props => {
   const classes = useStyles();
   const profile = useSelector(state => state.userInfor);
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(showLoading());
-  //   var username = JSON.parse(localStorage.getItem('USER')).username;
-  //   callAPI(`Account/${username}`, 'GET', null)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         dispatch(hideLoading())
-  //         setProfile(res.data);
-  //         console.log(res.data)
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }, []);
+  
 
   if (!profile) {
     return null;

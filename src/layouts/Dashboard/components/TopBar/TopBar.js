@@ -157,7 +157,7 @@ const TopBar = props => {
     setOpen(false);
   };
   const handleLogout = () => {
-    localStorage.clear();
+    sessionStorage.clear();
     history.push('/auth/login');
     toastSuccess('Đăng xuất thành công !');
     dispatch(logout());

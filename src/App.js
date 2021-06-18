@@ -33,15 +33,7 @@ const App = () => {
   useEffect(() => {
     console.log('I have been mounted');
   }, []);
-  const checkRole = () => {
-    var user = localStorage.getItem('USER');
-    if (user) {
-      var role = JSON.parse(user).role;
-      console.log(role);
-      return role.toUpperCase();
-    }
-    return 'GUEST';
-  };
+  
   // function myFunction() {
   //   var myWindow = window.open(
       

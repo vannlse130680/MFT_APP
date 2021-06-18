@@ -54,14 +54,7 @@ const schema = {
       maximum: 64
     }
   },
-  // birthday: {
-  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-  //   datetime: {
-  //     dateOnly: true,
-  //     latest: moment.utc().subtract(18, 'years'),
-  //     message: 'Bạn cần đủ 18 tuổi'
-  //   }
-  // },
+
   phoneNum: {
     format: {
       pattern: /((09|03|07|08|05)+([0-9]{8})\b)/,
@@ -87,10 +80,6 @@ const schema = {
       message: 'Mật khẩu nhập lại không trùng khớp'
     }
   }
-  // policy: {
-  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-  //   checked: true
-  // }
 };
 const useStyles = makeStyles(theme => ({
   root: {
@@ -143,15 +132,9 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const classes = useStyles();
 
-  // const defaultValue = {
-  //   name: '111',
-  //   address: '111',
-  //   plantType: '11'
-  // };
-  const [plantTypesName, setPlantTypesName] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
-    values: { status: 1 },
+    values: {},
     touched: {},
     errors: {}
   });
@@ -165,19 +148,6 @@ const AddEditEvent = forwardRef((props, ref) => {
       errors: errors || {}
     }));
   }, [formState.values]);
-
-  useEffect(() => {
-    var username = JSON.parse(localStorage.getItem('USER')).username;
-    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
-      .then(res => {
-        if (res.status === 200) {
-          setPlantTypesName(res.data);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
 
   // useEffect(() => {
   //   if (selectedGarden)
@@ -203,19 +173,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     if (!event) return;
     event.persist();
 
-    if (event.target.name === 'test') {
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          test: ''
-        },
-        touched: {
-          ...formState.touched,
-          [event.target.name]: true
-        }
-      }));
-    } else if (event.target.name) {
+    if (event.target.name) {
       console.log('status');
       setFormState(formState => ({
         ...formState,
@@ -233,16 +191,6 @@ const AddEditEvent = forwardRef((props, ref) => {
           [event.target.name]: true
         }
       }));
-    } else {
-      // console.log('auto');
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          ...formState.values,
-          auto: value,
-          test: 'ád'
-        }
-      }));
     }
   };
 
@@ -251,20 +199,20 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleAdd = () => {
-    console.log(formState.values)
-    // dispatch(showLoadingChildren());
-    // var { values } = formState;
-    // var username = JSON.parse(localStorage.getItem('USER')).username;
-    // var data = {
-    //   gardenCode: values.code,
-    //   farmerUsername: username,
-    //   gardenName: values.name,
-    //   address: values.address,
-    //   plantTypeID: values.auto.id
-    // };
+    dispatch(showLoadingChildren());
+    var { values } = formState;
 
-    // console.log(formState);
-    // onAdd(data);
+    var data = {
+      username: values.username,
+      password: values.password,
+      fullname: values.fullName,
+      address:  values.address,
+      phone: values.phoneNum,
+      email: values.email
+    };
+
+    
+    onAdd(data);
   };
 
   // const handleEdit = () => {

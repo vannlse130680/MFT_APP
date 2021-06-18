@@ -34,8 +34,8 @@ const ContractPage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoading());
-    var username = JSON.parse(localStorage.getItem('USER'))
-      ? JSON.parse(localStorage.getItem('USER')).username
+    var username = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
     // console.log(username)
     callAPI(`contract/${username}`, 'GET', null)

@@ -52,7 +52,7 @@ const NavBar = props => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoading());
-    var user = localStorage.getItem('USER');
+    var user = sessionStorage.getItem('USER');
     if (user) {
       var data = JSON.parse(user);
       // console.log(data);
