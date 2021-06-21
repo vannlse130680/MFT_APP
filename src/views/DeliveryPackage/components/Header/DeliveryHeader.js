@@ -4,15 +4,14 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
-  root: {},
-  fr: {
-    float: 'right'
-  }
+  root: {}
 }));
 
-const TreeHeader = props => {
+const DeliveryHeader = props => {
   const { onAddEvent, className, ...rest } = props;
 
   const classes = useStyles();
@@ -24,25 +23,27 @@ const TreeHeader = props => {
       <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
         <Grid item>
           <Typography component="h2" gutterBottom variant="overline">
-            Quản lý
+            Danh sách
           </Typography>
           <Typography component="h1" variant="h3">
-           Cây trong vườn
+            Đơn hàng
           </Typography>
         </Grid>
         <Grid item>
-          <Button
-            className={classes.fr}
-            color="primary"
+          {/* <Button
+            
             variant="contained"
-            onClick={onAddEvent}>
-            <AddIcon />
-            Thêm cây mới
-          </Button>
+            component={RouterLink}
+            to="/contract">
+            <ArrowBackIcon />
+            Về chi tiết hợp đồng
+          </Button> */}
         </Grid>
       </Grid>
     </div>
   );
 };
 
-export default TreeHeader;
+
+
+export default DeliveryHeader;

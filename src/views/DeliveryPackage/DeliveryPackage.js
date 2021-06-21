@@ -1,29 +1,28 @@
 import {
-  Modal,
   Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogTitle,
+  Divider,
+  Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import 'react-toastify/dist/ReactToastify.css';
+import { hideLoadingChildren } from 'actions/childrenLoading';
+import { actFetchDeliveryPackages, actSearchDeliveryPackages } from 'actions/deliveryPackages';
+import { hideLoading, showLoading } from 'actions/loading';
+import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
+
 import { AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import callAPI from 'utils/callAPI';
+import { toastError, toastSuccess } from 'utils/toastHelper';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
+import DeliveryHeader from './components/Header/DeliveryHeader';
 import Results from './components/Result/Results';
-
-import Axios from 'axios';
-import callAPI from 'utils/callAPI';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from 'actions';
-import { hideLoading, showLoading } from 'actions/loading';
-import { actFetchGardens, actSearchGardens } from 'actions/gardens';
-import { toastError, toastSuccess } from 'utils/toastHelper';
-import { actSearchPlantTypes } from 'actions/plantType';
-import { hideLoadingChildren } from 'actions/childrenLoading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,8 +33,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const GardenPage = () => {
-  const [searchValue, setSearchValue] = useState('');
+const DeliveryPackage = (props) => {
+  console.log(props)
+  const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -45,21 +45,19 @@ const GardenPage = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const classes = useStyles();
-  const [value, setValue] = useState(true); //
-  const gardensStore = useSelector(state => state.gardens);
+  const [searchValue, setSearchValue] = useState('');
+  const deliveryPackagesStore = useSelector(state => state.deliveryPackages);
   const dispatch = useDispatch();
   useEffect(() => {
+    
     dispatch(showLoading());
-    var username = JSON.parse(sessionStorage.getItem('USER'))
-      ? JSON.parse(sessionStorage.getItem('USER')).username
-      : null;
-    // console.log(username)
-    callAPI(`garden/${username}`, 'GET', null)
+    
+    
+    callAPI(`PackageDelivery/getDeliveryPackagelByContractDetaiID/${props.match.params.id}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
-          dispatch(actFetchGardens(res.data));
-          dispatch(actSearchGardens(searchValue));
+          dispatch(actFetchDeliveryPackages(res.data));
+          dispatch(actSearchDeliveryPackages(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -68,10 +66,11 @@ const GardenPage = () => {
       });
   }, [value]);
 
-  // const [gardens, setGardens] = useState(initGardensValue);
+  const classes = useStyles();
+
   const [events, setEvents] = useState([]);
   const [resetPage, setResetPage] = useState(false);
-  const [selectedGarden, setSelectedGarden] = useState({});
+  const [selectedPlantType, setSelectedPlantType] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -83,15 +82,16 @@ const GardenPage = () => {
       event: null
     });
   };
+
   const handleEventAdd = data => {
     // setEvents(events => [...events, event]);
-
-    callAPI('Garden/addGarden', 'POST', data)
+    console.log(data);
+    callAPI('PlantType/addPlantType', 'POST', data)
       .then(res => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Tạo vườn thành công !');
+            toastSuccess('Thêm thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -99,7 +99,7 @@ const GardenPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Mã vườn đã tồn tại !');
+            toastError('Thêm thất bại !');
           }
         }
       })
@@ -117,81 +117,78 @@ const GardenPage = () => {
   const handleEventEdit = data => {
     // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
     console.log(data);
-    callAPI('Garden/updateGarden', 'PUT', data)
-      .then(res => {
-        console.log(res);
-        if (res.status === 200) {
-          if (res.data) {
-            dispatch(hideLoadingChildren());
-            toastSuccess('Cập nhật vườn thành công !');
-            setValue(!value);
-            setEventModal({
-              open: false,
-              event: null
-            });
-          } else {
-            dispatch(hideLoadingChildren());
-            toastError('Mã vườn đã tồn tại !');
-          }
+    callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Cập nhật thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
         }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      }
+    });
   };
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setSearchValue(keyword);
     setResetPage(!resetPage);
-    dispatch(actSearchGardens(keyword));
+    dispatch(actSearchPlantTypes(keyword));
   };
   const handleEventNew = () => {
-    setSelectedGarden(null);
+    setSelectedPlantType(null);
     setEventModal({
       open: true,
       event: null
     });
   };
-  const handleEventOpenEdit = garden => {
-    callAPI(`Contract/GetContractByGardenId/${garden.id}`, 'GET', null)
-      .then(res => {
-        console.log(res.data);
-        if (res.data.length === 0) {
-          garden.plantTypeObj = {
-            id: garden.plantTypeID,
-            plantTypeName: garden.plantTypeName
-          };
-          setSelectedGarden(garden);
-          setEventModal({
-            open: true,
-            event: {}
-          });
-        } else {
-          handleClickOpen();
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  const handleEventOpenEdit = plantType => {
+    callAPI(
+      `Contract/GetContractByPlantTypeId/${plantType.id}`,
+      'GET',
+      null
+    ).then(res => {
+      console.log(res.data);
+      if (res.data.length === 0) {
+        setSelectedPlantType(plantType);
+        setEventModal({
+          open: true,
+          event: {}
+        });
+      } else {
+        handleClickOpen()
+      }
+    }).catch((err) => {
+      console.log(err)
+    });
   };
 
   return (
-    <Page className={classes.root} title="Quản lý vườn">
-      <AuthGuard roles={['Nông dân']} />
+    <Page className={classes.root} title="Quản lý loại cây">
+      <AuthGuard roles={['Nông dân']}></AuthGuard>
       <Header onAddEvent={handleEventNew} />
+      <Divider/>
+      <DeliveryHeader/>
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      {gardensStore && (
+      {deliveryPackagesStore && (
         <Results
+          resetPage={resetPage}
           className={classes.results}
-          gardens={gardensStore}
+          plantTypes={deliveryPackagesStore}
           onEditEvent={handleEventOpenEdit}
         />
       )}
       <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
+          selectedPlantType={selectedPlantType}
           event={eventModal.event}
-          selectedGarden={selectedGarden}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}
           onDelete={handleEventDelete}
@@ -203,11 +200,10 @@ const GardenPage = () => {
         aria-labelledby="alert-dialog-title"
         onClose={handleClose}
         open={open}>
-        <DialogTitle id="alert-dialog-title">Chỉnh sửa vừa</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Chỉnh sửa loại cây</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn không thể chỉnh sửa vườn này vì có cây thuộc vườn này
-            đang trong hợp đồng với khách hàng!
+            Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây này đang trong hợp đồng với khách hàng!
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -216,9 +212,8 @@ const GardenPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Button variant="text" color="default" onClick={handleonClick}> a</Button> */}
     </Page>
   );
 };
 
-export default GardenPage;
+export default DeliveryPackage;

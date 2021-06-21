@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import callAPI from 'utils/callAPI';
+import ContractDetailPage from 'views/ContractDetailManagement/ContractDetailPage';
 import { Logs } from 'views/CustomerManagementDetails/components';
 import Header from '../Header';
 import HeaderBack from '../Header/HeaderBack';
@@ -63,7 +64,7 @@ const ContractInformation = props => {
     { value: 'general', label: 'Tổng quát' },
     { value: 'customer', label: 'Khách hàng' },
     { value: 'tree', label: 'Chăm sóc cây' },
-    { value: 'crop', label: 'Chi tiết hợp đồng' },
+    { value: 'detail', label: 'Chi tiết hợp đồng' },
     { value: 'exchange', label: 'Phát sinh trao đổi' }
   ];
 
@@ -107,6 +108,7 @@ const ContractInformation = props => {
             onAccept={onAccept}
           />
         )}
+         {tab === 'detail' && <ContractDetailPage contractStatus={contractInfomation.status} treeId={contractInfomation.treeID}/>}
         {/* {tab === 'logs' && <Logs />} */}
       </div>
     </Page>

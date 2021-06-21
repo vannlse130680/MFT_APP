@@ -1,4 +1,11 @@
-import { Modal, Button } from '@material-ui/core';
+import {
+  Modal,
+  Button,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+  Dialog
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthGuard, Page, SearchBar } from 'components';
@@ -16,6 +23,7 @@ import { actFetchContracts, actSearchContracts } from 'actions/contracts';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import { actSearchPlantTypes } from 'actions/plantType';
 import { hideLoadingChildren } from 'actions/childrenLoading';
+import { DialogContent } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +36,16 @@ const useStyles = makeStyles(theme => ({
 
 const ContractPage = () => {
   const classes = useStyles();
-  const [searchValue, setSearchValue] = useState('')
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [searchValue, setSearchValue] = useState('');
   const [value, setValue] = useState(true); //
   const contractsStore = useSelector(state => state.contracts);
   // const [contractList , setContractList] = useState([])
@@ -44,7 +61,7 @@ const ContractPage = () => {
         if (res.status === 200) {
           // dispatch(actFetchGardens(res.data));
           dispatch(actFetchContracts(res.data));
-          dispatch(actSearchContracts(searchValue))
+          dispatch(actSearchContracts(searchValue));
           console.log(res.data);
           dispatch(hideLoading());
         }
@@ -69,7 +86,7 @@ const ContractPage = () => {
       event: null
     });
   };
-  
+
   const handleEventEdit = data => {
     console.log(data);
     callAPI('Contract/UpdateContract', 'PUT', data)
@@ -98,7 +115,7 @@ const ContractPage = () => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     setResetPage(!resetPage);
-    setSearchValue(keyword)
+    setSearchValue(keyword);
     dispatch(actSearchContracts(keyword));
   };
   const handleEventNew = () => {
@@ -109,11 +126,15 @@ const ContractPage = () => {
     });
   };
   const handleEventOpenEdit = contract => {
-    setSelectedContract(contract);
-    setEventModal({
-      open: true,
-      event: {}
-    });
+    if (contract.status === 1 || contract.status === 2 || contract.status === 3) {
+      handleClickOpen();
+    } else {
+      setSelectedContract(contract);
+      setEventModal({
+        open: true,
+        event: {}
+      });
+    }
   };
 
   return (
@@ -139,6 +160,23 @@ const ContractPage = () => {
           onEdit={handleEventEdit}
         />
       </Modal>
+      <Dialog
+        aria-describedby="alert-dialog-description"
+        aria-labelledby="alert-dialog-title"
+        onClose={handleClose}
+        open={open}>
+        <DialogTitle id="alert-dialog-title">Chỉnh sửa hợp đồng</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn không thể chỉnh sửa hợp đồng ở trạng thái này!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClose}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* <Button variant="text" color="default" onClick={handleonClick}> a</Button> */}
     </Page>
   );

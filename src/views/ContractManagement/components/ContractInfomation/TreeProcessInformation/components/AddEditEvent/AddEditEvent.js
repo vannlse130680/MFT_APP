@@ -337,7 +337,7 @@ const AddEditEvent = forwardRef((props, ref) => {
                 multiline
                 rows={5}
                 helperText={hasError('desc') ? formState.errors.desc[0] : null}
-                label="Nhà cung cấp"
+                label="Mô tả"
                 name="desc"
                 onChange={handleChange}
                 value={formState.values.desc || ''}

@@ -4,15 +4,14 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
-  root: {},
-  fr: {
-    float: 'right'
-  }
+  root: {}
 }));
 
-const TreeHeader = props => {
+const Header = props => {
   const { onAddEvent, className, ...rest } = props;
 
   const classes = useStyles();
@@ -27,17 +26,17 @@ const TreeHeader = props => {
             Quản lý
           </Typography>
           <Typography component="h1" variant="h3">
-           Cây trong vườn
+            Hợp đồng
           </Typography>
         </Grid>
         <Grid item>
           <Button
-            className={classes.fr}
             color="primary"
             variant="contained"
-            onClick={onAddEvent}>
-            <AddIcon />
-            Thêm cây mới
+            component={RouterLink}
+            to="/contract">
+            <ArrowBackIcon />
+            Về quản lý hợp đồng
           </Button>
         </Grid>
       </Grid>
@@ -45,4 +44,8 @@ const TreeHeader = props => {
   );
 };
 
-export default TreeHeader;
+Header.propTypes = {
+  className: PropTypes.string
+};
+
+export default Header;

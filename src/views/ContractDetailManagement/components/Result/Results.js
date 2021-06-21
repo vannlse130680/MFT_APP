@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import ViewIcon from '@material-ui/icons/VisibilityOutlined';
-
 import {
   Card,
   CardActions,
@@ -15,6 +13,7 @@ import {
   Checkbox,
   Divider,
   Button,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -33,8 +32,14 @@ const useStyles = makeStyles(theme => ({
   content: {
     padding: 0
   },
+  alert: {
+    marginBottom: 10
+  },
   inner: {
     minWidth: 700
+  },
+  actionIcon: {
+    marginRight: theme.spacing(1)
   },
   nameCell: {
     display: 'flex',
@@ -48,33 +53,30 @@ const useStyles = makeStyles(theme => ({
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
-  },
-  buttonIcon: {
-    marginRight: theme.spacing(1)
-  },
-  actionIcon: {
-    marginRight: theme.spacing(1)
-  },
-  alert: {
-    marginBottom: 10
   }
 }));
 
 const Results = props => {
-  const { className, onEditEvent, contracts, ...rest } = props;
-
+  const { className, contractDetails, onEditEvent, resetPage, ...rest } = props;
+  // console.log(plantTypes);
   const classes = useStyles();
-
+  useEffect(() => {
+    if (resetPage) {
+      console.log(resetPage);
+      setPage(0);
+    }
+  }, [resetPage]);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? contracts.map(garden => garden.id)
+      ? contractDetails.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleSelectOne = (event, id) => {
@@ -99,6 +101,7 @@ const Results = props => {
     }
 
     setSelectedCustomers(newSelectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleChangePage = (event, page) => {
@@ -113,29 +116,24 @@ const Results = props => {
     canceled: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
-    2: colors.red[600]
-  };
-  const statusName = {
-    2: 'Đã hủy',
-    0: 'Đang xử lý',
-    1: 'Hoạt động',
-    3: 'Chờ xác nhận'
+    rejected: colors.red[600]
   };
 
-  const handleEditClick = contract => {
-    onEditEvent(contract);
+  const handleEditClick = plantType => {
+    onEditEvent(plantType);
   };
+
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {contracts.length < 1 ? (
+      {contractDetails.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Không tìm thấy hợp đồng mua mua bán cây nào !"
+          message="Không tìm thấy chi tiết hợp đồng nào trồng nào!"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {contracts.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(contracts.length / rowsPerPage)}
+        {contractDetails.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(contractDetails.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -148,22 +146,21 @@ const Results = props => {
                   <TableRow>
                     {/* <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === contracts.length}
+                        checked={selectedCustomers.length === plantTypes.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < contracts.length
+                          selectedCustomers.length < plantTypes.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell> */}
                     <TableCell>STT</TableCell>
-                    <TableCell>Số hợp đồng</TableCell>
-                    <TableCell>Tên khách hàng</TableCell>
-                    <TableCell>Mã cây</TableCell>
-                    <TableCell>Số năm thuê</TableCell>
-                    <TableCell>Tổng tiền</TableCell>
-                    <TableCell>Thời gian</TableCell>
+                    <TableCell>Ngày có thể thu hoạch</TableCell>
+
+                    <TableCell>Tổng sản lượng</TableCell>
+
+                    <TableCell>Ngày giao</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -172,47 +169,57 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {contracts
+                  {contractDetails
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((contract, index) => (
+                    .map((contractDetail, index) => (
                       <TableRow
                         hover
                         key={index}
                         selected={
-                          selectedCustomers.indexOf(contract.id) !== -1
+                          selectedCustomers.indexOf(contractDetail.id) !== -1
                         }>
                         {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
-                              selectedCustomers.indexOf(contract.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                             color="primary"
                             onChange={event =>
-                              handleSelectOne(event, contract.id)
+                              handleSelectOne(event, plantType.id)
                             }
                             value={
-                              selectedCustomers.indexOf(contract.id) !== -1
+                              selectedCustomers.indexOf(plantType.id) !== -1
                             }
                           />
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{contract.contractNumber}</TableCell>
-                        <TableCell>{contract.fullname}</TableCell>
-                        <TableCell>{contract.treeCode}</TableCell>
-                        <TableCell>{contract.numOfYear}</TableCell>
+                        <TableCell>
+                          {contractDetail.startHarvest !== ''
+                            ? ' Từ ' +
+                              moment(contractDetail.startHarvest).format('DD/MM/YYYY') +
+                              ' đến ' +
+                              moment(contractDetail.endHarvest).format('DD/MM/YYYY')
+                            : 'Chưa cập nhật'}{' '}
+                        </TableCell>
+
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
-                            contract.totalPrice
+                            contractDetail.yield
                           )}
                         </TableCell>
                         <TableCell>
-                          {moment(contract.date).format('DD/MM/YYYY')}
+                          {contractDetail.deliveryDate
+                            ? contractDetail.deliveryDate
+                            : 'Chưa cập nhật'}
                         </TableCell>
+
                         <TableCell>
                           <Label
-                            color={statusColors[contract.status]}
+                            color={statusColors[contractDetail.status]}
                             variant="contained">
-                            {statusName[contract.status]}
+                            {contractDetail.status === 1
+                              ? 'Hoạt động'
+                              : 'Đang xử lý'}
                           </Label>
                         </TableCell>
 
@@ -222,17 +229,16 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/contract/${contract.id}`}
+                            to={`/contractDetail/${contractDetail.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-
                           <Button
                             color="secondary"
-                            onClick={handleEditClick.bind(this, contract)}
                             size="small"
+                            onClick={handleEditClick.bind(this, contractDetail)}
                             variant="contained">
                             Sửa
                           </Button>
@@ -247,7 +253,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={contracts.length}
+            count={contractDetails.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -259,15 +265,6 @@ const Results = props => {
       <TableEditBar selected={selectedCustomers} />
     </div>
   );
-};
-
-Results.propTypes = {
-  className: PropTypes.string,
-  gardens: PropTypes.array
-};
-
-Results.defaultProps = {
-  gardens: []
 };
 
 export default Results;

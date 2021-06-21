@@ -1,37 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
 import {
+  Avatar,
   Card,
-  CardHeader,
   CardContent,
-  CardActions,
-  Button,
+  CardHeader,
   Divider,
+  Grid,
   Table,
   TableBody,
-  TableRow,
   TableCell,
-  colors,
-  Grid,
-  Avatar,
+  TableRow,
   Typography
 } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
-import EditIcon from '@material-ui/icons/Edit';
-import LockOpenIcon from '@material-ui/icons/LockOpenOutlined';
-import PersonIcon from '@material-ui/icons/PersonOutline';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Label } from 'components';
-import { useDispatch, useSelector } from 'react-redux';
-import useRouter from 'utils/useRouter';
-import callAPI from 'utils/callAPI';
+import { makeStyles } from '@material-ui/styles';
 import { hideLoading, showLoading } from 'actions/loading';
+import clsx from 'clsx';
+import { Page } from 'components';
 import moment from 'moment';
-
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import callAPI from 'utils/callAPI';
+import useRouter from 'utils/useRouter';
+import Header from './Header/Header';
 const useStyles = makeStyles(theme => ({
-  root: { marginTop: 10 },
+  root: { padding: theme.spacing(3) },
   content: {
     display: 'flex',
     alignItems: 'center',
@@ -56,8 +47,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CustomerInformation = props => {
-  const {customerUsername, className, ...rest } = props;
-console.log(customerUsername)
+  const { customerUsername, className, ...rest } = props;
+  console.log(customerUsername);
   const classes = useStyles();
 
   const router = useRouter();
@@ -78,93 +69,99 @@ console.log(customerUsername)
       });
   }, [customerUsername]);
   return (
-    <Grid
-      {...rest}
-      className={clsx(classes.root, className)}
-      container
-      spacing={2}>
-      <Grid item lg={2} md={6} xl={2} xs={12}>
-        <Card>
-          <CardContent className={classes.content}>
-            <Avatar
-              className={classes.avatar}
-              src={customerInfomation.avatar}></Avatar>
-            <Typography style={{marginTop : 10}} gutterBottom variant="body1">
-            Ảnh đại diện
-            </Typography>
-          </CardContent>
-        </Card>
+    <Page className={classes.root}>
+      <Header />
+      <Grid
+        {...rest}
+        className={clsx(classes.root, className)}
+        container
+        spacing={2}>
+        <Grid item lg={2} md={6} xl={2} xs={12}>
+          <Card>
+            <CardContent className={classes.content}>
+              <Avatar
+                className={classes.avatar}
+                src={customerInfomation.avatar}></Avatar>
+              <Typography
+                style={{ marginTop: 10 }}
+                gutterBottom
+                variant="body1">
+                Ảnh đại diện
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={10} md={6} xl={5} xs={12}>
+          <Card
+          // style={{ width: 600, marginTop: 20 }}
+          // {...rest}
+          >
+            <CardHeader title="Thông tin khách hàng" />
+            <Divider />
+            <CardContent style={{ padding: 0 }}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Họ và tên:</TableCell>
+                    <TableCell align="left">
+                      {customerInfomation.fullname}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow
+                    // style={{
+                    //   whiteSpace: 'normal',
+                    //   wordWrap: 'break-word'
+                    // }}
+                    selected>
+                    <TableCell>Giới tính:</TableCell>
+                    <TableCell>
+                      {customerInfomation.gender === 1 ? 'Nam' : 'Nữ'}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Ngày sinh:</TableCell>
+                    <TableCell>
+                      {moment(customerInfomation.dateOfBirth).format(
+                        'DD/MM/YYYY'
+                      )}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow selected>
+                    <TableCell>Số điện thoại:</TableCell>
+                    <TableCell>{customerInfomation.phone}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Địa chỉ Email:</TableCell>
+                    <TableCell>{customerInfomation.email}</TableCell>
+                  </TableRow>
+                  <TableRow selected>
+                    <TableCell>Địa chỉ:</TableCell>
+                    <TableCell>{customerInfomation.address}</TableCell>
+                  </TableRow>
+                  {/* <TableRow>
+                <TableCell>Trạng thái:</TableCell>
+                <TableCell>
+                  <div>
+                    <Label
+                      color={
+                        gardenInfor.pt.status === 1
+                          ? colors.green[600]
+                          : colors.orange[600]
+                      }>
+                      {gardenInfor.pt.status === 1
+                        ? 'Hoạt động'
+                        : 'Tạm ngừng'}
+                    </Label>
+                  </div>
+                </TableCell>
+              </TableRow> */}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
-      <Grid item lg={10} md={6} xl={5} xs={12}>
-        <Card
-        // style={{ width: 600, marginTop: 20 }}
-        // {...rest}
-        >
-          <CardHeader title="Thông tin khách hàng" />
-          <Divider />
-          <CardContent style={{padding : 0}}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Họ và tên:</TableCell>
-                  <TableCell align="left">
-                    {customerInfomation.fullname}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  // style={{
-                  //   whiteSpace: 'normal',
-                  //   wordWrap: 'break-word'
-                  // }}
-                  selected>
-                  <TableCell>Giới tính:</TableCell>
-                  <TableCell>
-                    {customerInfomation.gender === 1 ? 'Nam' : 'Nữ'}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Ngày sinh:</TableCell>
-                  <TableCell>
-                    {moment(customerInfomation.dateOfBirth).format(
-                      'DD/MM/YYYY'
-                    )}
-                  </TableCell>
-                </TableRow>
-                <TableRow selected>
-                  <TableCell>Số điện thoại:</TableCell>
-                  <TableCell>{customerInfomation.phone}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Địa chỉ Email:</TableCell>
-                  <TableCell>{customerInfomation.email}</TableCell>
-                </TableRow>
-                <TableRow selected>
-                  <TableCell>Địa chỉ:</TableCell>
-                  <TableCell>{customerInfomation.address}</TableCell>
-                </TableRow>
-                {/* <TableRow>
-                  <TableCell>Trạng thái:</TableCell>
-                  <TableCell>
-                    <div>
-                      <Label
-                        color={
-                          gardenInfor.pt.status === 1
-                            ? colors.green[600]
-                            : colors.orange[600]
-                        }>
-                        {gardenInfor.pt.status === 1
-                          ? 'Hoạt động'
-                          : 'Tạm ngừng'}
-                      </Label>
-                    </div>
-                  </TableCell>
-                </TableRow> */}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+    </Page>
   );
 };
 

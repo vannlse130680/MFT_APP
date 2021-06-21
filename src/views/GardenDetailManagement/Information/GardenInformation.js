@@ -1,16 +1,14 @@
-import {
-  Grid
-} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
+import { Page } from 'components';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import General from './GeneralInformatin/General';
 import PlantTypeInformation from './PlantTypeInfor/PlantTypeInformation';
-
-
+import Header from './Header/Header';
 const useStyles = makeStyles(theme => ({
-  root: {},
+  root: {padding : theme.spacing(3)},
   content: {
     padding: 0
   },
@@ -27,7 +25,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const GardenInformation = props => {
-  
   const { customer, className, ...rest } = props;
 
   const classes = useStyles();
@@ -43,18 +40,21 @@ const GardenInformation = props => {
   };
 
   return (
-    <Grid
-      {...rest}
-      className={clsx(classes.root, className)}
-      container
-      spacing={1}>
-      <Grid item lg={4} md={12} xl={4} xs={12}>
-        <General customer={customer}/>
+    <Page className={classes.root}>
+      <Header/>
+      <Grid
+        {...rest}
+       
+        container
+        spacing={5}>
+        <Grid item lg={4} md={12} xl={4} xs={12}>
+          <General customer={customer} />
+        </Grid>
+        <Grid item lg={4} md={12} xl={4} xs={12}>
+          <PlantTypeInformation customer={customer} />
+        </Grid>
       </Grid>
-      <Grid item lg={4} md={12} xl={4} xs={12}>
-        <PlantTypeInformation customer={customer} />
-      </Grid>
-    </Grid>
+    </Page>
   );
 };
 

@@ -22,6 +22,7 @@ import CustomerAccountsPage from 'views/CustomerAccountManagement/CustomerAccoun
 import FarmerAccountsPage from 'views/FarmerAccountManagement/FarmerAccountsPage';
 import ShippAccountPage from 'views/ShipperAccountsManagement/ShippAccountPage';
 import VisitCalendarPage from 'views/VisitCalendar/VisitCalendarPage';
+import DeliveryPackage from 'views/DeliveryPackage/DeliveryPackage';
 
 const routes = [
   {
@@ -265,6 +266,12 @@ const routes = [
             'views/ContractManagement/components/ContractInfomation/ContractInformation'
           )
         )
+      },
+      
+      {
+        path: '/contractDetail/:id',
+        exact: true,
+        component: DeliveryPackage
       },
       {
         path: '/policy/tree',

@@ -50,6 +50,11 @@ const schema = {
     length: {
       maximum: 50,
       message: 'Tối đa chỉ 50 kí tự'
+    },
+    format: {
+      pattern: '[aA-zZ0-9]+',
+
+      message: 'Tên tài khoản không được chứa kí tự đặc biệt'
     }
   },
   address: {

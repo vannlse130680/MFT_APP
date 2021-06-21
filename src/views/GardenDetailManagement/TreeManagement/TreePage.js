@@ -169,9 +169,9 @@ const TreePage = props => {
   return (
     <Page className={classes.root} title="Quản lý cây">
       <AuthGuard roles={['Nông dân']} />
-
-      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       <TreeHeader onAddEvent={handleEventNew} />
+      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
+      
 
       {treesStore && (
         <Results

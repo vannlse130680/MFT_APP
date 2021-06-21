@@ -5,23 +5,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
+import {
+  actFetchContractDetail,
+  actSearchContractDetail
+} from 'actions/contractDetail';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
-import {
-  actFetchTreeProcesses,
-  actSearchTreeProcesses
-} from 'actions/treeProcesses';
 
 import { Alert, AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import callAPI from 'utils/callAPI';
-import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import useRouter from 'utils/useRouter';
 import AddEditEvent from './components/AddEditEvent';
@@ -37,27 +35,33 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TreeProcess = props => {
-  console.log(props.contractStatus);
+const ContractDetailPage = props => {
   const [value, setValue] = useState(true); // integer state
-  const [searchValue, setSearchValue] = useState(''); // integer state
-  const treeProcessesStore = useSelector(state => state.treeProcesses);
-  const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
   const router = useRouter();
-  
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [searchValue, setSearchValue] = useState('');
+  const contractDetailStore = useSelector(state => state.contractDetail);
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoading());
 
-    // console.log(username)
     callAPI(
-      `TreeProcess/getAllTreeProcess/${router.match.params.id}`,
+      `ContractDetail/getContractDetailByContractID/${router.match.params.id}`,
       'GET',
       null
     )
       .then(res => {
         if (res.status === 200) {
-          dispatch(actFetchTreeProcesses(res.data));
-          dispatch(actSearchTreeProcesses(searchValue));
+          console.log(res.data);
+          dispatch(actFetchContractDetail(res.data));
+          dispatch(actSearchContractDetail(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -69,17 +73,8 @@ const TreeProcess = props => {
   const classes = useStyles();
 
   const [events, setEvents] = useState([]);
-  const [openDelete, setOpenDelete] = React.useState(false);
-  const [deleteId, setDeleteId] = useState('');
-  const handleClickOpenDelete = () => {
-    setOpenDelete(true);
-  };
-
-  const handleCloseDelete = () => {
-    setOpenDelete(false);
-  };
   const [resetPage, setResetPage] = useState(false);
-  const [selectedTreeProcess, setSelectedTreeProcess] = useState({});
+  const [selectedPlantType, setSelectedPlantType] = useState({});
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -94,10 +89,8 @@ const TreeProcess = props => {
 
   const handleEventAdd = data => {
     // setEvents(events => [...events, event]);
-    data.treeID = props.treeId;
-    data.contractID = parseInt(router.match.params.id);
     console.log(data);
-    callAPI('TreeProcess/addTreeProcess', 'POST', data)
+    callAPI('PlantType/addPlantType', 'POST', data)
       .then(res => {
         if (res.status === 200) {
           if (res.data) {
@@ -126,10 +119,9 @@ const TreeProcess = props => {
     });
   };
   const handleEventEdit = data => {
-    data.treeID = props.treeId;
-    data.contractID = parseInt(router.match.params.id);
-
-    callAPI('TreeProcess/updateTreeProcess', 'PUT', data).then(res => {
+    // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
+    console.log(data);
+    callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
       if (res.status === 200) {
         if (res.data) {
           dispatch(hideLoadingChildren());
@@ -152,85 +144,85 @@ const TreeProcess = props => {
   const handleSearch = keyword => {
     setSearchValue(keyword);
     setResetPage(!resetPage);
-    dispatch(actSearchTreeProcesses(keyword));
+    dispatch(actSearchContractDetail(keyword));
   };
   const handleEventNew = () => {
-    setSelectedTreeProcess(null);
+    setSelectedPlantType(null);
     setEventModal({
       open: true,
       event: null
     });
   };
-  const handleEventOpenEdit = treeProcess => {
-    setSelectedTreeProcess(treeProcess);
+  const handleEventOpenEdit = plantType => {
+    setSelectedPlantType(plantType);
     setEventModal({
       open: true,
       event: {}
     });
   };
-  const handleOnClickDelete = id => {
-    setDeleteId(id);
-    handleClickOpenDelete();
-  };
-  const handleDeleteAccount = () => {
-    callAPI(`TreeProcess/deleteTreeProcess/${deleteId}`, 'DELETE', null)
-      .then(res => {
+  const handleEditDate = data => {
+    console.log(data);
+    callAPI('ContractDetail/updateHarvetDateRange', 'PUT', data).then(res => {
+      if (res.status === 200) {
         if (res.data) {
-          toastSuccess('Xóa thành công !');
-          setValue(!value);
           dispatch(hideLoadingChildren());
-          handleCloseDelete()
+          toastSuccess('Cập nhật thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
         }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      }
+    });
   };
   return (
-    <Page className={classes.root}>
+    <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1 || props.contractStatus === 2  ? (
+      {props.contractStatus === 1 || props.contractStatus === 2 ? (
         <div>
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-          {treeProcessesStore && (
+          {contractDetailStore && (
             <Results
-              onClickDelete={handleOnClickDelete}
               resetPage={resetPage}
               className={classes.results}
-              treeProcesses={treeProcessesStore}
+              contractDetails={contractDetailStore}
               onEditEvent={handleEventOpenEdit}
             />
           )}
           <Modal onClose={handleModalClose} open={eventModal.open}>
             <AddEditEvent
-              selectedTreeProcess={selectedTreeProcess}
+              selectedContractDetail={selectedPlantType}
               event={eventModal.event}
               onAdd={handleEventAdd}
               onCancel={handleModalClose}
               onDelete={handleEventDelete}
               onEdit={handleEventEdit}
+              onEditDate={handleEditDate}
             />
           </Modal>
           <Dialog
-            open={openDelete}
-            onClose={handleCloseDelete}
+            aria-describedby="alert-dialog-description"
             aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description">
-            <GoblaLoadingChildren />
+            onClose={handleClose}
+            open={open}>
             <DialogTitle id="alert-dialog-title">
-              <p style={{ fontSize: 20 }}>Xóa</p>
+              Chỉnh sửa loại cây
             </DialogTitle>
-            
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn có chắc chắn muốn xóa !
+                Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây
+                này đang trong hợp đồng với khách hàng!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDelete}>Hủy bỏ</Button>
-              <Button onClick={handleDeleteAccount} color="primary" autoFocus>
-                Đồng ý
+              <Button color="primary" onClick={handleClose}>
+                Đóng
               </Button>
             </DialogActions>
           </Dialog>
@@ -245,4 +237,4 @@ const TreeProcess = props => {
   );
 };
 
-export default TreeProcess;
+export default ContractDetailPage;
