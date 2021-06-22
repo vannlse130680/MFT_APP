@@ -78,7 +78,15 @@ const General = props => {
             </TableRow>
             <TableRow>
               <TableCell>Địa chỉ</TableCell>
-              <TableCell>{gardenInfor.address}</TableCell>
+              <TableCell>
+                {gardenInfor.address +
+                  ' , ' +
+                  gardenInfor.wardName +
+                  ', ' +
+                  gardenInfor.districtName +
+                  ', ' +
+                  gardenInfor.cityName}
+              </TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Trạng thái</TableCell>
@@ -99,11 +107,7 @@ const General = props => {
         </Table>
       </CardContent>
       <CardActions className={classes.actions}>
-        <Button
-          
-          
-          component={RouterLink}
-          to="/gardenManagement/garden">
+        <Button component={RouterLink} to="/gardenManagement/garden">
           <ArrowBackIcon />
           Về quản lý vườn
         </Button>

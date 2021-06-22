@@ -140,7 +140,7 @@ const Results = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomers.length === gardens.length}
                         color="primary"
@@ -150,7 +150,7 @@ const Results = props => {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Mã</TableCell>
                     <TableCell>Tên</TableCell>
@@ -171,7 +171,7 @@ const Results = props => {
                         hover
                         key={index}
                         selected={selectedCustomers.indexOf(garden.id) !== -1}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
                               selectedCustomers.indexOf(garden.id) !== -1
@@ -182,23 +182,19 @@ const Results = props => {
                             }
                             value={selectedCustomers.indexOf(garden.id) !== -1}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{garden.gardenCode}</TableCell>
+                        <TableCell>{garden.gardenName}</TableCell>
                         <TableCell>
-                          <div className={classes.nameCell}>
-                            <div>
-                              <Link
-                                color="inherit"
-                                component={RouterLink}
-                                to="/management/gardens/1"
-                                variant="h6">
-                                {garden.gardenName}
-                              </Link>
-                            </div>
-                          </div>
+                          {garden.address +
+                            ' , ' +
+                            garden.wardName +
+                            ' , ' +
+                            garden.districtName +
+                            ' , ' +
+                            garden.cityName}
                         </TableCell>
-                        <TableCell>{garden.address}</TableCell>
 
                         <TableCell>
                           <Label

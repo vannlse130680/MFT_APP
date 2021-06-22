@@ -7,6 +7,8 @@ import {
   colors,
   Divider,
   FormControl,
+  FormHelperText,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -23,17 +25,18 @@ import { useDispatch } from 'react-redux';
 import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import validate from 'validate.js';
+
 const schema = {
-  code : {
+  code: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     format: {
-      pattern: "[aA-zZ0-9]+",
-      
-      message: "Mã không được chứa kí tự đặc biệt"
+      pattern: '[aA-zZ0-9]+',
+
+      message: 'Mã không được chứa kí tự đặc biệt'
     },
-    length : {
-      maximum : 10,
-      message : "Tối đa chỉ 10 kí tự"
+    length: {
+      maximum: 10,
+      message: 'Tối đa chỉ 10 kí tự'
     }
   },
   name: {
@@ -43,6 +46,15 @@ const schema = {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   },
   test: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  city: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  district: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  ward: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   }
 };
@@ -71,6 +83,11 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: colors.green[900]
     }
+  },
+  formControl: {
+    marginTop: theme.spacing(3),
+    marginRight: theme.spacing(3),
+    minWidth: 150
   }
 }));
 
@@ -94,6 +111,9 @@ const AddEditEvent = forwardRef((props, ref) => {
   //   plantType: '11'
   // };
   const [plantTypesName, setPlantTypesName] = useState([]);
+  const [citys, setCitys] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
     values: { status: 1 },
@@ -122,6 +142,33 @@ const AddEditEvent = forwardRef((props, ref) => {
       .catch(err => {
         console.log(err);
       });
+    callAPI('city', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setCitys(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('District', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setDistricts(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('ward', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setWards(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, []);
 
   useEffect(() => {
@@ -135,7 +182,10 @@ const AddEditEvent = forwardRef((props, ref) => {
 
           test: 'a',
           auto: selectedGarden.plantTypeObj,
-          status: selectedGarden.status
+          status: selectedGarden.status,
+          city: selectedGarden.city,
+          district: selectedGarden.district,
+          ward: selectedGarden.ward
         }
       }));
   }, []);
@@ -146,6 +196,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const handleChange = (event, value) => {
     if (!event) return;
+
     event.persist();
 
     if (event.target.name === 'test') {
@@ -161,7 +212,6 @@ const AddEditEvent = forwardRef((props, ref) => {
         }
       }));
     } else if (event.target.name) {
-      console.log('status');
       setFormState(formState => ({
         ...formState,
         values: {
@@ -189,6 +239,26 @@ const AddEditEvent = forwardRef((props, ref) => {
         }
       }));
     }
+    if (event.target.name === 'city') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          district: null,
+          ward: null
+        }
+      }));
+    }
+    if (event.target.name === 'district') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+
+          ward: null
+        }
+      }));
+    }
   };
 
   const handleDelete = () => {
@@ -204,10 +274,13 @@ const AddEditEvent = forwardRef((props, ref) => {
       farmerUsername: username,
       gardenName: values.name,
       address: values.address,
-      plantTypeID: values.auto.id
+      plantTypeID: values.auto.id,
+      city: values.city,
+      district: values.district,
+      ward: values.ward
     };
 
-    console.log(formState);
+    console.log(formState.values);
     onAdd(data);
   };
 
@@ -224,15 +297,19 @@ const AddEditEvent = forwardRef((props, ref) => {
       address: formState.values.address,
       gardenDetailId: selectedGarden.gardenDetailId,
       plantTypeID: formState.values.auto.id,
-      status: formState.values.status
+      status: formState.values.status,
+      city: formState.values.city,
+      district: formState.values.district,
+      ward: formState.values.ward
     };
     // console.log(data)
     onEdit(data);
   };
   // console.log(selectedPlantType);
+
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
-      <GoblaLoadingChildren/>
+      <GoblaLoadingChildren />
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
@@ -286,19 +363,91 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.name || ''}
             variant="outlined"
           />
-          <TextField
-            className={classes.field}
-            error={hasError('address')}
-            fullWidth
-            helperText={
-              hasError('address') ? formState.errors.address[0] : null
-            }
-            label="Địa chỉ"
-            name="address"
-            onChange={handleChange}
-            value={formState.values.address || ''}
-            variant="outlined"
-          />
+          <Grid container spacing={1}>
+            <Grid item md={3} xs={12}>
+              {' '}
+              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+                <InputLabel>Tỉnh/Thành Phố</InputLabel>
+                <Select
+                  error={hasError('city')}
+                  name="city"
+                  label="Tỉnh/Thành Phố"
+                  onChange={handleChange}
+                  value={formState.values.city || ''}>
+                  {citys.map((pro, index) => (
+                    <MenuItem key={index} value={pro.id}>
+                      {pro.cityName}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>
+                  {hasError('city') ? formState.errors.city[0] : null}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Quận/Huyện
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Quận/Huyện"
+                  name="district"
+                  value={formState.values.district || ''}
+                  onChange={handleChange}>
+                  {districts
+                    .filter(dis => dis.cityID === formState.values.city)
+                    .map((dis, index) => (
+                      <MenuItem key={index} value={dis.id}>
+                        {dis.districtName}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              {' '}
+              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Xã/Thị trấn
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  name="ward"
+                  label="Xã/Thị Trấn"
+                  value={formState.values.ward || ''}
+                  onChange={handleChange}>
+                  {wards
+                    .filter(
+                      ward => ward.districtID === formState.values.district
+                    )
+                    .map((ward, index) => (
+                      <MenuItem key={index} value={ward.id}>
+                        {ward.wardName}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <TextField
+                className={classes.field}
+                error={hasError('address')}
+                fullWidth
+                helperText={
+                  hasError('address') ? formState.errors.address[0] : null
+                }
+                label="Số/Đường"
+                name="address"
+                onChange={handleChange}
+                value={formState.values.address || ''}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
 
           {selectedGarden ? (
             <FormControl className={classes.field} variant="outlined" fullWidth>

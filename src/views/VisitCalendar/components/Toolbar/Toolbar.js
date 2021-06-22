@@ -81,8 +81,8 @@ const Toolbar = props => {
         <Grid item>
           <ButtonGroup>
             <Button onClick={onDatePrev}>Sau</Button>
-            <Button onClick={onDateToday}>Today</Button>
-            <Button onClick={onDateNext}>trước</Button>
+            <Button onClick={onDateToday}>Hôm nay</Button>
+            <Button onClick={onDateNext}>Trước</Button>
           </ButtonGroup>
         </Grid>
         <Hidden smDown>

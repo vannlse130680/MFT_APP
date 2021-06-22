@@ -223,7 +223,7 @@ const Results = props => {
                         <TableCell>{account.password}</TableCell>
 
                         <TableCell>{account.phone}</TableCell>
-                        <TableCell>{account.address}</TableCell>
+                        <TableCell>{account.address + ', ' + account.wardName + ', ' + account.districtName + ', ' + account.cityName}</TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[account.status]}

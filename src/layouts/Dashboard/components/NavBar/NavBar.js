@@ -60,6 +60,7 @@ const NavBar = props => {
       callAPI(`Account/${data.username}`, 'GET', null)
         .then(res => {
           if (res.status === 200) {
+            console.log("leu leu")
             dispatch(hideLoading());
             dispatch(actFetchUserInfor(res.data));
           }

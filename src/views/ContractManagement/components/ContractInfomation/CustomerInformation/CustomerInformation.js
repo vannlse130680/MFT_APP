@@ -57,11 +57,29 @@ const CustomerInformation = props => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoading());
-    callAPI(`account/${customerUsername}`, 'GET', null)
+    callAPI(
+      `Account/GetAccountForContractByUsername/${customerUsername}`,
+      'GET',
+      null
+    )
       .then(res => {
         if (res.status === 200) {
           dispatch(hideLoading());
-          setCustomerInformation(res.data);
+          var obj = res.data[0];
+          setCustomerInformation({
+            fullname: obj.fullname,
+            gender: obj.gender,
+            dateOfBirth: obj.dateOfBirth,
+            address: obj.address,
+            phone: obj.phone,
+            email: obj.email,
+            avatar: obj.avatar,
+
+            cityName: obj.cityName,
+            districtName: obj.districtName,
+
+            wardName: obj.wardName
+          });
         }
       })
       .catch(err => {
@@ -136,7 +154,15 @@ const CustomerInformation = props => {
                   </TableRow>
                   <TableRow selected>
                     <TableCell>Địa chỉ:</TableCell>
-                    <TableCell>{customerInfomation.address}</TableCell>
+                    <TableCell>
+                      {customerInfomation.address +
+                        ', ' +
+                        customerInfomation.wardName +
+                        ', ' +
+                        customerInfomation.districtName +
+                        ', ' +
+                        customerInfomation.cityName}
+                    </TableCell>
                   </TableRow>
                   {/* <TableRow>
                 <TableCell>Trạng thái:</TableCell>

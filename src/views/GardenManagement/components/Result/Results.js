@@ -186,7 +186,15 @@ const Results = props => {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>{garden.gardenName}</TableCell>
-                        <TableCell>{garden.address}</TableCell>
+                        <TableCell>
+                          {garden.address +
+                            ' , ' +
+                            garden.wardName +
+                            ' , ' +
+                            garden.districtName +
+                            ' , ' +
+                            garden.cityName}
+                        </TableCell>
                         <TableCell>{garden.plantTypeName}</TableCell>
                         <TableCell>
                           <Label

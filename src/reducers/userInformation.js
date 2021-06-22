@@ -31,6 +31,9 @@ const userInformation = (state = initialState, action) => {
         address: infor.address,
         phone: infor.phone,
         email: infor.email,
+        city: infor.city,
+        district: infor.district,
+        ward: infor.ward
         
         
       };

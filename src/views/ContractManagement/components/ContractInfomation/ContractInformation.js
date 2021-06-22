@@ -65,7 +65,7 @@ const ContractInformation = props => {
     { value: 'customer', label: 'Khách hàng' },
     { value: 'tree', label: 'Chăm sóc cây' },
     { value: 'detail', label: 'Chi tiết hợp đồng' },
-    { value: 'exchange', label: 'Phát sinh trao đổi' }
+    { value: 'exchange', label: 'Trao đổi' }
   ];
 
 

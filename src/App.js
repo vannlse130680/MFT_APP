@@ -56,7 +56,7 @@ const App = () => {
             <AuthGuard></AuthGuard>
             <ScrollReset />
             <GoogleAnalytics />
-            <CookiesNotification />
+            {/* <CookiesNotification /> */}
             {/*            
             {checkRole() === 'GUEST' ? renderRoutes(guestRoutes) : checkRole() === 'FARMER' ? renderRoutes(routes) :}
             {checkRole() === 'FARMER' ? renderRoutes(routes) : null} */}

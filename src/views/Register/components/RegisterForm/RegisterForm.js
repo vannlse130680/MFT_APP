@@ -15,7 +15,8 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  Grid
 } from '@material-ui/core';
 
 import useRouter from 'utils/useRouter';
@@ -105,6 +106,15 @@ const schema = {
       attribute: 'password',
       message: 'Mật khẩu nhập lại không trùng khớp'
     }
+  },
+  city: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  district: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  ward: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   }
   // policy: {
   //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
@@ -141,6 +151,9 @@ const RegisterForm = props => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [citys, setCitys] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const { history } = useRouter();
 
   const [formState, setFormState] = useState({
@@ -160,6 +173,36 @@ const RegisterForm = props => {
     }));
   }, [formState.values]);
 
+  useEffect(() => {
+    callAPI('city', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setCitys(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('District', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setDistricts(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('ward', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setWards(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+
   const handleChange = event => {
     event.persist();
 
@@ -177,6 +220,27 @@ const RegisterForm = props => {
         [event.target.name]: event.target.value === '' ? false : true
       }
     }));
+
+    if (event.target.name === 'city') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          district: null,
+          ward: null
+        }
+      }));
+    }
+    if (event.target.name === 'district') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+
+          ward: null
+        }
+      }));
+    }
   };
 
   const handleSubmit = async event => {
@@ -192,7 +256,10 @@ const RegisterForm = props => {
       email: '',
       phone: formState.values.phoneNum,
       address: formState.values.address,
-      avatar: ''
+      avatar: null,
+      city: formState.values.city,
+      district: formState.values.district,
+      ward: formState.values.ward
     };
     console.log(data);
     callAPI('Account/register', 'POST', data)
@@ -287,16 +354,94 @@ const RegisterForm = props => {
           value={formState.values.phoneNum || ''}
           variant="outlined"
         />
-        <TextField
-          error={hasError('address')}
-          fullWidth
-          helperText={hasError('address') ? formState.errors.address[0] : null}
-          label="Địa chỉ *"
-          name="address"
-          onChange={handleChange}
-          value={formState.values.address || ''}
-          variant="outlined"
-        />
+        <Grid container spacing={1}>
+          <Grid item md={3} xs={12}>
+            {' '}
+            <FormControl
+              className={classes.formControl}
+              variant="outlined"
+              fullWidth>
+              <InputLabel>Tỉnh/Thành Phố</InputLabel>
+              <Select
+                error={hasError('city')}
+                name="city"
+                label="Tỉnh/Thành Phố"
+                onChange={handleChange}
+                value={formState.values.city || ''}>
+                {citys.map((pro, index) => (
+                  <MenuItem key={index} value={pro.id}>
+                    {pro.cityName}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>
+                {hasError('city') ? formState.errors.city[0] : null}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <FormControl
+              className={classes.formControl}
+              variant="outlined"
+              fullWidth>
+              <InputLabel id="demo-simple-select-label">Quận/Huyện</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Quận/Huyện"
+                name="district"
+                value={formState.values.district || ''}
+                onChange={handleChange}>
+                {districts
+                  .filter(dis => dis.cityID === formState.values.city)
+                  .map((dis, index) => (
+                    <MenuItem key={index} value={dis.id}>
+                      {dis.districtName}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12}>
+            {' '}
+            <FormControl
+              className={classes.formControl}
+              variant="outlined"
+              fullWidth>
+              <InputLabel id="demo-simple-select-label">Xã/Thị trấn</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="ward"
+                label="Xã/Thị Trấn"
+                value={formState.values.ward || ''}
+                onChange={handleChange}>
+                {wards
+                  .filter(ward => ward.districtID === formState.values.district)
+                  .map((ward, index) => (
+                    <MenuItem key={index} value={ward.id}>
+                      {ward.wardName}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <TextField
+              error={hasError('address')}
+              fullWidth
+              helperText={
+                hasError('address') ? formState.errors.address[0] : null
+              }
+              label="Địa chỉ *"
+              name="address"
+              onChange={handleChange}
+              value={formState.values.address || ''}
+              variant="outlined"
+            />
+          </Grid>
+        </Grid>
+
         <TextField
           error={hasError('username')}
           fullWidth

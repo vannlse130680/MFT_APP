@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     marginTop : 50
   },
   card: {
-    width: theme.breakpoints.values.md,
+    width: 1500,
     maxWidth: '100%',
     overflow: 'unset',
     display: 'flex',

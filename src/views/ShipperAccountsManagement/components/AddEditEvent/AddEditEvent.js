@@ -7,6 +7,7 @@ import {
   colors,
   Divider,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -79,6 +80,15 @@ const schema = {
       attribute: 'password',
       message: 'Mật khẩu nhập lại không trùng khớp'
     }
+  },
+  city: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  district: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  ward: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
   }
 };
 const useStyles = makeStyles(theme => ({
@@ -131,7 +141,9 @@ const AddEditEvent = forwardRef((props, ref) => {
   } = props;
 
   const classes = useStyles();
-
+  const [citys, setCitys] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
@@ -148,6 +160,35 @@ const AddEditEvent = forwardRef((props, ref) => {
       errors: errors || {}
     }));
   }, [formState.values]);
+  useEffect(() => {
+    callAPI('city', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setCitys(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('District', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setDistricts(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callAPI('ward', 'GET', null)
+      .then(res => {
+        if (res.status === 200) {
+          setWards(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   // useEffect(() => {
   //   if (selectedGarden)
@@ -192,6 +233,26 @@ const AddEditEvent = forwardRef((props, ref) => {
         }
       }));
     }
+    if (event.target.name === 'city') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          district: null,
+          ward: null
+        }
+      }));
+    }
+    if (event.target.name === 'district') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+
+          ward: null
+        }
+      }));
+    }
   };
 
   const handleDelete = () => {
@@ -206,12 +267,14 @@ const AddEditEvent = forwardRef((props, ref) => {
       username: values.username,
       password: values.password,
       fullname: values.fullName,
-      address:  values.address,
+      address: values.address,
       phone: values.phoneNum,
-      email: values.email
+      email: values.email,
+      city: values.city,
+      district: values.district,
+      ward: values.ward
     };
 
-    
     onAdd(data);
   };
 
@@ -256,38 +319,7 @@ const AddEditEvent = forwardRef((props, ref) => {
               value={formState.values.fullName || ''}
               variant="outlined"
             />
-            {/* <TextField
-              error={hasError('birthday')}
-              helperText={
-                hasError('birthday') ? formState.errors.birthday[0] : null
-              }
-              onChange={handleChange}
-              name="birthday"
-              variant="outlined"
-              value={formState.values.birthday || ''}
-              label="Ngày sinh *"
-              type="date"
-              // defaultValue="1999-06-03"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel id="demo-simple-select-outlined-label">
-                Giới tính
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                name="gender"
-                value={formState.values.gender}
-                onChange={handleChange}
-                label="Giới tính">
-                <MenuItem value={1}>Nam</MenuItem>
-                <MenuItem value={0}>Nữ</MenuItem>
-              </Select>
-            </FormControl> */}
+
             <TextField
               error={hasError('email')}
               fullWidth
@@ -310,18 +342,97 @@ const AddEditEvent = forwardRef((props, ref) => {
               value={formState.values.phoneNum || ''}
               variant="outlined"
             />
-            <TextField
-              error={hasError('address')}
-              fullWidth
-              helperText={
-                hasError('address') ? formState.errors.address[0] : null
-              }
-              label="Địa chỉ *"
-              name="address"
-              onChange={handleChange}
-              value={formState.values.address || ''}
-              variant="outlined"
-            />
+            <Grid container spacing={1}>
+              <Grid item md={3} xs={12}>
+                {' '}
+                <FormControl
+                  className={classes.formControl}
+                  variant="outlined"
+                  fullWidth>
+                  <InputLabel>Tỉnh/Thành Phố</InputLabel>
+                  <Select
+                    error={hasError('city')}
+                    name="city"
+                    label="Tỉnh/Thành Phố"
+                    onChange={handleChange}
+                    value={formState.values.city || ''}>
+                    {citys.map((pro, index) => (
+                      <MenuItem key={index} value={pro.id}>
+                        {pro.cityName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item md={3} xs={12}>
+                <FormControl
+                  className={classes.formControl}
+                  variant="outlined"
+                  fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Quận/Huyện
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Quận/Huyện"
+                    name="district"
+                    value={formState.values.district || ''}
+                    onChange={handleChange}>
+                    {districts
+                      .filter(dis => dis.cityID === formState.values.city)
+                      .map((dis, index) => (
+                        <MenuItem key={index} value={dis.id}>
+                          {dis.districtName}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item md={3} xs={12}>
+                {' '}
+                <FormControl
+                  className={classes.formControl}
+                  variant="outlined"
+                  fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Xã/Thị trấn
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    name="ward"
+                    label="Xã/Thị Trấn"
+                    value={formState.values.ward || ''}
+                    onChange={handleChange}>
+                    {wards
+                      .filter(
+                        ward => ward.districtID === formState.values.district
+                      )
+                      .map((ward, index) => (
+                        <MenuItem key={index} value={ward.id}>
+                          {ward.wardName}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item md={3} xs={12}>
+                <TextField
+                  error={hasError('address')}
+                  fullWidth
+                  helperText={
+                    hasError('address') ? formState.errors.address[0] : null
+                  }
+                  label="Số/Đường"
+                  name="address"
+                  onChange={handleChange}
+                  value={formState.values.address || ''}
+                  variant="outlined"
+                />
+              </Grid>
+            </Grid>
+
             <TextField
               error={hasError('username')}
               fullWidth

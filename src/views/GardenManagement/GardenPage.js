@@ -203,7 +203,7 @@ const GardenPage = () => {
         aria-labelledby="alert-dialog-title"
         onClose={handleClose}
         open={open}>
-        <DialogTitle id="alert-dialog-title">Chỉnh sửa vừa</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Chỉnh sửa vườn</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Bạn không thể chỉnh sửa vườn này vì có cây thuộc vườn này
