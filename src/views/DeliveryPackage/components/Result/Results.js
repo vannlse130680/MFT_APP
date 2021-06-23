@@ -156,9 +156,10 @@ const Results = props => {
                     </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Người nhận</TableCell>
+                    <TableCell>Số điện thoại</TableCell>
+                    <TableCell>Địa chỉ</TableCell>
                     <TableCell>Khối lượng</TableCell>
-                   
-                    
+
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
                     <TableCell>Reviews</TableCell> */}
@@ -191,13 +192,22 @@ const Results = props => {
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{plantType.fullname}</TableCell>
-                        
+                        <TableCell>{plantType.phone}</TableCell>
+                        <TableCell>
+                          {plantType.address +
+                            ', ' +
+                            plantType.wardName +
+                            ', ' +
+                            plantType.districtName +
+                            ', ' +
+                            plantType.cityName}
+                        </TableCell>
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
                             plantType.yield
                           )}
                         </TableCell>
-                       
+
                         {/* <TableCell>
                           <Label
                             color={statusColors[plantType.status]}
@@ -205,7 +215,7 @@ const Results = props => {
                             {plantType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
                           </Label>
                         </TableCell> */}
-{/* 
+                        {/* 
                         <TableCell align="center">
                           <Button
                             className={classes.actionIcon}

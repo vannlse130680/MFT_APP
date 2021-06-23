@@ -39,6 +39,7 @@ const ContractDetailPage = props => {
   const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -180,6 +181,25 @@ const ContractDetailPage = props => {
       }
     });
   };
+  const handLeEditYield = data => {
+    callAPI('ContractDetail/updateHarvetYield', 'PUT', data).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Cập nhật thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
+        }
+      }
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -198,12 +218,14 @@ const ContractDetailPage = props => {
           <Modal onClose={handleModalClose} open={eventModal.open}>
             <AddEditEvent
               selectedContractDetail={selectedPlantType}
+              customerUsername={props.customerUsername}
               event={eventModal.event}
               onAdd={handleEventAdd}
               onCancel={handleModalClose}
               onDelete={handleEventDelete}
               onEdit={handleEventEdit}
               onEditDate={handleEditDate}
+              onEditYield={handLeEditYield}
             />
           </Modal>
           <Dialog

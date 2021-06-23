@@ -68,7 +68,6 @@ const ContractInformation = props => {
     { value: 'exchange', label: 'Trao đổi' }
   ];
 
-
   if (!tab) {
     return <Redirect to={`/contract/${id}/general`} />;
   }
@@ -93,22 +92,36 @@ const ContractInformation = props => {
         scrollButtons="auto"
         value={tab}
         variant="scrollable">
-           
         {tabs.map(tab => (
           <Tab key={tab.value} label={tab.label} value={tab.value} />
         ))}
       </Tabs>
       <Divider className={classes.divider} />
       <div className={classes.content}>
-        {tab === 'customer' && <CustomerInformation customerUsername={contractInfomation.customerUsername} />}
-        {tab === 'tree' && <TreeProcess contractStatus={contractInfomation.status} treeId={contractInfomation.treeID}/>}
+        {tab === 'customer' && (
+          <CustomerInformation
+            customerUsername={contractInfomation.customerUsername}
+          />
+        )}
+        {tab === 'tree' && (
+          <TreeProcess
+            contractStatus={contractInfomation.status}
+            treeId={contractInfomation.treeID}
+          />
+        )}
         {tab === 'general' && (
           <GeneralInformation
             contractInfomation={contractInfomation}
             onAccept={onAccept}
           />
         )}
-         {tab === 'detail' && <ContractDetailPage contractStatus={contractInfomation.status} treeId={contractInfomation.treeID}/>}
+        {tab === 'detail' && (
+          <ContractDetailPage
+            contractStatus={contractInfomation.status}
+            customerUsername={contractInfomation.customerUsername}
+            treeId={contractInfomation.treeID}
+          />
+        )}
         {/* {tab === 'logs' && <Logs />} */}
       </div>
     </Page>

@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/styles';
 import { showLoadingChildren } from 'actions/childrenLoading';
 import clsx from 'clsx';
+import { partition } from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
@@ -164,6 +165,8 @@ const AddEditEvent = forwardRef((props, ref) => {
     className,
     selectedContractDetail,
     onEditDate,
+    customerUsername,
+    onEditYield,
     ...rest
   } = props;
 
@@ -304,7 +307,19 @@ const AddEditEvent = forwardRef((props, ref) => {
   const handleToggleYield = () => {
     setExpandYield(expandYield => !expandYield);
   };
-  console.log(formState.values);
+
+  const handleEditYield = () => {
+    dispatch(showLoadingChildren());
+    var data = {
+      contractDetailId: selectedContractDetail.id,
+      username: customerUsername,
+      yield: parseFloat(formStateYield.values.totalYield)
+    };
+
+    console.log(data);
+    onEditYield(data)
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
       <GoblaLoadingChildren />
@@ -418,6 +433,7 @@ const AddEditEvent = forwardRef((props, ref) => {
                       : null
                   }
                   fullWidth
+                  type="number"
                   onChange={handleChangeYield}
                   name="totalYield"
                   variant="outlined"
@@ -438,7 +454,7 @@ const AddEditEvent = forwardRef((props, ref) => {
                   <Button
                     className={classes.confirmButton}
                     disabled={!formStateYield.isValid}
-                    onClick={handleEditDate}
+                    onClick={handleEditYield}
                     variant="contained">
                     Lưu
                   </Button>
