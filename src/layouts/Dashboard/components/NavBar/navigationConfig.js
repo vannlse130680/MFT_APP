@@ -63,7 +63,7 @@ export default [
         children: [
           {
             title: 'Lịch thu hoạch',
-            href: '/contract'
+            href: '/calendar/harvest'
           },
           {
             title: 'Lịch tham quan vườn',

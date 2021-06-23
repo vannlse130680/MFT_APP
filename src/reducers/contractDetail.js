@@ -2,7 +2,12 @@ import {
   FETCH_CONTRACT_DETAIL,
   SEARCH_CONTRACT_DETAIL
 } from 'actions/contractDetail';
-
+const statusName = {
+  0: 'Đang xử lý',
+  1: 'Chờ thu hoạch',
+  2: 'Đã thu hoạch',
+  3: 'Đã giao'
+};
 var initState = [];
 var arrSearch = [];
 var contractDetail = (state = initState, action) => {
@@ -12,18 +17,18 @@ var contractDetail = (state = initState, action) => {
       for (let index = 0; index < action.contractDetail.length; index++) {
         state[index].startHarvest =
           action.contractDetail[index].startHarvest === '0001-01-01T00:00:00'
-            ? ""
+            ? ''
             : action.contractDetail[index].startHarvest;
         state[index].endHarvest =
           action.contractDetail[index].endHarvest === '0001-01-01T00:00:00'
-            ? ""
+            ? ''
             : action.contractDetail[index].endHarvest;
         state[index].deliveryDate =
           action.contractDetail[index].deliveryDate === '0001-01-01T00:00:00'
-            ? ""
+            ? ''
             : action.contractDetail[index].deliveryDate;
         state[index].statusName =
-          action.contractDetail[index].status === 1 ? 'Hoạt động' : 'Tạm ngưng';
+          statusName[action.contractDetail[index].status];
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

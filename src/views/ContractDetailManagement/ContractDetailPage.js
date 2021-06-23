@@ -8,7 +8,7 @@ import {
   Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { hideLoadingChildren } from 'actions/childrenLoading';
+import { hideLoadingChildren, showLoadingChildren } from 'actions/childrenLoading';
 import {
   actFetchContractDetail,
   actSearchContractDetail
@@ -48,6 +48,7 @@ const ContractDetailPage = props => {
     setOpen(false);
   };
   const [searchValue, setSearchValue] = useState('');
+  const [contractDetailId, setContractDetailId] = useState('');
   const contractDetailStore = useSelector(state => state.contractDetail);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -200,6 +201,33 @@ const ContractDetailPage = props => {
       }
     });
   };
+
+  const handleClickAcceptDeliveryDate = (id) => {
+    setContractDetailId(id)
+    handleClickOpen();
+  };
+  const handleAcceptDeliveryDate = () => {
+    dispatch(showLoadingChildren())
+    callAPI(`ContractDetail/confirmDeliveryDate/${contractDetailId}`, 'PUT', null).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Cập nhật thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+          handleClose()
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
+          handleClose()
+        }
+      }
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -209,6 +237,7 @@ const ContractDetailPage = props => {
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {contractDetailStore && (
             <Results
+              onAcceptDeliveryDate={handleClickAcceptDeliveryDate}
               resetPage={resetPage}
               className={classes.results}
               contractDetails={contractDetailStore}
@@ -218,6 +247,7 @@ const ContractDetailPage = props => {
           <Modal onClose={handleModalClose} open={eventModal.open}>
             <AddEditEvent
               selectedContractDetail={selectedPlantType}
+              isUpdateDate={selectedPlantType.deliveryDate === ''}
               customerUsername={props.customerUsername}
               event={eventModal.event}
               onAdd={handleEventAdd}
@@ -245,6 +275,9 @@ const ContractDetailPage = props => {
             <DialogActions>
               <Button color="primary" onClick={handleClose}>
                 Đóng
+              </Button>
+              <Button color="primary" onClick={handleAcceptDeliveryDate}>
+                Đồng ý
               </Button>
             </DialogActions>
           </Dialog>

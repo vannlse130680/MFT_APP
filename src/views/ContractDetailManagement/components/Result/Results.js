@@ -57,7 +57,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, contractDetails, onEditEvent, resetPage, ...rest } = props;
+  const {
+    className,
+    contractDetails,
+    onEditEvent,
+    resetPage,
+    onAcceptDeliveryDate,
+    ...rest
+  } = props;
   // console.log(plantTypes);
   const classes = useStyles();
   useEffect(() => {
@@ -113,14 +120,19 @@ const Results = props => {
     setPage(0);
   };
   const statusColors = {
-    canceled: colors.grey[600],
-    0: colors.orange[600],
-    1: colors.green[600],
+    0: colors.grey[600],
+    1: colors.orange[600],
+    2: colors.green[600],
     rejected: colors.red[600]
   };
 
   const handleEditClick = plantType => {
     onEditEvent(plantType);
+  };
+  const hanleAcceptDeliveryDate = (id, event) => {
+    event.preventDefault();
+    console.log(id);
+    onAcceptDeliveryDate(id);
   };
 
   return (
@@ -194,12 +206,25 @@ const Results = props => {
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
-                          {contractDetail.startHarvest !== ''
-                            ? ' Từ ' +
-                              moment(contractDetail.startHarvest).format('DD/MM/YYYY') +
-                              ' đến ' +
-                              moment(contractDetail.endHarvest).format('DD/MM/YYYY')
-                            : 'Chưa cập nhật'}{' '}
+                          {contractDetail.startHarvest ? (
+                            <div>
+                              {' '}
+                              Từ{' '}
+                              <span>
+                                {moment(contractDetail.startHarvest).format(
+                                  'DD/MM/YYYY'
+                                )}
+                              </span>
+                              {' '} đến{' '}
+                              <span>
+                                {moment(contractDetail.endHarvest).format(
+                                  'DD/MM/YYYY'
+                                )}
+                              </span>
+                            </div>
+                          ) : (
+                            'Chưa cập nhật'
+                          )}{' '}
                         </TableCell>
 
                         <TableCell>
@@ -208,18 +233,39 @@ const Results = props => {
                           )}
                         </TableCell>
                         <TableCell>
-                          {contractDetail.deliveryDate
-                            ? contractDetail.deliveryDate
-                            : 'Chưa cập nhật'}
+                          {contractDetail.deliveryDate ? (
+                            <div>
+                              <div>
+                                {' '}
+                                {moment(contractDetail.deliveryDate).format(
+                                  'DD/MM/YYYY'
+                                )}{' '}
+                              </div>
+                              <div>
+                                {contractDetail.status === 0 ? (
+                                  <Link
+                                    href="#"
+                                    onClick={hanleAcceptDeliveryDate.bind(
+                                      this,
+                                      contractDetail.id
+                                    )}>
+                                    Xác nhận
+                                  </Link>
+                                ) : (
+                                  'Đã xác nhận'
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            'Chưa cập nhật'
+                          )}
                         </TableCell>
 
                         <TableCell>
                           <Label
                             color={statusColors[contractDetail.status]}
                             variant="contained">
-                            {contractDetail.status === 1
-                              ? 'Hoạt động'
-                              : 'Đang xử lý'}
+                            {contractDetail.statusName}
                           </Label>
                         </TableCell>
 
@@ -237,8 +283,8 @@ const Results = props => {
                           </Button>
                           <Button
                             color="secondary"
-                            size="small"
                             onClick={handleEditClick.bind(this, contractDetail)}
+                            size="small"
                             variant="contained">
                             Sửa
                           </Button>

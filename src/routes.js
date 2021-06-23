@@ -23,6 +23,7 @@ import FarmerAccountsPage from 'views/FarmerAccountManagement/FarmerAccountsPage
 import ShippAccountPage from 'views/ShipperAccountsManagement/ShippAccountPage';
 import VisitCalendarPage from 'views/VisitCalendar/VisitCalendarPage';
 import DeliveryPackage from 'views/DeliveryPackage/DeliveryPackage';
+import HarvestCalendarPage from 'views/HarvestCalendar/HarvestCalendarPage';
 
 const routes = [
   {
@@ -297,6 +298,11 @@ const routes = [
         path: '/calendar/visit',
         exact: true,
         component: VisitCalendarPage
+      },
+      {
+        path: '/calendar/harvest',
+        exact: true,
+        component: HarvestCalendarPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />
