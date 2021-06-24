@@ -25,7 +25,7 @@ import '@fullcalendar/timegrid/main.css';
 import '@fullcalendar/list/main.css';
 
 import axios from 'utils/axios';
-import { Page } from 'components';
+import { AuthGuard, Page } from 'components';
 import { AddEditEvent, Toolbar } from './components';
 
 // let calendar = new Calendar(calendarEl, {
@@ -220,6 +220,7 @@ const VisitCalendarPage = () => {
   };
   return (
     <Page className={classes.root} title="Lịch tham quan vườn">
+      <AuthGuard roles={['Nông dân']} />
       <Toolbar
         date={date}
         onDateNext={handleDateNext}

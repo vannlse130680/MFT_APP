@@ -8,7 +8,10 @@ import {
   Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { hideLoadingChildren, showLoadingChildren } from 'actions/childrenLoading';
+import {
+  hideLoadingChildren,
+  showLoadingChildren
+} from 'actions/childrenLoading';
 import {
   actFetchContractDetail,
   actSearchContractDetail
@@ -37,8 +40,8 @@ const useStyles = makeStyles(theme => ({
 
 const ContractDetailPage = props => {
   const [value, setValue] = useState(true); // integer state
-  const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -46,6 +49,15 @@ const ContractDetailPage = props => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const [openAccept, setOpenAccept] = React.useState(false);
+
+  const handleClickOpenAccept = () => {
+    setOpenAccept(true);
+  };
+
+  const handleCloseAccept = () => {
+    setOpenAccept(false);
   };
   const [searchValue, setSearchValue] = useState('');
   const [contractDetailId, setContractDetailId] = useState('');
@@ -202,13 +214,17 @@ const ContractDetailPage = props => {
     });
   };
 
-  const handleClickAcceptDeliveryDate = (id) => {
-    setContractDetailId(id)
+  const handleClickAcceptDeliveryDate = id => {
+    setContractDetailId(id);
     handleClickOpen();
   };
   const handleAcceptDeliveryDate = () => {
-    dispatch(showLoadingChildren())
-    callAPI(`ContractDetail/confirmDeliveryDate/${contractDetailId}`, 'PUT', null).then(res => {
+    dispatch(showLoadingChildren());
+    callAPI(
+      `ContractDetail/confirmDeliveryDate/${contractDetailId}`,
+      'PUT',
+      null
+    ).then(res => {
       if (res.status === 200) {
         if (res.data) {
           dispatch(hideLoadingChildren());
@@ -219,11 +235,42 @@ const ContractDetailPage = props => {
             open: false,
             event: null
           });
-          handleClose()
+          handleClose();
         } else {
           dispatch(hideLoadingChildren());
           toastError('Cập nhật thất bại !');
-          handleClose()
+          handleClose();
+        }
+      }
+    });
+  };
+  const handleClickAcceptAll = id => {
+    setContractDetailId(id);
+    handleClickOpenAccept();
+  };
+  const handleAcceptAll = () => {
+    dispatch(showLoadingChildren());
+    var data = {
+      contractDetailID: contractDetailId,
+      contractID: parseInt(router.match.params.id)
+    };
+    console.log(data);
+    callAPI('ContractDetail/confirmCrop', 'PUT', data).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Cập nhật thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+          handleCloseAccept();
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Cập nhật thất bại !');
+          handleCloseAccept();
         }
       }
     });
@@ -237,6 +284,7 @@ const ContractDetailPage = props => {
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {contractDetailStore && (
             <Results
+              onAcceptAll={handleClickAcceptAll}
               onAcceptDeliveryDate={handleClickAcceptDeliveryDate}
               resetPage={resetPage}
               className={classes.results}
@@ -264,12 +312,11 @@ const ContractDetailPage = props => {
             onClose={handleClose}
             open={open}>
             <DialogTitle id="alert-dialog-title">
-              Chỉnh sửa loại cây
+              Xác nhận ngày giao hàng
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây
-                này đang trong hợp đồng với khách hàng!
+                Bạn có chắn chắn muốn xác nhận ngày giao hàng của khách hàng!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -277,6 +324,28 @@ const ContractDetailPage = props => {
                 Đóng
               </Button>
               <Button color="primary" onClick={handleAcceptDeliveryDate}>
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            aria-describedby="alert-dialog-description"
+            aria-labelledby="alert-dialog-title"
+            onClose={handleCloseAccept}
+            open={openAccept}>
+            <DialogTitle id="alert-dialog-title">
+              Hoàn thành chi tiết hợp đồng
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={handleCloseAccept}>
+                Đóng
+              </Button>
+              <Button color="primary" onClick={handleAcceptAll}>
                 Đồng ý
               </Button>
             </DialogActions>

@@ -175,7 +175,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const [expandDate, setExpandDate] = useState(true);
   const [expandYield, setExpandYield] = useState(true);
   const dispatch = useDispatch();
-  console.log(isUpdateDate)
+  console.log(isUpdateDate);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
@@ -318,7 +318,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     };
 
     console.log(data);
-    onEditYield(data)
+    onEditYield(data);
   };
 
   return (
@@ -406,7 +406,6 @@ const AddEditEvent = forwardRef((props, ref) => {
                   </Button>
 
                   <Button
-                    
                     className={classes.confirmButton}
                     disabled={!formState.isValid || !isUpdateDate}
                     onClick={handleEditDate}
@@ -455,7 +454,11 @@ const AddEditEvent = forwardRef((props, ref) => {
 
                   <Button
                     className={classes.confirmButton}
-                    disabled={!formStateYield.isValid}
+                    disabled={
+                      !formStateYield.isValid ||
+                      selectedContractDetail.status === 2 ||
+                      selectedContractDetail.status === 3
+                    }
                     onClick={handleEditYield}
                     variant="contained">
                     Lưu

@@ -25,7 +25,7 @@ import '@fullcalendar/timegrid/main.css';
 import '@fullcalendar/list/main.css';
 
 import axios from 'utils/axios';
-import { Page } from 'components';
+import { AuthGuard, Page } from 'components';
 import { AddEditEvent, Toolbar } from './components';
 import callAPI from 'utils/callAPI';
 import { set } from 'immutable';
@@ -146,7 +146,8 @@ const HarvestCalendarPage = () => {
                 var item = {
                   title: data[index].treeCode,
                   start: data[index].deliveryDate,
-                  id: index + ''
+                  id: index + '',
+                  yield: data[index].yield
                 };
                 events.push(item);
               }
@@ -250,12 +251,13 @@ const HarvestCalendarPage = () => {
   };
   console.log(esLocale);
   const EventDetail = ({ event, el }) => {
-    const content = <div>{event.title}</div>;
+    const content = <div>{event.title}{ ' : ' }{event.extendedProps.yield} {'kg'}</div>;
     ReactDOM.render(content, el);
     return el;
   };
   return (
     <Page className={classes.root} title="Lịch thu hoạch">
+      <AuthGuard roles={['Nông dân']} />
       <Toolbar
         date={date}
         onDateNext={handleDateNext}

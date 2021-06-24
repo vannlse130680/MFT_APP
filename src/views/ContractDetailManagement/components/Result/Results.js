@@ -63,6 +63,7 @@ const Results = props => {
     onEditEvent,
     resetPage,
     onAcceptDeliveryDate,
+    onAcceptAll,
     ...rest
   } = props;
   // console.log(plantTypes);
@@ -133,6 +134,10 @@ const Results = props => {
     event.preventDefault();
     console.log(id);
     onAcceptDeliveryDate(id);
+  };
+
+  const handleAcceptClick = id => {
+    onAcceptAll(id);
   };
 
   return (
@@ -214,8 +219,8 @@ const Results = props => {
                                 {moment(contractDetail.startHarvest).format(
                                   'DD/MM/YYYY'
                                 )}
-                              </span>
-                              {' '} đến{' '}
+                              </span>{' '}
+                              đến{' '}
                               <span>
                                 {moment(contractDetail.endHarvest).format(
                                   'DD/MM/YYYY'
@@ -282,11 +287,23 @@ const Results = props => {
                             Xem
                           </Button>
                           <Button
+                            className={classes.actionIcon}
                             color="secondary"
                             onClick={handleEditClick.bind(this, contractDetail)}
                             size="small"
                             variant="contained">
                             Sửa
+                          </Button>
+                          <Button
+                            color="secondary"
+                            onClick={handleAcceptClick.bind(
+                              this,
+                              contractDetail.id
+                            )}
+                            size="small"
+                            disabled={contractDetail.status !== 1}
+                            variant="contained">
+                            Xác nhận
                           </Button>
                         </TableCell>
                       </TableRow>

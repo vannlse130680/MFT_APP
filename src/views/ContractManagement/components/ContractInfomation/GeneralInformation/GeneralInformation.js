@@ -104,7 +104,7 @@ const GeneralInformation = props => {
     //   contractID: contractInfomation.id
     // };
 
-    callAPI(`Contract/SendContract/${contractInfomation.id}`, 'PUT', null)
+    callAPI(`Contract/SendContract/${contractInfomation.contractID}`, 'PUT', null)
       .then(res => {
         if (res.data) {
           toastSuccess('Gửi hợp đồng thành công !');
