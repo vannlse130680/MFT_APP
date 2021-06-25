@@ -41,16 +41,16 @@ export default [
         children: [
           {
             title: 'Địa chỉ',
-            href: '/managementAccount/farmers'
+            href: '/managementAddress/cities'
           },
-          {
-            title: 'Khách hàng',
-            href: '/managementAccount/customers'
-          },
-          {
-            title: 'Giao hàng',
-            href: '/managementAccount/shippers'
-          }
+          // {
+          //   title: 'Khách hàng',
+          //   href: '/managementAccount/customers'
+          // },
+          // {
+          //   title: 'Giao hàng',
+          //   href: '/managementAccount/shippers'
+          // }
         ]
       },
 

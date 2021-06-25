@@ -333,7 +333,7 @@ const GeneralSettings = props => {
                 name="fullName"
                 onChange={handleChange}
                 required
-                value={formState.values.fullName || profile.fullname || ''}
+                value={formState.values.fullName || ''}
                 variant="outlined"
               />
             </Grid>

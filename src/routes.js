@@ -24,6 +24,11 @@ import ShippAccountPage from 'views/ShipperAccountsManagement/ShippAccountPage';
 import VisitCalendarPage from 'views/VisitCalendar/VisitCalendarPage';
 import DeliveryPackage from 'views/DeliveryPackage/DeliveryPackage';
 import HarvestCalendarPage from 'views/HarvestCalendar/HarvestCalendarPage';
+import CityPage from 'views/CityManagement/CityPage';
+import DistrictPage from 'views/DistrictMangement/DistrictPage';
+import WardPage from 'views/WardManagement/WardPage';
+import CollectSchedulePage from 'views/CollectSchedule/CollectSchedulePage';
+import DeliverySchedulePage from 'views/DeliverySchedule/DeliverySchedulePage';
 
 const routes = [
   {
@@ -268,7 +273,7 @@ const routes = [
           )
         )
       },
-      
+
       {
         path: '/contractDetail/:id',
         exact: true,
@@ -303,6 +308,32 @@ const routes = [
         path: '/calendar/harvest',
         exact: true,
         component: HarvestCalendarPage
+      },
+      {
+        path: '/managementAddress/cities',
+        exact: true,
+        component: CityPage
+      },
+      {
+        path: '/managementAddress/cities/:cityId',
+        exact: true,
+        component: DistrictPage
+      },
+      {
+        path: '/managementAddress/districts/:districtId',
+        exact: true,
+        component: WardPage
+      },
+      {
+        path: '/transport/collect',
+        exact: true,
+        component: CollectSchedulePage
+      },
+
+      {
+        path: '/transport/delivery',
+        exact: true,
+        component: DeliverySchedulePage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

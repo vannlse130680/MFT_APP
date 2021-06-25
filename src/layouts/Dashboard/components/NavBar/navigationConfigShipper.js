@@ -22,7 +22,7 @@ import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import GardenIcon from '@material-ui/icons/Streetview';
 import TreeIcon from '@material-ui/icons/LocalFloristOutlined';
 import PlantTypeIcon from '@material-ui/icons/NaturePeopleOutlined';
-
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import { Label } from 'components';
 
 export default [
@@ -33,6 +33,21 @@ export default [
         title: 'Trang chủ',
         href: '/overview',
         icon: HomeIcon
+      },
+      {
+        title: 'Quản lý vận chuyển',
+        href: '/transport',
+        icon: LocalShippingIcon,
+        children: [
+          {
+            title: 'Lịch lấy hàng',
+            href: '/transport/collect'
+          },
+          {
+            title: 'Lịch giao hàng',
+            href: '/transport/delivery'
+          }
+        ]
       },
       {
         title: 'Cài đặt',
@@ -46,16 +61,7 @@ export default [
           {
             title: 'Bảo mật',
             href: '/settings/security'
-          },
-          {
-            title: 'Subscription',
-            href: '/settings/subscription'
-          },
-          {
-            title: 'Notifications',
-            href: '/settings/notifications'
-          },
-          
+          }
         ]
       },
       {
@@ -73,7 +79,7 @@ export default [
           }
         ]
       },
-      
+
       {
         title: 'Profile',
         href: '/profile',
@@ -129,7 +135,7 @@ export default [
         href: '/social-feed',
         icon: PeopleIcon
       },
-     
+
       {
         title: 'Project',
         href: '/projects',
@@ -197,7 +203,7 @@ export default [
         icon: CalendarTodayIcon,
         label: () => <Label color={colors.green[500]}>New</Label>
       },
-      
+
       {
         title: 'Authentication',
         href: '/auth',
