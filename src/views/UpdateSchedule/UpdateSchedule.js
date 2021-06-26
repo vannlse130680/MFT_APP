@@ -5,14 +5,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
-import { actFetchDeliveryPackages, actSearchDeliveryPackages } from 'actions/deliveryPackages';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
+import { actFetchSchedulesCollect, actSearchSchedulesCollect } from 'actions/schedulesCollect';
 
 import { AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
@@ -21,7 +20,6 @@ import callAPI from 'utils/callAPI';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
-import DeliveryHeader from './components/Header/DeliveryHeader';
 import Results from './components/Result/Results';
 
 const useStyles = makeStyles(theme => ({
@@ -33,8 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DeliveryPackage = (props) => {
-  console.log(props)
+const UpdateSchedule = () => {
   const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
 
@@ -46,18 +43,18 @@ const DeliveryPackage = (props) => {
     setOpen(false);
   };
   const [searchValue, setSearchValue] = useState('');
-  const deliveryPackagesStore = useSelector(state => state.deliveryPackages);
+  const schedulesCollectStore = useSelector(state => state.schedulesCollect);
   const dispatch = useDispatch();
   useEffect(() => {
     
     dispatch(showLoading());
+   
     
-    
-    callAPI(`PackageDelivery/getDeliveryPackagelByContractDetaiID/${props.match.params.id}`, 'GET', null)
+    callAPI('ContractDetail/getAllDeliveryScheduleToFinishContract', 'GET', null)
       .then(res => {
         if (res.status === 200) {
-          dispatch(actFetchDeliveryPackages(res.data));
-          dispatch(actSearchDeliveryPackages(searchValue));
+          dispatch(actFetchSchedulesCollect(res.data));
+          dispatch(actSearchSchedulesCollect(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -140,7 +137,7 @@ const DeliveryPackage = (props) => {
   const handleSearch = keyword => {
     setSearchValue(keyword);
     setResetPage(!resetPage);
-    dispatch(actSearchPlantTypes(keyword));
+    dispatch(actSearchSchedulesCollect(keyword));
   };
   const handleEventNew = () => {
     setSelectedPlantType(null);
@@ -171,21 +168,19 @@ const DeliveryPackage = (props) => {
   };
 
   return (
-    <Page className={classes.root} title="Quản lý loại cây">
-      <AuthGuard roles={['Nông dân']}></AuthGuard>
-      <Header onAddEvent={handleEventNew}  />
-      <Divider/>
-      <DeliveryHeader contractId={props.match.params.contractId}/>
+    <Page className={classes.root} title="Cập nhật vận chuyển">
+      <AuthGuard roles={['Shipper']}></AuthGuard>
+      <Header onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      {deliveryPackagesStore && (
+      {schedulesCollectStore && (
         <Results
           resetPage={resetPage}
           className={classes.results}
-          plantTypes={deliveryPackagesStore}
+          schedules={schedulesCollectStore}
           onEditEvent={handleEventOpenEdit}
         />
       )}
-      <Modal onClose={handleModalClose} open={eventModal.open}>
+      {/* <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
           selectedPlantType={selectedPlantType}
           event={eventModal.event}
@@ -194,7 +189,7 @@ const DeliveryPackage = (props) => {
           onDelete={handleEventDelete}
           onEdit={handleEventEdit}
         />
-      </Modal>
+      </Modal> */}
       <Dialog
         aria-describedby="alert-dialog-description"
         aria-labelledby="alert-dialog-title"
@@ -216,4 +211,4 @@ const DeliveryPackage = (props) => {
   );
 };
 
-export default DeliveryPackage;
+export default UpdateSchedule;

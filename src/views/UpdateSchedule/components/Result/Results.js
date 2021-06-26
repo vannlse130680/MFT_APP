@@ -1,31 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { makeStyles } from '@material-ui/styles';
-import EditIcon from '@material-ui/icons/Edit';
 import {
-  Card,
+  Button, Card,
   CardActions,
   CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Button,
-  Link,
-  Table,
+  CardHeader, colors, Divider, Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
-  colors
+  Typography
 } from '@material-ui/core';
-
+import { makeStyles } from '@material-ui/styles';
+import clsx from 'clsx';
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Link as RouterLink } from 'react-router-dom';
+
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -57,16 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const {
-    className,
-    contractDetails,
-    onEditEvent,
-    resetPage,
-    onAcceptDeliveryDate,
-    onAcceptAll,
-    contractId,
-    ...rest
-  } = props;
+  const { className, schedules, onEditEvent, resetPage, ...rest } = props;
   // console.log(plantTypes);
   const classes = useStyles();
   useEffect(() => {
@@ -81,7 +64,7 @@ const Results = props => {
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? contractDetails.map(garden => garden.id)
+      ? schedules.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
@@ -122,36 +105,27 @@ const Results = props => {
     setPage(0);
   };
   const statusColors = {
-    0: colors.grey[600],
-    1: colors.orange[600],
-    2: colors.green[600],
+    canceled: colors.grey[600],
+    2: colors.orange[600],
+    1: colors.green[600],
     rejected: colors.red[600]
   };
 
   const handleEditClick = plantType => {
     onEditEvent(plantType);
   };
-  const hanleAcceptDeliveryDate = (id, event) => {
-    event.preventDefault();
-    console.log(id);
-    onAcceptDeliveryDate(id);
-  };
-
-  const handleAcceptClick = id => {
-    onAcceptAll(id);
-  };
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {contractDetails.length < 1 ? (
+      {schedules.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Không tìm thấy chi tiết hợp đồng nào trồng nào!"
+          message="Không tìm thấy thông tin vận chuyển nào !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {contractDetails.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(contractDetails.length / rowsPerPage)}
+        {schedules.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(schedules.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="Danh sách" />
@@ -174,12 +148,15 @@ const Results = props => {
                       />
                     </TableCell> */}
                     <TableCell>STT</TableCell>
-                    <TableCell>Ngày có thể thu hoạch</TableCell>
+                    <TableCell>Người gửi</TableCell>
+                    <TableCell>Vườn</TableCell>
+                    <TableCell>Loại trái cây</TableCell>
+                    <TableCell>Só lượng</TableCell>
+                    <TableCell>Địa chỉ</TableCell>
 
-                    <TableCell>Tổng sản lượng</TableCell>
-
-                    <TableCell>Ngày giao</TableCell>
+                    <TableCell>Ngày lấy hàng</TableCell>
                     <TableCell>Trạng thái</TableCell>
+
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
                     <TableCell>Reviews</TableCell> */}
@@ -187,14 +164,14 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {contractDetails
+                  {schedules
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((contractDetail, index) => (
+                    .map((schedule, index) => (
                       <TableRow
                         hover
                         key={index}
                         selected={
-                          selectedCustomers.indexOf(contractDetail.id) !== -1
+                          selectedCustomers.indexOf(schedule.id) !== -1
                         }>
                         {/* <TableCell padding="checkbox">
                           <Checkbox
@@ -211,67 +188,32 @@ const Results = props => {
                           />
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                          {contractDetail.startHarvest ? (
-                            <div>
-                              {' '}
-                              Từ{' '}
-                              <span>
-                                {moment(contractDetail.startHarvest).format(
-                                  'DD/MM/YYYY'
-                                )}
-                              </span>{' '}
-                              đến{' '}
-                              <span>
-                                {moment(contractDetail.endHarvest).format(
-                                  'DD/MM/YYYY'
-                                )}
-                              </span>
-                            </div>
-                          ) : (
-                            'Chưa cập nhật'
-                          )}{' '}
-                        </TableCell>
-
+                        <TableCell>{schedule.fullname}</TableCell>
+                        <TableCell>{schedule.gardenName}</TableCell>
+                        <TableCell>{schedule.plantTypeName}</TableCell>
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
-                            contractDetail.yield
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {contractDetail.deliveryDate ? (
-                            <div>
-                              <div>
-                                {' '}
-                                {moment(contractDetail.deliveryDate).format(
-                                  'DD/MM/YYYY'
-                                )}{' '}
-                              </div>
-                              <div>
-                                {contractDetail.status === 0 ? (
-                                  <Link
-                                    href="#"
-                                    onClick={hanleAcceptDeliveryDate.bind(
-                                      this,
-                                      contractDetail.id
-                                    )}>
-                                    Xác nhận
-                                  </Link>
-                                ) : (
-                                  'Đã xác nhận'
-                                )}
-                              </div>
-                            </div>
-                          ) : (
-                            'Chưa cập nhật'
+                            schedule.yield
                           )}
                         </TableCell>
 
                         <TableCell>
+                          {schedule.address +
+                            ', ' +
+                            schedule.wardName +
+                            ', ' +
+                            schedule.districtName +
+                            ', ' +
+                            schedule.cityName}
+                        </TableCell>
+                        <TableCell>
+                          {moment(schedule.delivery).format('DD/MM/YYYY')}
+                        </TableCell>
+                        <TableCell>
                           <Label
-                            color={statusColors[contractDetail.status]}
+                            color={statusColors[schedule.status]}
                             variant="contained">
-                            {contractDetail.statusName}
+                            {schedule.statusName}
                           </Label>
                         </TableCell>
 
@@ -281,30 +223,18 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/contractDetail/${contractId}/${contractDetail.id}`}
+                            to={`/transport/update/${schedule.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
                           <Button
-                            className={classes.actionIcon}
                             color="secondary"
-                            onClick={handleEditClick.bind(this, contractDetail)}
                             size="small"
+                            onClick={handleEditClick.bind(this, schedule)}
                             variant="contained">
-                            Sửa
-                          </Button>
-                          <Button
-                            color="secondary"
-                            onClick={handleAcceptClick.bind(
-                              this,
-                              contractDetail.id
-                            )}
-                            size="small"
-                            disabled={contractDetail.status !== 1}
-                            variant="contained">
-                            Xác nhận
+                            Xác nhận 
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -317,7 +247,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={contractDetails.length}
+            count={schedules.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -330,5 +260,7 @@ const Results = props => {
     </div>
   );
 };
+
+
 
 export default Results;

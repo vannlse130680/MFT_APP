@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const DeliveryHeader = props => {
-  const { onAddEvent, className, ...rest } = props;
+  const { onAddEvent, className,contractId, ...rest } = props;
 
   const classes = useStyles();
   // const onAddEventHandle = (params) => {
@@ -30,20 +30,14 @@ const DeliveryHeader = props => {
           </Typography>
         </Grid>
         <Grid item>
-          {/* <Button
-            
-            variant="contained"
-            component={RouterLink}
-            to="/contract">
+          <Button variant="contained" component={RouterLink} to={`/contract/${contractId}/detail`}>
             <ArrowBackIcon />
             Về chi tiết hợp đồng
-          </Button> */}
+          </Button>
         </Grid>
       </Grid>
     </div>
   );
 };
-
-
 
 export default DeliveryHeader;

@@ -95,7 +95,7 @@ const ContractPage = () => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Cập nhật vườn thành công !');
+            toastSuccess('Cập nhật thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -103,7 +103,7 @@ const ContractPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Mã vườn đã tồn tại !');
+            toastError('Cập nhật thất bại !');
           }
         }
       })

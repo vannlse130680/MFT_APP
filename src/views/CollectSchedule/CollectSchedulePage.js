@@ -214,6 +214,7 @@ const CollectSchedulePage = () => {
     ).then(res => {
       if (res.status === 200) {
         dispatch(hideLoading())
+        console.log(res.data)
         setCollectDetail(res.data);
         handleClickOpen();
       } 
@@ -370,8 +371,9 @@ const CollectSchedulePage = () => {
 
               <TableCell>Tên vườn</TableCell>
               <TableCell>Nông dân</TableCell>
-              <TableCell>Địa chỉ</TableCell>
+              <TableCell>Loại trái cây</TableCell>
               <TableCell>Kg</TableCell>
+              <TableCell>Địa chỉ</TableCell>
               <TableCell>Số điện thoại</TableCell>
             </TableRow>
           </TableHead>
@@ -382,6 +384,8 @@ const CollectSchedulePage = () => {
 
                 <TableCell>{item.gardenName}</TableCell>
                 <TableCell>{item.fullname}</TableCell>
+                <TableCell>{item.plantTypeName}</TableCell>
+                <TableCell>{item.yield}</TableCell>
                 <TableCell>
                   {item.address +
                     ', ' +
@@ -391,7 +395,7 @@ const CollectSchedulePage = () => {
                     ', ' +
                     item.cityName}
                 </TableCell>
-                <TableCell>{item.yield}</TableCell>
+                
                 <TableCell>{item.phone}</TableCell>
               </TableRow>
             ))}

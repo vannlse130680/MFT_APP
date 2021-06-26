@@ -68,7 +68,7 @@ const Toolbar = props => {
             Lịch
           </Typography>
           <Typography component="h1" variant="h3">
-            Lịch lấy hàng 
+            Lịch giao hàng
           </Typography>
         </Grid>
         <Grid item>

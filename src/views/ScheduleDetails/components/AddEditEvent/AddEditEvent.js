@@ -1,46 +1,77 @@
 /* eslint-disable react/display-name */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  colors,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/styles';
-import { showLoadingChildren } from 'actions/childrenLoading';
+import React, { useState, forwardRef, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useEffect, useState } from 'react';
-import NumberFormat from 'react-number-format';
-import { useDispatch } from 'react-redux';
-import callAPI from 'utils/callAPI';
-import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
+import moment from 'moment';
+import uuid from 'uuid/v1';
+import { makeStyles } from '@material-ui/styles';
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  TextField,
+  Button,
+  IconButton,
+  Divider,
+  FormControlLabel,
+  Switch,
+  colors,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import { Autocomplete } from '@material-ui/lab';
 import validate from 'validate.js';
+import callAPI from 'utils/callAPI';
+import { values } from 'lodash';
+import { useDispatch } from 'react-redux';
+import { showLoadingChildren } from 'actions/childrenLoading';
+import NumberFormat from 'react-number-format';
+import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 const schema = {
-  treePrice: {
+  name: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 100,
+      message: 'Tối đa chỉ 100 kí tự '
+    }
+  },
+  supplier: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 200,
+      message: 'Tối đa chỉ 200 kí tự '
+    }
+  },
+  test: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  yield: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      greaterThan: 0,
+      lessThanOrEqualTo: 1000,
+      message: 'Năng suất phải lớn 0 và bé hơn 10000kg'
+    }
+  },
+  crops: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+      greaterThan: 0,
+      lessThanOrEqualTo: 100,
+      message: 'Số vụ phải lớn 0 và bé hơn 100 và là số nguyên'
+    }
+  },
+  price: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     numericality: {
       onlyInteger: true,
 
       greaterThan: 0,
-      lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
-    }
-  },
-  shipFee: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    numericality: {
-      onlyInteger: true,
-
-      greaterThan: -1,
       lessThanOrEqualTo: 100000000,
       message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
     }
@@ -104,25 +135,20 @@ const AddEditEvent = forwardRef((props, ref) => {
     onAdd,
     onEdit,
     className,
-    selectedContract,
+    selectedPlantType,
     ...rest
   } = props;
 
   const classes = useStyles();
 
-  // const defaultValue = {
-  //   name: '111',
-  //   address: '111',
-  //   plantType: '11'
-  // };
-  const [plantTypesName, setPlantTypesName] = useState([]);
+  const dispatch = useDispatch();
+  const [treeTypes, setTreeTypes] = useState([]);
   const [formState, setFormState] = useState({
     isValid: false,
     values: { status: 1 },
     touched: {},
     errors: {}
   });
-  const dispatch = useDispatch();
   useEffect(() => {
     const errors = validate(formState.values, schema, { fullMessages: false });
 
@@ -134,11 +160,10 @@ const AddEditEvent = forwardRef((props, ref) => {
   }, [formState.values]);
 
   useEffect(() => {
-    var username = JSON.parse(sessionStorage.getItem('USER')).username;
-    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null)
+    callAPI('treetype', 'GET', null)
       .then(res => {
         if (res.status === 200) {
-          setPlantTypesName(res.data);
+          setTreeTypes(res.data);
         }
       })
       .catch(err => {
@@ -147,24 +172,48 @@ const AddEditEvent = forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    if (selectedContract)
+    if (selectedPlantType)
       setFormState(formState => ({
         ...formState,
         values: {
-          treePrice: selectedContract.treePrice,
-          shipFee: selectedContract.shipFee
+          name: selectedPlantType.plantTypeName,
+          supplier: selectedPlantType.supplier,
+          yield: selectedPlantType.yield,
+          crops: selectedPlantType.crops,
+          price: selectedPlantType.price,
+          test: 'a',
+          auto: selectedPlantType.t,
+          status: selectedPlantType.status
         }
       }));
   }, []);
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
+  // const [values, setValues] = useState(event || defaultEvent);
 
   const mode = event ? 'edit' : 'add';
 
   const handleChange = (event, value) => {
-    
+    if (!event) return;
+    /// changehere
+    if (event.target.name !== 'price') {
+      event.persist();
+    }
 
-    if (event.target.name) {
+    if (event.target.name === 'test') {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          test: ''
+        },
+        touched: {
+          ...formState.touched,
+          [event.target.name]: true
+        }
+      }));
+    } else if (event.target.name) {
+      console.log('status');
       setFormState(formState => ({
         ...formState,
         values: {
@@ -181,6 +230,16 @@ const AddEditEvent = forwardRef((props, ref) => {
           [event.target.name]: true
         }
       }));
+    } else {
+      // console.log('auto');
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          auto: value,
+          test: 'ád'
+        }
+      }));
     }
   };
 
@@ -193,11 +252,13 @@ const AddEditEvent = forwardRef((props, ref) => {
     var { values } = formState;
     var username = JSON.parse(sessionStorage.getItem('USER')).username;
     var data = {
-      gardenCode: values.code,
+      treeTypeID: values.auto.id,
+      name: values.name,
       farmerUsername: username,
-      gardenName: values.name,
-      address: values.address,
-      plantTypeID: values.auto.id
+      supplier: values.supplier,
+      crops: parseInt(values.crops),
+      yield: parseFloat(values.yield),
+      price: parseInt(values.price)
     };
 
     console.log(formState);
@@ -205,19 +266,21 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
-    
     dispatch(showLoadingChildren());
-    
+    var username = JSON.parse(sessionStorage.getItem('USER')).username;
+    // console.log(formState.values);
     var data = {
-      contractID: selectedContract.contractID,
-      treePrice:  parseInt(formState.values.treePrice),
-      shipFee:  parseInt(formState.values.shipFee),
-      totalPrice:
-        parseInt(formState.values.treePrice) *
-          parseInt(selectedContract.numOfYear) +
-        parseInt(formState.values.shipFee)
+      id: selectedPlantType.id,
+      treeTypeID: formState.values.auto.id,
+      plantTypeName: formState.values.name,
+      farmerUsername: username,
+      supplier: formState.values.supplier,
+      crops: parseInt(formState.values.crops),
+      yield: parseFloat(formState.values.yield),
+      price: parseInt(formState.values.price),
+      status: formState.values.status
     };
-    console.log(data)
+    // console.log(data)
     onEdit(data);
   };
   // console.log(selectedPlantType);
@@ -227,60 +290,102 @@ const AddEditEvent = forwardRef((props, ref) => {
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm vườn' : 'Cập nhật hợp đồng'}
+            {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
           </Typography>
-
+          <Autocomplete
+            // onChange={handleChange}
+            // value={selectedPlantType.t}
+            defaultValue={selectedPlantType ? selectedPlantType.t : null}
+            fullWidth
+            // inputValue={formState.values.test}
+            getOptionLabel={option => option.typeName}
+            // value={formState.values.test}
+            getOptionSelected={(option, value) => option.id === value.id}
+            onChange={(event, value) => handleChange(event, value)}
+            onInputChange={handleChange} // prints the selected value
+            options={treeTypes}
+            renderInput={params => (
+              <TextField
+                {...params}
+                className={classes.field}
+                error={hasError('test')}
+                helperText={hasError('test') ? formState.errors.test[0] : null}
+                label="Loại trái cây"
+                name="test"
+                value={formState.values.test || ''}
+                variant="outlined"
+              />
+            )}
+          />
           <TextField
             className={classes.field}
-            error={hasError('treePrice')}
+            error={hasError('name')}
+            fullWidth
+            helperText={hasError('name') ? formState.errors.name[0] : null}
+            label="Tên"
+            name="name"
+            onChange={handleChange}
+            value={formState.values.name || ''}
+            variant="outlined"
+          />
+          <TextField
+            className={classes.field}
+            error={hasError('supplier')}
             fullWidth
             helperText={
-              hasError('treePrice') ? formState.errors.treePrice[0] : null
+              hasError('supplier') ? formState.errors.supplier[0] : null
             }
-            label="Giá cây"
-            name="treePrice"
+            label="Nhà cung cấp"
+            name="supplier"
             onChange={handleChange}
-            value={formState.values.treePrice || ''}
+            value={formState.values.supplier || ''}
             variant="outlined"
-            InputProps={{
-              inputComponent: NumberFormatCustom
-            }}
-          />
-
-          <TextField
-            className={classes.field}
-            error={hasError('shipFee')}
-            fullWidth
-            helperText={
-              hasError('shipFee') ? formState.errors.shipFee[0] : null
-            }
-            label="Giá vận chuyển"
-            name="shipFee"
-            onChange={handleChange}
-            value={formState.values.shipFee || 0}
-            variant="outlined"
-            InputProps={{
-              inputComponent: NumberFormatCustom
-            }}
           />
           <TextField
             className={classes.field}
-            label="Tổng tiền"
+            error={hasError('yield')}
+            fullWidth
+            fullWidth
+            helperText={hasError('yield') ? formState.errors.yield[0] : null}
+            label="Năng suất bình quân (kg/vụ)"
+            name="yield"
+            onChange={handleChange}
+            type="number"
+            value={formState.values.yield || ''}
+            variant="outlined"
+          />
+          <TextField
+            className={classes.field}
+            error={hasError('crops')}
+            fullWidth
+            fullWidth
+            helperText={hasError('crops') ? formState.errors.crops[0] : null}
+            label="Số vụ"
+            name="crops"
+            onChange={handleChange}
+            type="number"
+            value={formState.values.crops || ''}
+            variant="outlined"
+          />
+          <TextField
+            className={classes.field}
+            error={hasError('price')}
+            fullWidth
             fullWidth
             InputProps={{
-              readOnly: true,
               inputComponent: NumberFormatCustom
             }}
-            value={
-              parseInt(formState.values.treePrice) *
-                parseInt(selectedContract.numOfYear) +
-                parseInt(formState.values.shipFee) || ''
-            }
+            helperText={hasError('price') ? formState.errors.price[0] : null}
+            label="Giá"
+            name="price"
+            onChange={handleChange}
+            // type="number"
+            value={formState.values.price || ''}
             variant="outlined"
           />
 
-          {/* {selectedGarden ? (
-            <FormControl className={classes.field} variant="outlined" fullWidth>
+          {selectedPlantType ? (
+            <FormControl className={classes.field} fullWidth variant="outlined">
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái
               </InputLabel>
@@ -295,7 +400,7 @@ const AddEditEvent = forwardRef((props, ref) => {
                 <MenuItem value={0}>Tạm ngừng</MenuItem>
               </Select>
             </FormControl>
-          ) : null} */}
+          ) : null}
         </CardContent>
         <Divider />
         <CardActions>

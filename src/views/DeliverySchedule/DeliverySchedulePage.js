@@ -363,7 +363,7 @@ const DeliverySchedulePage = () => {
           <TableHead>
             <TableRow>
               <TableCell>STT</TableCell>
-
+              <TableCell>Từ vườn</TableCell>
               <TableCell>Người nhận</TableCell>
               <TableCell>Loại trái cây</TableCell>
               <TableCell>Kg</TableCell>
@@ -375,7 +375,7 @@ const DeliverySchedulePage = () => {
             {collectDetail.map((item, index) => (
               <TableRow hover key={index}>
                 <TableCell>{index + 1}</TableCell>
-
+                <TableCell>{item.gardenName}</TableCell>
                 <TableCell>{item.fullname}</TableCell>
                 <TableCell>{item.plantTypeName}</TableCell>
                 <TableCell>{item.yield}</TableCell>

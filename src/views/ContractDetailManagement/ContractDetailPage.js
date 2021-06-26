@@ -284,6 +284,7 @@ const ContractDetailPage = props => {
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {contractDetailStore && (
             <Results
+              contractId={router.match.params.id}
               onAcceptAll={handleClickAcceptAll}
               onAcceptDeliveryDate={handleClickAcceptDeliveryDate}
               resetPage={resetPage}

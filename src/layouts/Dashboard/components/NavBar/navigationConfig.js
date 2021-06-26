@@ -1,13 +1,16 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import HomeIcon from '@material-ui/icons/HomeOutlined';
-import PlantTypeIcon from '@material-ui/icons/NaturePeopleOutlined';
-import SettingsIcon from '@material-ui/icons/SettingsOutlined';
+import HomeIcon from '@material-ui/icons/Home';
+
+import SettingsIcon from '@material-ui/icons/Settings';
 import GardenIcon from '@material-ui/icons/Streetview';
-import ContractIcon from '@material-ui/icons/SupervisedUserCircle';
+
 import PolicyIcon from '@material-ui/icons/Policy';
 import ScheduleIcon from '@material-ui/icons/Event';
 
+import PlantTypeIcon from '@material-ui/icons/Eco';
+import ContractIcon from '@material-ui/icons/Assignment';
+import VistitIcon from '@material-ui/icons/NaturePeople';
 export default [
   {
     title: 'Trang',
@@ -57,12 +60,23 @@ export default [
         ]
       },
       {
-        title: 'Quản lý lịch',
+        title: 'Thu hoạch',
         href: '/calendar',
         icon: ScheduleIcon,
         children: [
           {
             title: 'Lịch thu hoạch',
+            href: '/calendar/harvest'
+          }
+        ]
+      },
+      {
+        title: 'Tham quan vuờn',
+        href: '/calendar',
+        icon: VistitIcon,
+        children: [
+          {
+            title: 'Yêu cầu',
             href: '/calendar/harvest'
           },
           {
@@ -71,7 +85,6 @@ export default [
           }
         ]
       },
-
       {
         title: 'Cài đặt',
         href: '/settings',

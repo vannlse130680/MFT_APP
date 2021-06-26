@@ -29,6 +29,8 @@ import DistrictPage from 'views/DistrictMangement/DistrictPage';
 import WardPage from 'views/WardManagement/WardPage';
 import CollectSchedulePage from 'views/CollectSchedule/CollectSchedulePage';
 import DeliverySchedulePage from 'views/DeliverySchedule/DeliverySchedulePage';
+import UpdateSchedule from 'views/UpdateSchedule/UpdateSchedule';
+import ScheduleDetail from 'views/ScheduleDetails/ScheduleDetail';
 
 const routes = [
   {
@@ -275,7 +277,7 @@ const routes = [
       },
 
       {
-        path: '/contractDetail/:id',
+        path: '/contractDetail/:contractId/:id',
         exact: true,
         component: DeliveryPackage
       },
@@ -334,6 +336,16 @@ const routes = [
         path: '/transport/delivery',
         exact: true,
         component: DeliverySchedulePage
+      },
+      {
+        path: '/transport/update',
+        exact: true,
+        component: UpdateSchedule
+      },
+      {
+        path: '/transport/update/:id',
+        exact: true,
+        component: ScheduleDetail
       },
       {
         component: () => <Redirect to="/errors/error-404" />

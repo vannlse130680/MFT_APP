@@ -3,7 +3,7 @@ import {
   SEARCH_CONTRACT_DETAIL
 } from 'actions/contractDetail';
 const statusName = {
-  0: 'Đang xử lý',
+  0: 'Bắt đầu',
   1: 'Chờ thu hoạch',
   2: 'Đã thu hoạch',
   3: 'Đã giao'

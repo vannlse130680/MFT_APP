@@ -234,7 +234,7 @@ const Results = props => {
                             onClick={handleEditClick.bind(this, contract)}
                             size="small"
                             variant="contained">
-                            Sửa
+                            Cập nhật
                           </Button>
                         </TableCell>
                       </TableRow>
