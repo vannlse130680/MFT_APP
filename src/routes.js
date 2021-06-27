@@ -31,6 +31,7 @@ import CollectSchedulePage from 'views/CollectSchedule/CollectSchedulePage';
 import DeliverySchedulePage from 'views/DeliverySchedule/DeliverySchedulePage';
 import UpdateSchedule from 'views/UpdateSchedule/UpdateSchedule';
 import ScheduleDetail from 'views/ScheduleDetails/ScheduleDetail';
+import ManageVisitingPage from 'views/ManageVisitingCalendar/ManageVisitingPage';
 
 const routes = [
   {
@@ -306,6 +307,12 @@ const routes = [
         exact: true,
         component: VisitCalendarPage
       },
+      {
+        path: '/management/visiting',
+        exact: true,
+        component: ManageVisitingPage
+      },
+
       {
         path: '/calendar/harvest',
         exact: true,

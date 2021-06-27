@@ -71,11 +71,11 @@ const Toolbar = props => {
             Lịch tham quan vườn
           </Typography>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Button color="primary" onClick={onEventAdd} variant="contained">
             Add event
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid alignItems="center" container justify="space-between" spacing={3}>
         <Grid item>
@@ -91,7 +91,7 @@ const Toolbar = props => {
               {moment(date).locale('vi').format('MMMM YYYY')}
             </Typography>
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             {viewOptions.map(viewOption => {
               const Icon = viewOption.icon;
 
@@ -105,7 +105,7 @@ const Toolbar = props => {
                 </Tooltip>
               );
             })}
-          </Grid>
+          </Grid> */}
         </Hidden>
       </Grid>
     </div>

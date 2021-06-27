@@ -72,12 +72,12 @@ export default [
       },
       {
         title: 'Tham quan vuờn',
-        href: '/calendar',
+        href: '/management',
         icon: VistitIcon,
         children: [
           {
             title: 'Yêu cầu',
-            href: '/calendar/harvest'
+            href: '/management/visiting'
           },
           {
             title: 'Lịch tham quan vườn',

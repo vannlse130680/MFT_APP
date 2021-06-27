@@ -27,6 +27,9 @@ import '@fullcalendar/list/main.css';
 import axios from 'utils/axios';
 import { AuthGuard, Page } from 'components';
 import { AddEditEvent, Toolbar } from './components';
+import callAPI from 'utils/callAPI';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'actions/loading';
 
 // let calendar = new Calendar(calendarEl, {
 //   locale: esLocale
@@ -100,26 +103,49 @@ const VisitCalendarPage = () => {
   const calendarRef = useRef(null);
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
-  const [view, setView] = useState(mobileDevice ? 'listWeek' : 'dayGridMonth');
-  const [date, setDate] = useState(moment('2019-07-30 08:00:00').toDate());
+  const [view, setView] = useState(mobileDevice ? 'listWeek' : 'timeGridWeek');
+  const [date, setDate] = useState(moment().toDate());
   const [events, setEvents] = useState([]);
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
   });
-
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(showLoading());
     let mounted = true;
 
     const fetchEvents = () => {
       if (mounted) {
-        axios
-          .get('/api/calendar')
-          .then((res) => {
-            console.log(res.data.events)
-            setEvents(res.data.events)
+        var username = JSON.parse(sessionStorage.getItem('USER'))
+          ? JSON.parse(sessionStorage.getItem('USER')).username
+          : null;
+        callAPI(
+          `VisitingSchedule/getAllAcceptVisitingScheduleByUsername/${username}`,
+          'GET',
+          null
+        )
+          .then(res => {
+            if (res.status === 200) {
+              dispatch(hideLoading());
+              var data = res.data;
+              console.log(data);
+              var events = [{}];
+              for (let index = 0; index < data.length; index++) {
+                var item = {
+                  title: data[index].fullname + ', ' + data[index].gardenName,
+
+                  start: data[index].visitDate,
+                  id: index + ''
+                };
+                events.push(item);
+              }
+              setEvents(events);
+            }
+          })
+          .catch(err => {
+            console.log(err);
           });
-          
       }
     };
 
@@ -132,7 +158,7 @@ const VisitCalendarPage = () => {
 
   useEffect(() => {
     const calendarApi = calendarRef.current.getApi();
-    const newView = mobileDevice ? 'listWeek' : 'dayGridMonth';
+    const newView = mobileDevice ? 'listWeek' : 'timeGridWeek';
 
     calendarApi.changeView(newView);
     setView(newView);
@@ -214,7 +240,13 @@ const VisitCalendarPage = () => {
   };
   console.log(esLocale);
   const EventDetail = ({ event, el }) => {
-    const content = <div>{event.title}<div>{event.extendedProps.desc}</div></div>;
+    const content = (
+      <div>
+       
+        {event.title} 
+        {/* <div>{event.extendedProps.desc}</div> */}
+      </div>
+    );
     ReactDOM.render(content, el);
     return el;
   };
@@ -237,10 +269,9 @@ const VisitCalendarPage = () => {
             defaultDate={date}
             defaultView={view}
             droppable
-          
             locale={esLocale}
             eventRender={EventDetail}
-            eventClick={handleEventClick}
+            
             eventResizableFromStart={false}
             events={events}
             header={true}
