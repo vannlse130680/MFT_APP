@@ -1,7 +1,23 @@
 import {
-  Button, Card, CardActions, CardContent, CardHeader, colors, Dialog,
-  DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Table,
-  TableBody, TableCell, TableRow
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  colors,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Grid,
+  Link,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -11,13 +27,14 @@ import {
 import clsx from 'clsx';
 import { Label, Page } from 'components';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import useRouter from 'utils/useRouter';
+import AddEditEvent from './AddEditEvent';
 import Header from './Header/Header';
 
 const useStyles = makeStyles(theme => ({
@@ -50,8 +67,7 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     height: 150,
     width: 150
-  },
- 
+  }
 }));
 const statusColors = {
   3: colors.grey[600],
@@ -61,15 +77,33 @@ const statusColors = {
 };
 const statusName = {
   3: 'Chờ xác nhận',
+  4: 'Chờ xác nhận hủy',
   0: 'Đang xử lý',
   1: 'Hoạt động',
   2: 'Đã hủy'
 };
 const GeneralInformation = props => {
-  const { className, contractInfomation, onAccept, ...rest } = props;
+  const {
+    className,
+    contractInfomation,
+    onAccept,
+    onConfirmCancel,
+    onCancelContract,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 
+  const [eventModal, setEventModal] = useState({
+    open: false,
+    event: null
+  });
+  const handleModalClose = () => {
+    setEventModal({
+      open: false,
+      event: null
+    });
+  };
   const router = useRouter();
   // const [contractInfomation, setContractInformation] = useState({});
   console.log(router);
@@ -83,28 +117,25 @@ const GeneralInformation = props => {
   const handleClose = () => {
     setOpen(false);
   };
-  // useEffect(() => {
-  //   dispatch(showLoading());
-  //   callAPI(`Contract/GetContractById/${router.match.params.id}`, 'GET', null)
-  //     .then(res => {
-  //       if (res.status === 200) {
-  //         dispatch(hideLoading());
-  //         setContractInformation(res.data[0]);
-  //         console.log(res.data);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }, []);
+
+  const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
+
+  const handleClickOpenConfirmCancel = () => {
+    setOpenConfirmCancel(true);
+  };
+
+  const handleCloseConfirmCancel = () => {
+    setOpenConfirmCancel(false);
+  };
+
   const handleConfirmContract = () => {
     dispatch(showLoadingChildren());
-    // var data = {
-    //   treeID: contractInfomation.treeID,
-    //   contractID: contractInfomation.id
-    // };
 
-    callAPI(`Contract/SendContract/${contractInfomation.contractID}`, 'PUT', null)
+    callAPI(
+      `Contract/SendContract/${contractInfomation.contractID}`,
+      'PUT',
+      null
+    )
       .then(res => {
         if (res.data) {
           toastSuccess('Gửi hợp đồng thành công !');
@@ -120,6 +151,57 @@ const GeneralInformation = props => {
         console.log(err);
       });
   };
+
+  const handleClickCancel = () => {
+    setEventModal({
+      open: true,
+      event: {}
+    });
+  };
+  const handleClickConfirmCancel = () => {
+    handleClickOpenConfirmCancel();
+  };
+  const handleConfirmCancelContract = () => {
+    dispatch(showLoadingChildren());
+
+    callAPI(
+      `Contract/confirmCancelContract/${contractInfomation.contractID}`,
+      'PUT',
+      null
+    )
+      .then(res => {
+        if (res.data) {
+          toastSuccess('Xác nhận thành công !');
+          dispatch(hideLoadingChildren());
+          handleCloseConfirmCancel();
+          onConfirmCancel();
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Xác nhận không thành công !');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const handleCancelContract = (data) => {
+    callAPI('Contract/cancelContract', 'PUT', data)
+      .then(res => {
+        if (res.data) {
+          toastSuccess('Xác nhận thành công !');
+          dispatch(hideLoadingChildren());
+          handleModalClose()
+          onCancelContract();
+
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Xác nhận không thành công !');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <Page className={classes.root}>
       <Header className={classes.header} />
@@ -129,10 +211,7 @@ const GeneralInformation = props => {
         container
         spacing={2}>
         <Grid item lg={10} md={6} xl={4} xs={12}>
-          <Card
-          // style={{ width: 600, marginTop: 20 }}
-          // {...rest}
-          >
+          <Card>
             <CardHeader title="Chi tiết hợp đồng" />
             <Divider />
             <CardContent style={{ padding: 0 }}>
@@ -225,7 +304,9 @@ const GeneralInformation = props => {
                       </div>
                     </TableCell>
                   </TableRow>
-                  {contractInfomation.status === 1 ? (
+                  {contractInfomation.status === 1 ||
+                  contractInfomation.status === 2 ||
+                  contractInfomation.status === 4 ? (
                     <TableRow>
                       <TableCell selected style={{ fontWeight: 'bold' }}>
                         Giá trị hợp đồng hiện tại:
@@ -244,8 +325,8 @@ const GeneralInformation = props => {
                 {contractInfomation.status === 0 ? (
                   <Button
                     color="secondary"
-                    variant="contained"
-                    onClick={handleClickOpen}>
+                    onClick={handleClickOpen}
+                    variant="contained">
                     Gửi khách hàng
                   </Button>
                 ) : null}
@@ -253,6 +334,7 @@ const GeneralInformation = props => {
                 {contractInfomation.status === 1 ? (
                   <Button
                     className={classes.redButton}
+                    onClick={handleClickCancel}
                     variant="contained"
                     variant="contained">
                     Hủy hợp đồng
@@ -270,9 +352,21 @@ const GeneralInformation = props => {
               <Table>
                 <TableBody>
                   <TableRow>
+                    <TableCell>Ngày hủy:</TableCell>
+                    <TableCell>
+                      {moment(contractInfomation.cancelDate).format(
+                        'DD/MM/YYYY'
+                      ) === '01/01/0001'
+                        ? null
+                        : moment(contractInfomation.cancelDate).format(
+                            'DD/MM/YYYY'
+                          )}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell>Bên hủy:</TableCell>
                     <TableCell align="left">
-                      {contractInfomation.cancelParty}
+                      {contractInfomation.cancelPartyName}
                     </TableCell>
                   </TableRow>
                   <TableRow selected>
@@ -281,18 +375,37 @@ const GeneralInformation = props => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Tiền hoàn trả:</TableCell>
-                    <TableCell>{contractInfomation.refund}</TableCell>
+                    <TableCell>
+                      {' '}
+                      {new Intl.NumberFormat('vi-VN').format(
+                        contractInfomation.refund
+                      )}{' '}
+                      VNĐ
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
+              <CardActions>
+                {contractInfomation.status === 4 &&
+                contractInfomation.cancelParty ===
+                  contractInfomation.customerUsername ? (
+                  <Button
+                    className={classes.redButton}
+                    onClick={handleClickConfirmCancel}
+                    variant="contained"
+                    variant="contained">
+                    Xác nhận hủy hợp đồng
+                  </Button>
+                ) : null}
+              </CardActions>
             </CardContent>
           </Card>
         </Grid>
         <Dialog
-          open={open}
-          onClose={handleClose}
+          aria-describedby="alert-dialog-description"
           aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description">
+          onClose={handleClose}
+          open={open}>
           <DialogTitle id="alert-dialog-title">
             {''} <p style={{ fontSize: 18 }}>Gửi hợp đồng</p>
           </DialogTitle>
@@ -304,12 +417,47 @@ const GeneralInformation = props => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Hủy bỏ</Button>
-            <Button onClick={handleConfirmContract} color="primary" autoFocus>
+            <Button autoFocus color="primary" onClick={handleConfirmContract}>
               Đồng ý
             </Button>
           </DialogActions>
           <GoblaLoadingChildren />
         </Dialog>
+
+        <Dialog
+          aria-describedby="alert-dialog-description"
+          aria-labelledby="alert-dialog-title"
+          onClose={handleCloseConfirmCancel}
+          open={openConfirmCancel}>
+          <DialogTitle id="alert-dialog-title">
+            {''} <p style={{ fontSize: 18 }}>Xác nhận hủy hợp đồng</p>
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Bạn có chắc chắn muốn xác nhận yêu cầu hủy hợp đồng của khách hàng
+              !
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmCancel}>Hủy bỏ</Button>
+            <Button
+              autoFocus
+              color="primary"
+              onClick={handleConfirmCancelContract}>
+              Đồng ý
+            </Button>
+          </DialogActions>
+          <GoblaLoadingChildren />
+        </Dialog>
+        <Modal onClose={handleModalClose} open={eventModal.open}>
+          <AddEditEvent
+            event={eventModal.event}
+            onCancel={handleModalClose}
+            onCancelContract={handleCancelContract}
+            selectedContract={contractInfomation}
+          />
+        </Modal>
       </Grid>
     </Page>
   );

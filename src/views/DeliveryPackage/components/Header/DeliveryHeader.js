@@ -30,7 +30,7 @@ const DeliveryHeader = props => {
           </Typography>
         </Grid>
         <Grid item>
-          <Button variant="contained" component={RouterLink} to={`/contract/${contractId}/detail`}>
+          <Button  component={RouterLink} to={`/contract/${contractId}/detail`}>
             <ArrowBackIcon />
             Về chi tiết hợp đồng
           </Button>

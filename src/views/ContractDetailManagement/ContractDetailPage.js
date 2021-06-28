@@ -278,7 +278,7 @@ const ContractDetailPage = props => {
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1 || props.contractStatus === 2 ? (
+      {props.contractStatus === 1? (
         <div>
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
@@ -352,6 +352,18 @@ const ContractDetailPage = props => {
             </DialogActions>
           </Dialog>
         </div>
+      ) : props.contractStatus === 2 ? (
+        <Alert
+          className={classes.alert}
+          variant="warning"
+          message="Hợp đồng đã bị hủy!"
+        />
+      ) : props.contractStatus === 4 ? (
+        <Alert
+          className={classes.alert}
+          variant="warning"
+          message="Hợp đồng đang trong trạng thái chờ xác nhận hủy!"
+        />
       ) : (
         <Alert
           className={classes.alert}

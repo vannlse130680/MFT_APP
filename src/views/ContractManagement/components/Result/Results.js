@@ -119,7 +119,8 @@ const Results = props => {
     2: 'Đã hủy',
     0: 'Đang xử lý',
     1: 'Hoạt động',
-    3: 'Chờ xác nhận'
+    3: 'Chờ xác nhận',
+    4: 'Chờ xác nhận hủy'
   };
 
   const handleEditClick = contract => {

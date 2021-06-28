@@ -171,7 +171,7 @@ const DeliveryPackage = (props) => {
   };
 
   return (
-    <Page className={classes.root} title="Quản lý loại cây">
+    <Page className={classes.root} title="Đơn hàng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
       <Header onAddEvent={handleEventNew}  />
       <Divider/>

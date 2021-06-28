@@ -44,7 +44,7 @@ const TreeProcess = props => {
   const treeProcessesStore = useSelector(state => state.treeProcesses);
   const dispatch = useDispatch();
   const router = useRouter();
-  
+
   useEffect(() => {
     dispatch(showLoading());
 
@@ -179,7 +179,7 @@ const TreeProcess = props => {
           toastSuccess('Xóa thành công !');
           setValue(!value);
           dispatch(hideLoadingChildren());
-          handleCloseDelete()
+          handleCloseDelete();
         }
       })
       .catch(err => {
@@ -189,7 +189,7 @@ const TreeProcess = props => {
   return (
     <Page className={classes.root}>
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1 || props.contractStatus === 2  ? (
+      {props.contractStatus === 1 ? (
         <div>
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
@@ -221,7 +221,7 @@ const TreeProcess = props => {
             <DialogTitle id="alert-dialog-title">
               <p style={{ fontSize: 20 }}>Xóa</p>
             </DialogTitle>
-            
+
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Bạn có chắc chắn muốn xóa !
@@ -235,6 +235,18 @@ const TreeProcess = props => {
             </DialogActions>
           </Dialog>
         </div>
+      ) : props.contractStatus === 2 ? (
+        <Alert
+          className={classes.alert}
+          variant="warning"
+          message="Hợp đồng đã bị hủy!"
+        />
+      ) : props.contractStatus === 4 ? (
+        <Alert
+          className={classes.alert}
+          variant="warning"
+          message="Hợp đồng đang trong trạng thái chờ xác nhận hủy!"
+        />
       ) : (
         <Alert
           className={classes.alert}

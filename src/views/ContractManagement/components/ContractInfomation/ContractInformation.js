@@ -29,6 +29,7 @@ const ContractInformation = props => {
   const { match, history } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [value, setValue] = useState(true); //
   const { id, tab, username } = match.params;
   console.log(id);
   const [contractInfomation, setContractInformation] = useState({});
@@ -54,7 +55,7 @@ const ContractInformation = props => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [value]);
 
   const handleTabsChange = (event, value) => {
     history.push(value);
@@ -64,8 +65,8 @@ const ContractInformation = props => {
     { value: 'general', label: 'Tổng quát' },
     { value: 'customer', label: 'Khách hàng' },
     { value: 'tree', label: 'Chăm sóc cây' },
-    { value: 'detail', label: 'Chi tiết hợp đồng' },
-    { value: 'exchange', label: 'Trao đổi' }
+    { value: 'detail', label: 'Chi tiết hợp đồng' }
+    // { value: 'exchange', label: 'Trao đổi' }
   ];
 
   if (!tab) {
@@ -81,6 +82,15 @@ const ContractInformation = props => {
       status: 3
     });
   };
+  const onConfirmCancel = () => {
+    setContractInformation({
+      ...contractInfomation,
+      status: 2
+    });
+  };
+  const onCancelContract = () => {
+    setValue(!value)
+  }
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']} />
@@ -113,6 +123,8 @@ const ContractInformation = props => {
           <GeneralInformation
             contractInfomation={contractInfomation}
             onAccept={onAccept}
+            onConfirmCancel={onConfirmCancel}
+            onCancelContract={onCancelContract}
           />
         )}
         {tab === 'detail' && (
