@@ -61,6 +61,7 @@
     "react-beautiful-dnd": "^11.0.4",
     "react-big-calendar": "^0.22.0",
     "react-chartjs-2": "^2.7.4",
+    "react-csv": "^2.0.3",
     "react-dom": "^16.8.6",
     "react-dropzone": "^10.1.5",
     "react-helmet": "^5.2.1",

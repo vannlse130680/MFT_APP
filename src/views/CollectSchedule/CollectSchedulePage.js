@@ -42,6 +42,7 @@ import { AddEditEvent, Toolbar } from './components';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'actions/loading';
 import callAPI from 'utils/callAPI';
+import { CSVLink } from 'react-csv';
 
 // let calendar = new Calendar(calendarEl, {
 //   locale: esLocale
@@ -198,7 +199,7 @@ const CollectSchedulePage = () => {
   }, [mobileDevice]);
 
   const handleEventClick = info => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     const selected = events.find(event => event.id === info.event.id);
     console.log(selected);
     var data = {
@@ -207,20 +208,18 @@ const CollectSchedulePage = () => {
       wardID: selected.ward,
       date: selected.start
     };
-    callAPI(
-      'ContractDetail/getDetailShipperPickPackageSchedule',
-      'PUT',
-      data
-    ).then(res => {
-      if (res.status === 200) {
-        dispatch(hideLoading())
-        console.log(res.data)
-        setCollectDetail(res.data);
-        handleClickOpen();
-      } 
-    }).catch((err) => {
-      console.log(err)
-    });
+    callAPI('ContractDetail/getDetailShipperPickPackageSchedule', 'PUT', data)
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(hideLoading());
+          console.log(res.data);
+          setCollectDetail(res.data);
+          handleClickOpen();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     // setEventModal({
     //   open: true,
     //   event: selected
@@ -303,10 +302,13 @@ const CollectSchedulePage = () => {
     ReactDOM.render(content, el);
     return el;
   };
+
+  
   return (
     <Page className={classes.root} title="Lịch lấy hàng">
       <AuthGuard roles={['Shipper']} />
       <Toolbar
+        
         date={date}
         onDateNext={handleDateNext}
         onDatePrev={handleDatePrev}
@@ -360,8 +362,11 @@ const CollectSchedulePage = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">
-          <Typography  align="center">
-            <span style={{ fontSize: 20, fontWeight : 'bold' }}> Danh sách vườn cần đến lấy hàng</span>
+          <Typography align="center">
+            <span style={{ fontSize: 20, fontWeight: 'bold' }}>
+              {' '}
+              Danh sách vườn cần đến lấy hàng
+            </span>
           </Typography>
         </DialogTitle>
         <Table>
@@ -395,7 +400,7 @@ const CollectSchedulePage = () => {
                     ', ' +
                     item.cityName}
                 </TableCell>
-                
+
                 <TableCell>{item.phone}</TableCell>
               </TableRow>
             ))}

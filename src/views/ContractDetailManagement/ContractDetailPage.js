@@ -59,6 +59,16 @@ const ContractDetailPage = props => {
   const handleCloseAccept = () => {
     setOpenAccept(false);
   };
+
+  const [openDeny, setOpenDeny] = React.useState(false);
+
+  const handleClickOpenDeny = () => {
+    setOpenDeny(true);
+  };
+
+  const handleCloseDeny = () => {
+    setOpenDeny(false);
+  };
   const [searchValue, setSearchValue] = useState('');
   const [contractDetailId, setContractDetailId] = useState('');
   const contractDetailStore = useSelector(state => state.contractDetail);
@@ -130,27 +140,6 @@ const ContractDetailPage = props => {
     setEventModal({
       open: false,
       event: null
-    });
-  };
-  const handleEventEdit = data => {
-    // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
-    console.log(data);
-    callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
-      if (res.status === 200) {
-        if (res.data) {
-          dispatch(hideLoadingChildren());
-          toastSuccess('Cập nhật thành công !');
-          setValue(!value);
-
-          setEventModal({
-            open: false,
-            event: null
-          });
-        } else {
-          dispatch(hideLoadingChildren());
-          toastError('Cập nhật thất bại !');
-        }
-      }
     });
   };
 
@@ -262,10 +251,6 @@ const ContractDetailPage = props => {
           toastSuccess('Cập nhật thành công !');
           setValue(!value);
 
-          setEventModal({
-            open: false,
-            event: null
-          });
           handleCloseAccept();
         } else {
           dispatch(hideLoadingChildren());
@@ -275,10 +260,40 @@ const ContractDetailPage = props => {
       }
     });
   };
+  const handleClickDenyDeliveryDate = id => {
+    setContractDetailId(id);
+    handleClickOpenDeny();
+  };
+  const handleDenyDeliveryDate = () => {
+    dispatch(showLoadingChildren());
+    callAPI(
+      `ContractDetail/rejectDeliveryDate/${contractDetailId}`,
+      'PUT',
+      null
+    ).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          dispatch(hideLoadingChildren());
+          toastSuccess('Từ chối thành công !');
+          setValue(!value);
+
+          setEventModal({
+            open: false,
+            event: null
+          });
+          handleCloseDeny();
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Từ chối thất bại !');
+          handleCloseDeny();
+        }
+      }
+    });
+  };
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1? (
+      {props.contractStatus === 1 ? (
         <div>
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
@@ -287,6 +302,7 @@ const ContractDetailPage = props => {
               contractId={router.match.params.id}
               onAcceptAll={handleClickAcceptAll}
               onAcceptDeliveryDate={handleClickAcceptDeliveryDate}
+              onDenyDeliveryDate={handleClickDenyDeliveryDate}
               resetPage={resetPage}
               className={classes.results}
               contractDetails={contractDetailStore}
@@ -302,7 +318,6 @@ const ContractDetailPage = props => {
               onAdd={handleEventAdd}
               onCancel={handleModalClose}
               onDelete={handleEventDelete}
-              onEdit={handleEventEdit}
               onEditDate={handleEditDate}
               onEditYield={handLeEditYield}
             />
@@ -313,7 +328,7 @@ const ContractDetailPage = props => {
             onClose={handleClose}
             open={open}>
             <DialogTitle id="alert-dialog-title">
-              Xác nhận ngày giao hàng
+              <p style={{ fontSize: 20 }}>Xác nhận ngày giao hàng</p>
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
@@ -332,6 +347,28 @@ const ContractDetailPage = props => {
           <Dialog
             aria-describedby="alert-dialog-description"
             aria-labelledby="alert-dialog-title"
+            onClose={handleCloseDeny}
+            open={openDeny}>
+            <DialogTitle id="alert-dialog-title">
+              <p style={{ fontSize: 20 }}>Từ chối ngày giao hàng</p>
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Bạn có chắn chắn muốn từ chối ngày giao hàng của khách hàng!
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={handleCloseDeny}>
+                Đóng
+              </Button>
+              <Button color="primary" onClick={handleDenyDeliveryDate}>
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            aria-describedby="alert-dialog-description"
+            aria-labelledby="alert-dialog-title"
             onClose={handleCloseAccept}
             open={openAccept}>
             <DialogTitle id="alert-dialog-title">
@@ -339,7 +376,9 @@ const ContractDetailPage = props => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!
+                <p style={{ fontSize: 20 }}>
+                  Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!
+                </p>
               </DialogContentText>
             </DialogContent>
             <DialogActions>

@@ -32,6 +32,9 @@ import DeliverySchedulePage from 'views/DeliverySchedule/DeliverySchedulePage';
 import UpdateSchedule from 'views/UpdateSchedule/UpdateSchedule';
 import ScheduleDetail from 'views/ScheduleDetails/ScheduleDetail';
 import ManageVisitingPage from 'views/ManageVisitingCalendar/ManageVisitingPage';
+import CancelContractReport from 'views/CancelContractReport/CancelContractReport';
+import ReportCancelPage from 'views/CancelContractReport/ReportCancelPage';
+import SignContractRepostPage from 'views/SignContractReport/SignContractRepostPage';
 
 const routes = [
   {
@@ -353,6 +356,16 @@ const routes = [
         path: '/transport/update/:id',
         exact: true,
         component: ScheduleDetail
+      },
+      {
+        path: '/report/cancelContract',
+        exact: true,
+        component: ReportCancelPage
+      },
+      {
+        path: '/report/signContract',
+        exact: true,
+        component: SignContractRepostPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

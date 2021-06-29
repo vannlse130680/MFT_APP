@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import moment, { localeData } from 'moment';
 import PropTypes from 'prop-types';
@@ -16,7 +16,10 @@ import ViewConfigIcon from '@material-ui/icons/ViewComfyOutlined';
 import ViewWeekIcon from '@material-ui/icons/ViewWeekOutlined';
 import ViewDayIcon from '@material-ui/icons/ViewDayOutlined';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgendaOutlined';
-import 'moment/locale/vi' 
+import 'moment/locale/vi';
+import callAPI from 'utils/callAPI';
+import { CSVLink } from 'react-csv';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -36,6 +39,55 @@ const Toolbar = props => {
   } = props;
 
   const classes = useStyles();
+  const headers = [
+    { label: 'STT', key: 'id' },
+    { label: 'Người nhận', key: 'customer' },
+    { label: 'Vườn', key: 'garden' },
+    { label: 'Loại trái cây', key: 'plantType' },
+    { label: 'Khối lượng', key: 'yield' },
+    { label: 'Địa chỉ', key: 'address' },
+    { label: 'Ngày', key: 'date' },
+    { label: 'Trạng thái', key: 'status' },
+  ];
+  const [dataExport, setDataExport] = useState([{}]);
+  useEffect(() => {
+    callAPI(
+      'ContractDetail/getAllCustomerDeliverySchedule',
+      'GET',
+      null
+    )
+      .then(res => {
+        if (res.status === 200) {
+          var data = res.data;
+          var dataExport = [];
+          for (let index = 0; index < data.length; index++) {
+            var item = {
+              id: index + 1,
+              customer: data[index].fullname,
+              garden: data[index].gardenName,
+              plantType: data[index].plantTypeName,
+              yield: data[index].yield,
+
+              address:
+                data[index].address +
+                ', ' +
+                data[index].wardName +
+                ', ' +
+                data[index].districtName +
+                ', ' +
+                data[index].cityName,
+              date: moment(data[index].deliveryDate).format('DD/MM/YYYY'),
+              status: ''
+            };
+            dataExport.push(item);
+          }
+          setDataExport(dataExport);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   const viewOptions = [
     {
@@ -72,9 +124,15 @@ const Toolbar = props => {
           </Typography>
         </Grid>
         <Grid item>
-          {/* <Button color="primary" onClick={onEventAdd} variant="contained">
-            Add event
-          </Button> */}
+          <CSVLink
+            data={dataExport}
+            headers={headers}
+            filename="lich_giao_hang.csv">
+            <Button color="primary" variant="contained">
+              <GetAppIcon />
+              Xuất File excel
+            </Button>
+          </CSVLink>
         </Grid>
       </Grid>
       <Grid alignItems="center" container justify="space-between" spacing={3}>
@@ -88,7 +146,9 @@ const Toolbar = props => {
         <Hidden smDown>
           <Grid item>
             <Typography variant="h3">
-              {moment(date).locale('vi').format('MMMM YYYY')}
+              {moment(date)
+                .locale('vi')
+                .format('MMMM YYYY')}
             </Typography>
           </Grid>
           {/* <Grid item>

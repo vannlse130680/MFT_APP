@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { makeStyles } from '@material-ui/styles';
-import EditIcon from '@material-ui/icons/Edit';
 import {
+  Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
-  Checkbox,
+  colors,
   Divider,
-  Button,
   Link,
   Table,
   TableBody,
@@ -20,12 +13,15 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
-  colors
+  Typography
 } from '@material-ui/core';
-
+import { makeStyles } from '@material-ui/styles';
+import clsx from 'clsx';
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -65,6 +61,7 @@ const Results = props => {
     onAcceptDeliveryDate,
     onAcceptAll,
     contractId,
+    onDenyDeliveryDate,
     ...rest
   } = props;
   // console.log(plantTypes);
@@ -140,7 +137,11 @@ const Results = props => {
   const handleAcceptClick = id => {
     onAcceptAll(id);
   };
-
+  const hanleDenyDeliveryDate = (id, event) => {
+    event.preventDefault();
+    console.log(id);
+    onDenyDeliveryDate(id);
+  };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {contractDetails.length < 1 ? (
@@ -249,14 +250,27 @@ const Results = props => {
                               </div>
                               <div>
                                 {contractDetail.status === 0 ? (
-                                  <Link
-                                    href="#"
-                                    onClick={hanleAcceptDeliveryDate.bind(
-                                      this,
-                                      contractDetail.id
-                                    )}>
-                                    Xác nhận
-                                  </Link>
+                                  <div>
+                                    {' '}
+                                    <Link
+                                      href="#"
+                                      onClick={hanleAcceptDeliveryDate.bind(
+                                        this,
+                                        contractDetail.id
+                                      )}>
+                                      Xác nhận
+                                    </Link>{' '}
+                                    |{' '}
+                                    <Link
+                                      // style={{ color: 'red' }}
+                                      href="#"
+                                      onClick={hanleDenyDeliveryDate.bind(
+                                        this,
+                                        contractDetail.id
+                                      )}>
+                                      Từ chối
+                                    </Link>
+                                  </div>
                                 ) : (
                                   'Đã xác nhận'
                                 )}

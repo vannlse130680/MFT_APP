@@ -78,7 +78,7 @@ const statusColors = {
 const statusName = {
   3: 'Chờ xác nhận',
   4: 'Chờ xác nhận hủy',
-  0: 'Đang xử lý',
+  0: 'Mới',
   1: 'Hoạt động',
   2: 'Đã hủy'
 };

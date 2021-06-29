@@ -71,16 +71,16 @@ const Header = props => {
             gutterBottom
             variant="subtitle1"
           >
-            Here’s what’s happening with your projects today
+            Chào mừng bạn đến trình quản lý của người dùng {userInforStore.role} 
           </Typography>
-          <Button
+          {/* <Button
             className={classes.summaryButton}
             edge="start"
             variant="contained"
           >
             <BarChartIcon className={classes.barChartIcon} />
             View summary
-          </Button>
+          </Button> */}
         </Grid>
         <Hidden smDown>
           <Grid

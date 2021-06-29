@@ -75,7 +75,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, accounts, onEditEvent, onDeleteAccount, onBan, ...rest } = props;
+  const {
+    className,
+    accounts,
+    onEditEvent,
+    onDeleteAccount,
+    onBan,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 
@@ -136,9 +143,9 @@ const Results = props => {
   const handleBanAccount = customer => {
     onBan(customer);
   };
-  const handleDeleteAccount = (username) => {
-    onDeleteAccount(username)
-  }
+  const handleDeleteAccount = username => {
+    onDeleteAccount(username);
+  };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {accounts.length < 1 ? (
@@ -223,7 +230,15 @@ const Results = props => {
                         <TableCell>{account.password}</TableCell>
 
                         <TableCell>{account.phone}</TableCell>
-                        <TableCell>{account.address + ', ' + account.wardName + ', ' + account.districtName + ', ' + account.cityName}</TableCell>
+                        <TableCell>
+                          {account.address +
+                            ', ' +
+                            account.wardName +
+                            ', ' +
+                            account.districtName +
+                            ', ' +
+                            account.cityName}
+                        </TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[account.status]}
@@ -234,6 +249,7 @@ const Results = props => {
 
                         <TableCell align="center">
                           <Button
+                            style={{ marginRight: 10 }}
                             className={
                               account.status === 1 ? classes.redButton : ''
                             }
@@ -247,7 +263,10 @@ const Results = props => {
                           <Button
                             size="small"
                             variant="contained"
-                            onClick={handleDeleteAccount.bind(this, account.username)}>
+                            onClick={handleDeleteAccount.bind(
+                              this,
+                              account.username
+                            )}>
                             Xóa
                           </Button>
                         </TableCell>
@@ -270,7 +289,7 @@ const Results = props => {
           />
         </CardActions>
       </Card>
-      
+
       <TableEditBar selected={selectedCustomers} />
     </div>
   );

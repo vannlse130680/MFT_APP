@@ -286,7 +286,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   // console.log(selectedPlantType);
   return (
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
-      <GoblaLoadingChildren/>
+      <GoblaLoadingChildren />
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
@@ -343,19 +343,6 @@ const AddEditEvent = forwardRef((props, ref) => {
           />
           <TextField
             className={classes.field}
-            error={hasError('yield')}
-            fullWidth
-            fullWidth
-            helperText={hasError('yield') ? formState.errors.yield[0] : null}
-            label="Năng suất bình quân (kg/vụ)"
-            name="yield"
-            onChange={handleChange}
-            type="number"
-            value={formState.values.yield || ''}
-            variant="outlined"
-          />
-          <TextField
-            className={classes.field}
             error={hasError('crops')}
             fullWidth
             fullWidth
@@ -367,6 +354,20 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.crops || ''}
             variant="outlined"
           />
+          <TextField
+            className={classes.field}
+            error={hasError('yield')}
+            fullWidth
+            fullWidth
+            helperText={hasError('yield') ? formState.errors.yield[0] : null}
+            label="Năng suất bình quân (kg/vụ)"
+            name="yield"
+            onChange={handleChange}
+            type="number"
+            value={formState.values.yield || ''}
+            variant="outlined"
+          />
+
           <TextField
             className={classes.field}
             error={hasError('price')}

@@ -39,6 +39,7 @@ const ShippAccountPage = () => {
   const [open, setOpen] = React.useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [openDelete, setOpenDelete] = React.useState(false);
+  const [openNew, setOpenNew] = React.useState(false);
   const [banUsername, setBanUsername] = useState('');
   const [deleteUsername, setDeleteUsername] = useState('');
   const [eventModal, setEventModal] = useState({
@@ -58,6 +59,14 @@ const ShippAccountPage = () => {
 
   const handleCloseDelete = () => {
     setOpenDelete(false);
+  };
+
+  const handleClickOpenNew = () => {
+    setOpenNew(true);
+  };
+
+  const handleCloseNew = () => {
+    setOpenNew(false);
   };
   const classes = useStyles();
   const [value, setValue] = useState(true); //
@@ -84,7 +93,7 @@ const ShippAccountPage = () => {
 
   const handleFilter = () => {};
   const handleSearch = keyword => {
-    setSearchValue(keyword)
+    setSearchValue(keyword);
     setResetPage(!resetPage);
     dispatch(actSearchAccounts(keyword));
   };
@@ -139,10 +148,15 @@ const ShippAccountPage = () => {
   };
   const handleEventNew = () => {
     // setSelectedPlantType(null);
-    setEventModal({
-      open: true,
-      event: null
-    });
+    if (accountsStore.length === 1) {
+      console.log('ko đc');
+      handleClickOpenNew()
+    } else {
+      setEventModal({
+        open: true,
+        event: null
+      });
+    }
   };
   const handleModalClose = () => {
     setEventModal({
@@ -239,6 +253,26 @@ const ShippAccountPage = () => {
           <Button onClick={handleDeleteAccount} color="primary" autoFocus>
             Đồng ý
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openNew}
+        onClose={handleCloseNew}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <GoblaLoadingChildren />
+        <DialogTitle id="alert-dialog-title">
+          <p style={{ fontSize: 20 }}>Không thể thêm tài khoản</p>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn không thể thêm tài khoản giao hàng mới, vì đã tồn tại một tài
+            khoản !
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseNew}>Đóng</Button>
         </DialogActions>
       </Dialog>
     </Page>

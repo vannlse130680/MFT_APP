@@ -1,9 +1,10 @@
 import { FETCH_CONTRACTS, SEARCH_CONTRACTS } from 'actions/contracts';
 const statusName = {
   2: 'Đã hủy',
-  0: 'Đang xử lý',
+  0: 'Mới',
   1: 'Hoạt động',
-  3: 'Chờ xác nhận'
+  3: 'Chờ xác nhận',
+  4: 'Chờ xác nhận hủy'
 };
 var initState = [];
 var arrSearch = [];

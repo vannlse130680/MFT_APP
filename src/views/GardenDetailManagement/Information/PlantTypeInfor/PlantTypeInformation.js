@@ -79,21 +79,27 @@ const PlantTypeInformation = props => {
               <TableCell>Tên:</TableCell>
               <TableCell>{gardenInfor.pt.plantTypeName}</TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell>Năng suất bình quân:</TableCell>
-              <TableCell>{new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.yield)}</TableCell>
-            </TableRow>
             <TableRow selected>
               <TableCell>Số vụ/năm:</TableCell>
               <TableCell>{gardenInfor.pt.crops}</TableCell>
             </TableRow>
+            <TableRow>
+              <TableCell>Năng suất bình quân:</TableCell>
+              <TableCell>
+                {new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.yield)}
+              </TableCell>
+            </TableRow>
+
             <TableRow>
               <TableCell>Nhà cung cấp:</TableCell>
               <TableCell>{gardenInfor.pt.supplier} </TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Giá:</TableCell>
-              <TableCell>{new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.price)} VNĐ</TableCell>
+              <TableCell>
+                {new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.price)}{' '}
+                VNĐ
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Trạng thái:</TableCell>

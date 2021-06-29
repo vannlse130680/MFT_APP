@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import moment, { localeData } from 'moment';
 import PropTypes from 'prop-types';
@@ -16,7 +16,10 @@ import ViewConfigIcon from '@material-ui/icons/ViewComfyOutlined';
 import ViewWeekIcon from '@material-ui/icons/ViewWeekOutlined';
 import ViewDayIcon from '@material-ui/icons/ViewDayOutlined';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgendaOutlined';
-import 'moment/locale/vi' 
+import 'moment/locale/vi';
+import { CSVLink } from 'react-csv';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import callAPI from 'utils/callAPI';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -34,9 +37,56 @@ const Toolbar = props => {
     className,
     ...rest
   } = props;
-
+  const [dataExport, setDataExport] = useState([{}]);
   const classes = useStyles();
+  const headers = [
+    { label: 'STT', key: 'id' },
+    { label: 'Người gửi', key: 'farmer' },
+    { label: 'Vườn', key: 'garden' },
+    { label: 'Loại trái cây', key: 'plantType' },
+    { label: 'Khối lượng', key: 'yield' },
+    { label: 'Địa chỉ', key: 'address' },
+    { label: 'Ngày', key: 'date' },
+    { label: 'Trạng thái', key: 'status' },
+  ];
+  useEffect(() => {
+    callAPI(
+      'ContractDetail/getAllDeliveryScheduleToFinishContract',
+      'GET',
+      null
+    )
+      .then(res => {
+        if (res.status === 200) {
+          var data = res.data;
+          var dataExport = [];
+          for (let index = 0; index < data.length; index++) {
+            var item = {
+              id: index + 1,
+              farmer: data[index].fullname,
+              garden: data[index].gardenName,
+              plantType: data[index].plantTypeName,
+              yield: data[index].yield,
 
+              address:
+                data[index].address +
+                ', ' +
+                data[index].wardName +
+                ', ' +
+                data[index].districtName +
+                ', ' +
+                data[index].cityName,
+              date: moment(data[index].delivery).format('DD/MM/YYYY'),
+              status: ''
+            };
+            dataExport.push(item);
+          }
+          setDataExport(dataExport);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
   const viewOptions = [
     {
       label: 'Month',
@@ -59,7 +109,17 @@ const Toolbar = props => {
       icon: ViewAgendaIcon
     }
   ];
+  // var headers = [
+  //   { label: 'First Name', key: 'firstname' },
+  //   { label: 'Last Name', key: 'lastname' },
+  //   { label: 'Email', key: 'email' }
+  // ];
 
+  // var data = [
+  //   { firstname: 'Ahmed', lastname: 'Tomi', email: 'ah@smthing.co.com' },
+  //   { firstname: 'Raed', lastname: 'Labes', email: 'rl@smthing.co.com' },
+  //   { firstname: 'Yezzi', lastname: 'Min l3b', email: 'ymin@cocococo.com' }
+  // ];
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
@@ -68,13 +128,16 @@ const Toolbar = props => {
             Lịch
           </Typography>
           <Typography component="h1" variant="h3">
-            Lịch lấy hàng 
+            Lịch lấy hàng
           </Typography>
         </Grid>
         <Grid item>
-          {/* <Button color="primary" onClick={onEventAdd} variant="contained">
-            Add event
-          </Button> */}
+          <CSVLink data={dataExport} headers={headers} filename="lich_lay_hang.csv">
+            <Button color="primary" variant="contained">
+              <GetAppIcon />
+              Xuất File excel
+            </Button>
+          </CSVLink>
         </Grid>
       </Grid>
       <Grid alignItems="center" container justify="space-between" spacing={3}>
@@ -88,7 +151,9 @@ const Toolbar = props => {
         <Hidden smDown>
           <Grid item>
             <Typography variant="h3">
-              {moment(date).locale('vi').format('MMMM YYYY')}
+              {moment(date)
+                .locale('vi')
+                .format('MMMM YYYY')}
             </Typography>
           </Grid>
           {/* <Grid item>

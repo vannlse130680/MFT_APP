@@ -117,7 +117,7 @@ const Results = props => {
   };
   const statusName = {
     2: 'Đã hủy',
-    0: 'Đang xử lý',
+    0: 'Mới',
     1: 'Hoạt động',
     3: 'Chờ xác nhận',
     4: 'Chờ xác nhận hủy'
@@ -227,7 +227,7 @@ const Results = props => {
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
-                            Xem
+                            Quản lý
                           </Button>
 
                           <Button

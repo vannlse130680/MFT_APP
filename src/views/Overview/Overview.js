@@ -42,11 +42,11 @@ const Overview = () => {
         <div key={index}>{item.title}</div>
       ) : null} */}
       <Header />
-      <Statistics className={classes.statistics} />
+      {/* <Statistics className={classes.statistics} />
       <Notifications className={classes.notifications} />
       <Projects className={classes.projects} />
      
-      <Todos className={classes.todos} />
+      <Todos className={classes.todos} /> */}
     </Page>
   );
 };

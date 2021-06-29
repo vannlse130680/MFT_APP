@@ -11,6 +11,7 @@ import ScheduleIcon from '@material-ui/icons/Event';
 import PlantTypeIcon from '@material-ui/icons/Eco';
 import ContractIcon from '@material-ui/icons/Assignment';
 import VistitIcon from '@material-ui/icons/NaturePeople';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 export default [
   {
     title: 'Trang',
@@ -83,6 +84,22 @@ export default [
             title: 'Lịch tham quan vườn',
             href: '/calendar/visit'
           }
+        ]
+      },
+      {
+        title: 'Thống kê',
+        href: '/report',
+        icon: EqualizerIcon,
+        children: [
+          {
+            title: 'Hủy hợp đồng',
+            href: '/report/cancelContract'
+          },
+          {
+            title: 'Ký kết hợp đồng',
+            href: '/report/signContract'
+          },
+         
         ]
       },
       {

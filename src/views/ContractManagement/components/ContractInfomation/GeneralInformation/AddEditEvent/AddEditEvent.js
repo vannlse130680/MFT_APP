@@ -141,7 +141,7 @@ const AddEditEvent = forwardRef((props, ref) => {
         values: {
           refund: parseInt(
             selectedContract.contractPrice +
-              selectedContract.contractPrice * (25 / 100)
+              selectedContract.contractPrice * (10 / 100)
           ),
           reason: selectedContract.reason
         }
@@ -207,7 +207,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm loại cây' : 'Hủy hơp đồng'}
+            {mode === 'add' ? 'Thêm loại cây' : 'Hủy hợp đồng'}
           </Typography>
 
           <TextField
