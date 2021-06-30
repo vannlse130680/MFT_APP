@@ -35,6 +35,7 @@ import ManageVisitingPage from 'views/ManageVisitingCalendar/ManageVisitingPage'
 import CancelContractReport from 'views/CancelContractReport/CancelContractReport';
 import ReportCancelPage from 'views/CancelContractReport/ReportCancelPage';
 import SignContractRepostPage from 'views/SignContractReport/SignContractRepostPage';
+import LineChartReportPage from 'views/LineChartReport/LineChartReportPage';
 
 const routes = [
   {
@@ -366,6 +367,11 @@ const routes = [
         path: '/report/signContract',
         exact: true,
         component: SignContractRepostPage
+      },
+      {
+        path: '/report/yield',
+        exact: true,
+        component: LineChartReportPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

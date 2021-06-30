@@ -90,7 +90,12 @@ export default [
         title: 'Thống kê',
         href: '/report',
         icon: EqualizerIcon,
+        
         children: [
+          {
+            title: 'Sản lượng thu hoạch',
+            href: '/report/yield'
+          },
           {
             title: 'Hủy hợp đồng',
             href: '/report/cancelContract'

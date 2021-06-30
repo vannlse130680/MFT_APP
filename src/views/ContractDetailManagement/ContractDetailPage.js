@@ -372,13 +372,11 @@ const ContractDetailPage = props => {
             onClose={handleCloseAccept}
             open={openAccept}>
             <DialogTitle id="alert-dialog-title">
-              Hoàn thành chi tiết hợp đồng
+              <p style={{ fontSize: 20 }}>Hoàn thành chi tiết hợp đồng</p>
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <p style={{ fontSize: 20 }}>
-                  Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!
-                </p>
+                Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
