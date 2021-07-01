@@ -124,7 +124,10 @@ const TopBar = props => {
       const todoList = [];
 
       for (const key in todos) {
-        todoList.push(todos[key]);
+        console.log(todos[key]);
+        if (todos[key].farmer === 'nhattc') {
+          todoList.push({ key, ...todos[key] });
+        }
       }
 
       setNotifications(todoList);
@@ -175,9 +178,12 @@ const TopBar = props => {
     let dbCon = firebase.database().ref('/notification/');
     dbCon.once('value', function(snapshot) {
       snapshot.forEach(function(child) {
-        child.ref.update({
-          isSeen: true
-        });
+        // console.log(child.val())
+        if (child.val().farmer === 'nhattc') {
+          child.ref.update({
+            isSeen: true
+          });
+        }
       });
     });
     setOpenNotifications(true);

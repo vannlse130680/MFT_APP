@@ -157,7 +157,7 @@ const CollectSchedulePage = () => {
               dispatch(hideLoading());
               var data = res.data;
               console.log(data);
-              var events = [{}];
+              var events = [];
               for (let index = 0; index < data.length; index++) {
                 var item = {
                   title:
@@ -174,6 +174,7 @@ const CollectSchedulePage = () => {
                 };
                 events.push(item);
               }
+              console.log(events)
               setEvents(events);
             }
           })

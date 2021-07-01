@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Bar, Line } from 'react-chartjs-2';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { colors } from '@material-ui/core';
+import callAPI from 'utils/callAPI';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,10 +13,40 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Chart = props => {
-  const { data: dataProp, labels, className, ...rest } = props;
+  const {
+    data: dataProp,
+    labels,
+    className,
+    selectedPlantType,
+    ...rest
+  } = props;
 
   const classes = useStyles();
   const theme = useTheme();
+
+  const [dataTest, setDataTest] = useState({
+    datasets: [],
+    labels: [2017, 2018, 2019, 2020, 2021]
+  });
+  useEffect(() => {
+    var arr = [];
+    var obj1 = {
+      fill: false,
+      borderColor: 'red',
+      label: 'Bình quân',
+      backgroundColor: 'red',
+      data: test
+    };
+    // var obj2 = {
+    //   fill: false,
+    //   borderColor: color,
+    //   label: plantType[index].plantTypeName,
+    //   backgroundColor: color,
+    //   data: test
+    // };
+    arr.push(obj1);
+    setDataTest({ ...dataTest, datasets: arr });
+  }, [selectedPlantType]);
 
   const data = {
     datasets: [
@@ -24,7 +55,7 @@ const Chart = props => {
         label: 'This year',
         backgroundColor: theme.palette.primary.main,
         data: dataProp.thisYear,
-        borderColor:  theme.palette.primary.main,
+        borderColor: theme.palette.primary.main
       }
       // {
       //   label: 'Last year',
@@ -48,7 +79,7 @@ const Chart = props => {
     responsive: true,
 
     maintainAspectRatio: false,
-    animation: false,
+    animation: false
     // // cornerRadius: 20,
     // legend: {
     //   display: false

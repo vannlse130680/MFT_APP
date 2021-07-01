@@ -3,7 +3,8 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider
+  Divider,
+  TextField
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
@@ -18,6 +19,8 @@ import callAPI from 'utils/callAPI';
 import { Chart } from './components';
 
 import CachedIcon from '@material-ui/icons/Cached';
+import { Autocomplete } from '@material-ui/lab';
+import { platform } from 'chart.js';
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
@@ -51,6 +54,7 @@ const CancelContractReport = props => {
   );
   const dispatch = useDispatch();
   const [selectedDateEnd, handleDateChangeEnd] = useState(moment().toDate());
+  const [selectedPlantType, setSelectedPlantType] = useState({});
   const [lables, setLables] = useState([]);
   const classes = useStyles();
   useEffect(() => {
@@ -79,6 +83,17 @@ const CancelContractReport = props => {
       .catch(err => {
         console.log(err);
       });
+  }, []);
+  const [plantType, setPlantType] = useState([{}]);
+  useEffect(() => {
+    var username = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).username
+      : null;
+    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null).then(res => {
+      if (res.status === 200) {
+        setPlantType(res.data);
+      }
+    });
   }, []);
   const handleReport = () => {
     dispatch(showLoading());
@@ -114,6 +129,9 @@ const CancelContractReport = props => {
     // console.log(moment(selectedDateStart).format('YYYY'));
     // console.log(moment(selectedDateEnd).format('YYYY'));
   };
+  const handleChange = (event, value) => {
+    setSelectedPlantType(value);
+  };
   return (
     <Card
       {...rest}
@@ -123,7 +141,17 @@ const CancelContractReport = props => {
         action={<GenericMoreButton />}
         title="Thống kế số lượng hợp đồng đã hủy"></CardHeader>
       <div className={classes.picker}>
-        <DatePicker
+        <Autocomplete
+          id="combo-box-demo"
+          options={plantType}
+          onChange={handleChange}
+          getOptionLabel={option => option.plantTypeName}
+          style={{ width: 300 }}
+          renderInput={params => (
+            <TextField {...params} label="Combo box" variant="outlined" />
+          )}
+        />
+        {/* <DatePicker
           style={{ marginRight: 20 }}
           views={['year']}
           label="Từ năm"
@@ -145,9 +173,9 @@ const CancelContractReport = props => {
           minDateMessage="hahaah"
           onChange={handleDateChangeEnd}
           animateYearScrolling
-        />
+        /> */}
       </div>
-      <Button
+      {/* <Button
         className={classes.button}
         variant="text"
         size="small"
@@ -156,12 +184,14 @@ const CancelContractReport = props => {
         color="primary">
         <CachedIcon />
         Thống kê
-      </Button>
+      </Button> */}
+
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
             <Chart
+              selectedPlantType={selectedPlantType}
               className={classes.chart}
               data={reportData}
               labels={lables}
