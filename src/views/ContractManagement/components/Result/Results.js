@@ -113,14 +113,16 @@ const Results = props => {
     canceled: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
-    2: colors.red[600]
+    2: colors.red[600],
+    5: colors.lightBlue[600]
   };
   const statusName = {
     2: 'Đã hủy',
     0: 'Mới',
     1: 'Hoạt động',
     3: 'Chờ xác nhận',
-    4: 'Chờ xác nhận hủy'
+    4: 'Chờ xác nhận hủy',
+    5: 'Hoàn thành'
   };
 
   const handleEditClick = contract => {
@@ -162,6 +164,7 @@ const Results = props => {
                     <TableCell>Số hợp đồng</TableCell>
                     <TableCell>Tên khách hàng</TableCell>
                     <TableCell>Mã cây</TableCell>
+                    <TableCell>Loại cây</TableCell>
                     <TableCell>Số năm thuê</TableCell>
                     <TableCell>Tổng tiền</TableCell>
                     <TableCell>Thời gian</TableCell>
@@ -200,6 +203,7 @@ const Results = props => {
                         <TableCell>{contract.contractNumber}</TableCell>
                         <TableCell>{contract.fullname}</TableCell>
                         <TableCell>{contract.treeCode}</TableCell>
+                        <TableCell>{contract.plantTypeName}</TableCell>
                         <TableCell>{contract.numOfYear}</TableCell>
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
@@ -272,3 +276,4 @@ Results.defaultProps = {
 };
 
 export default Results;
+

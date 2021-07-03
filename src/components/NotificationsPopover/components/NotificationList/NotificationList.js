@@ -83,7 +83,7 @@ const NotificationList = props => {
           component={RouterLink}
           divider={i < notifications.length - 1}
           key={notification.id}
-          to="#"
+          to="/contract"
         >
           <ListItemAvatar>{avatars[notification.type]}</ListItemAvatar>
           <ListItemText

@@ -3,7 +3,8 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider
+  Divider,
+  Typography
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
@@ -19,7 +20,13 @@ import { Chart } from './components';
 import CachedIcon from '@material-ui/icons/Cached';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
+  root: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20
+  },
   content: {
     padding: 0
   },
@@ -41,15 +48,30 @@ const useStyles = makeStyles(theme => ({
 
 const CancelContractReport = props => {
   const { className, ...rest } = props;
- 
+
   const [reportData, setReportData] = useState({});
   const [selectedDateStart, handleDateChangeStart] = useState(
     moment().toDate()
   );
+  const [number, setNumber] = useState(0);
   const dispatch = useDispatch();
   const [selectedDateEnd, handleDateChangeEnd] = useState(moment().toDate());
   const [lables, setLables] = useState([]);
   const classes = useStyles();
+  useEffect(() => {
+    var username = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).username
+      : null;
+    callAPI(`Contract/${username}`, 'GET', null).then(res => {
+      if (res.status === 200) {
+        var arr = res.data.filter(
+          o =>
+            o.status === 1 || o.status === 2 || o.status === 4 || o.status === 5
+        );
+        setNumber(arr.length);
+      }
+    });
+  }, []);
   // useEffect(() => {
   //   dispatch(showLoading());
   //   var username = JSON.parse(sessionStorage.getItem('USER'))
@@ -108,17 +130,38 @@ const CancelContractReport = props => {
   //     .catch(err => {
   //       console.log(err);
   //     });
-    
+
   // };
   return (
-    <Card
-      {...rest}
-      style={{ marginTop: 20 }}
-      className={clsx(classes.root, className)}>
-      <CardHeader
-        action={<GenericMoreButton />}
-        title="Thống kế số lượng hợp đồng đã được ký kết"></CardHeader>
-      {/* <div className={classes.picker}>
+    <div>
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <div>
+          <Typography
+            color="inherit"
+            component="h3"
+            gutterBottom
+            variant="overline">
+            Số lượng hợp đồng ký kết
+          </Typography>
+          <div className={classes.details}>
+            <Typography color="inherit" variant="h3">
+              {number} hợp đồng
+            </Typography>
+          </div>
+        </div>
+      </Card>
+      <Card {...rest} style={{ marginTop: 20 }}>
+        <CardHeader
+          action={<GenericMoreButton />}
+          title={
+            'Thống kế số lượng hợp đồng đã được ký kết từ năm ' +
+            moment()
+              .subtract(4, 'year')
+              .format('YYYY') +
+            ' đến năm ' +
+            moment().format('YYYY')
+          }></CardHeader>
+        {/* <div className={classes.picker}>
         <DatePicker
           style={{ marginRight: 20 }}
           views={['year']}
@@ -143,7 +186,7 @@ const CancelContractReport = props => {
           animateYearScrolling
         />
       </div> */}
-      {/* <Button
+        {/* <Button
         className={classes.button}
         variant="text"
         size="small"
@@ -153,19 +196,20 @@ const CancelContractReport = props => {
         <CachedIcon />
         Thống kê
       </Button> */}
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Chart
-              className={classes.chart}
-              data={reportData}
-              labels={lables}
-            />
-          </div>
-        </PerfectScrollbar>
-      </CardContent>
-    </Card>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <Chart
+                className={classes.chart}
+                data={reportData}
+                labels={lables}
+              />
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

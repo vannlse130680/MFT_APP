@@ -4,7 +4,9 @@ const statusName = {
   0: 'Mới',
   1: 'Hoạt động',
   3: 'Chờ xác nhận',
-  4: 'Chờ xác nhận hủy'
+  4: 'Chờ xác nhận hủy',
+  5: 'Hoàn thành'
+
 };
 var initState = [];
 var arrSearch = [];
@@ -12,7 +14,7 @@ var contracts = (state = initState, action) => {
   switch (action.type) {
     case FETCH_CONTRACTS:
       console.log(action.contracts);
-      state = action.contracts;
+      state = action.contracts.reverse();
 
       for (let index = 0; index < action.contracts.length; index++) {
         // state[index].treeTypeName = action.plantTypes[index].t.typeName;

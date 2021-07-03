@@ -189,9 +189,12 @@ const TreeProcess = props => {
   return (
     <Page className={classes.root}>
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1 ? (
+      {props.contractStatus === 1 || props.contractStatus === 5 ? (
         <div>
-          <Header onAddEvent={handleEventNew} />
+          <Header
+            onAddEvent={handleEventNew}
+            contractStatus={props.contractStatus}
+          />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {treeProcessesStore && (
             <Results

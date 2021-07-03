@@ -84,6 +84,9 @@ const ContractDetailPage = props => {
       .then(res => {
         if (res.status === 200) {
           console.log(res.data);
+          if (res.data.length === props.totalCrop) {
+            props.onComplete()
+          }
           dispatch(actFetchContractDetail(res.data));
           dispatch(actSearchContractDetail(searchValue));
           dispatch(hideLoading());
@@ -293,12 +296,13 @@ const ContractDetailPage = props => {
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
-      {props.contractStatus === 1 ? (
+      {props.contractStatus === 1 || props.contractStatus === 5 ? (
         <div>
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {contractDetailStore && (
             <Results
+              contractStatus={props.contractStatus}
               contractId={router.match.params.id}
               onAcceptAll={handleClickAcceptAll}
               onAcceptDeliveryDate={handleClickAcceptDeliveryDate}

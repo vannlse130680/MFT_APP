@@ -62,6 +62,7 @@ const Results = props => {
     onAcceptAll,
     contractId,
     onDenyDeliveryDate,
+    contractStatus,
     ...rest
   } = props;
   // console.log(plantTypes);
@@ -306,6 +307,7 @@ const Results = props => {
                             color="secondary"
                             onClick={handleEditClick.bind(this, contractDetail)}
                             size="small"
+                            // disabled={contractStatus === 5}
                             variant="contained">
                             Sửa
                           </Button>

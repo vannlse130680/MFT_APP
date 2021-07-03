@@ -5,7 +5,7 @@ var arrSearch = [];
 var gardens = (state = initState, action) => {
   switch (action.type) {
     case FETCH_GARDENS:
-      state = action.gardens;
+      state = action.gardens.reverse();
       
       for (let index = 0; index < action.gardens.length; index++) {
         // state[index].treeTypeName = action.plantTypes[index].t.typeName;

@@ -126,7 +126,13 @@ const ContractPage = () => {
     });
   };
   const handleEventOpenEdit = contract => {
-    if (contract.status === 1 || contract.status === 2 || contract.status === 3 || contract.status === 4  ) {
+    if (
+      contract.status === 1 ||
+      contract.status === 2 ||
+      contract.status === 3 ||
+      contract.status === 4 ||
+      contract.status === 5
+    ) {
       handleClickOpen();
     } else {
       setSelectedContract(contract);

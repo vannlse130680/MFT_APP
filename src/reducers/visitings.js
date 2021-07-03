@@ -5,7 +5,7 @@ var arrSearch = [];
 var wards = (state = initState, action) => {
   switch (action.type) {
     case FETCH_VISITINGS:
-      state = action.visitings;
+      state = action.visitings.reverse();
       for (let index = 0; index < action.visitings.length; index++) {
         
         state[index].statusName =

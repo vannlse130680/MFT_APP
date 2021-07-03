@@ -127,10 +127,20 @@ const TopBar = props => {
         console.log(todos[key]);
         if (todos[key].farmer === 'nhattc') {
           todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
+          todoList.push({ key, ...todos[key] });
         }
       }
 
-      setNotifications(todoList);
+      setNotifications(todoList.reverse());
     });
   }, []);
   // useEffect(() => {

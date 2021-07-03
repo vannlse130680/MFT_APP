@@ -89,6 +89,10 @@ const ContractInformation = props => {
     });
   };
   const onCancelContract = () => {
+    setValue(!value);
+  };
+  const onComplete = () => {
+    console.log('DONE mua vu')
     setValue(!value)
   }
   return (
@@ -129,6 +133,8 @@ const ContractInformation = props => {
         )}
         {tab === 'detail' && (
           <ContractDetailPage
+            totalCrop={contractInfomation.totalCrop}
+            onComplete={onComplete}
             contractStatus={contractInfomation.status}
             customerUsername={contractInfomation.customerUsername}
             treeId={contractInfomation.treeID}

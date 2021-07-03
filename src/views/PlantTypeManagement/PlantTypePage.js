@@ -54,6 +54,9 @@ const PlantTypePage = () => {
     callAPI(`planttype/${username}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
+          // fetch(
+          //   `http://127.0.0.1:4000/send-text?recipient=${'840985900614'}&textmessage=${'text.textmessage'}`
+          // ).catch(err => console.error(err));
           dispatch(actFetchPlantTypes(res.data));
           dispatch(actSearchPlantTypes(searchValue));
           dispatch(hideLoading());
@@ -148,24 +151,22 @@ const PlantTypePage = () => {
     });
   };
   const handleEventOpenEdit = plantType => {
-    callAPI(
-      `Contract/GetContractByPlantTypeId/${plantType.id}`,
-      'GET',
-      null
-    ).then(res => {
-      console.log(res.data);
-      if (res.data.length === 0) {
-        setSelectedPlantType(plantType);
-        setEventModal({
-          open: true,
-          event: {}
-        });
-      } else {
-        handleClickOpen()
-      }
-    }).catch((err) => {
-      console.log(err)
-    });
+    callAPI(`Contract/GetContractByPlantTypeId/${plantType.id}`, 'GET', null)
+      .then(res => {
+        console.log(res.data);
+        if (res.data.length === 0) {
+          setSelectedPlantType(plantType);
+          setEventModal({
+            open: true,
+            event: {}
+          });
+        } else {
+          handleClickOpen();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
@@ -199,7 +200,8 @@ const PlantTypePage = () => {
         <DialogTitle id="alert-dialog-title">Chỉnh sửa loại cây</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây này đang trong hợp đồng với khách hàng!
+            Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây này
+            đang trong hợp đồng với khách hàng!
           </DialogContentText>
         </DialogContent>
         <DialogActions>

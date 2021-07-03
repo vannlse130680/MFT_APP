@@ -6,7 +6,7 @@ var arrSearch = [];
 var treeProcesses = (state = initState, action) => {
   switch (action.type) {
     case FETCH_TREE_PROCESSES:
-      state = action.treeProcesses;
+      state = action.treeProcesses.reverse();
       // for (let index = 0; index < action.plantTypes.length; index++) {
       //   state[index].treeTypeName = action.plantTypes[index].t.typeName;
       //   state[index].statusName =

@@ -73,14 +73,16 @@ const statusColors = {
   3: colors.grey[600],
   0: colors.orange[600],
   1: colors.green[600],
-  2: colors.red[600]
+  2: colors.red[600],
+  5: colors.lightBlue[600]
 };
 const statusName = {
   3: 'Chờ xác nhận',
   4: 'Chờ xác nhận hủy',
   0: 'Mới',
   1: 'Hoạt động',
-  2: 'Đã hủy'
+  2: 'Đã hủy',
+  5: 'Hoàn thành'
 };
 const GeneralInformation = props => {
   const {
@@ -184,15 +186,14 @@ const GeneralInformation = props => {
         console.log(err);
       });
   };
-  const handleCancelContract = (data) => {
+  const handleCancelContract = data => {
     callAPI('Contract/cancelContract', 'PUT', data)
       .then(res => {
         if (res.data) {
           toastSuccess('Xác nhận thành công !');
           dispatch(hideLoadingChildren());
-          handleModalClose()
+          handleModalClose();
           onCancelContract();
-
         } else {
           dispatch(hideLoadingChildren());
           toastError('Xác nhận không thành công !');
@@ -306,7 +307,8 @@ const GeneralInformation = props => {
                   </TableRow>
                   {contractInfomation.status === 1 ||
                   contractInfomation.status === 2 ||
-                  contractInfomation.status === 4 ? (
+                  contractInfomation.status === 4 ||
+                  contractInfomation.status === 5 ? (
                     <TableRow>
                       <TableCell selected style={{ fontWeight: 'bold' }}>
                         Giá trị hợp đồng hiện tại:

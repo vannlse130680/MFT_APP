@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Header = props => {
-  const {onAddEvent, className, ...rest } = props;
+  const {onAddEvent, className, contractStatus, ...rest } = props;
 
   const classes = useStyles();
   // const onAddEventHandle = (params) => {
@@ -47,6 +47,7 @@ const Header = props => {
             color="primary"
             variant="contained"
             onClick={onAddEvent}
+            disabled={contractStatus === 5 }
           >
             <AddIcon />
             Cập nhật tình trạng cây

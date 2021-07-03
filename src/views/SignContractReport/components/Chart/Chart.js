@@ -32,7 +32,7 @@ const Chart = props => {
     var username = JSON.parse(sessionStorage.getItem('USER'))
       ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
-    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null).then(res => {
+    callAPI(`PlantType/getPlantTypeInfoByUsername/${username}`, 'GET', null).then(res => {
       if (res.status === 200) {
         setPlantType(res.data);
       }

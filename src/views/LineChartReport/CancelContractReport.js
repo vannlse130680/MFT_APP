@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   chart: {
     padding: theme.spacing(4, 2, 0, 2),
-    height: 400
+    height: 600
   },
   picker: {
     padding: theme.spacing(3)
@@ -48,48 +48,71 @@ const CancelContractReport = props => {
     thisYear: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 10],
     lastYear: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13]
   };
-  const [reportData, setReportData] = useState({});
+  const [reportData, setReportData] = useState({
+    plan: [],
+    real: []
+  });
   const [selectedDateStart, handleDateChangeStart] = useState(
     moment().toDate()
   );
   const dispatch = useDispatch();
   const [selectedDateEnd, handleDateChangeEnd] = useState(moment().toDate());
-  const [selectedPlantType, setSelectedPlantType] = useState({});
+  const [selectedPlantType, setSelectedPlantType] = useState(null);
   const [lables, setLables] = useState([]);
   const classes = useStyles();
-  useEffect(() => {
-    dispatch(showLoading());
-    var username = JSON.parse(sessionStorage.getItem('USER'))
-      ? JSON.parse(sessionStorage.getItem('USER')).username
-      : null;
-    callAPI(`Report/CancelPlantTypeReport/${username}`, 'GET', null)
-      .then(res => {
-        if (res.status === 200) {
-          dispatch(hideLoading());
-          var data = res.data;
-          var lables = [];
-          var reportData = { thisYear: [] };
-          for (let index = 0; index < data.length; index++) {
-            console.log(data[index].plantTypeName);
-            lables.push(data[index].plantTypeName);
-
-            reportData.thisYear.push(data[index].cancelTime);
-          }
-          console.log(lables);
-          setLables(lables);
-          setReportData(reportData);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
   const [plantType, setPlantType] = useState([{}]);
   useEffect(() => {
+  
+    async function fetchMyAPI() {
+      var arrPlan = [];
+      var arrReal = [];
+      var arrLables = [];
+      if (selectedPlantType === null) return;
+      dispatch(showLoading())
+      for (let index = 4; index >= 0; index--) {
+        var data = {
+          plantTypeID: selectedPlantType.id,
+          inputYear: parseInt(
+            moment()
+              .subtract(index, 'year')
+              .format('YYYY')
+          )
+        };
+        arrLables.push(
+          parseInt(
+            moment()
+              .subtract(index, 'year')
+              .format('YYYY')
+          )
+        );
+        console.log(data);
+        await callAPI('Report/calculateYield', 'PUT', data).then(res => {
+          if (res.status === 200) {
+            arrReal.push(res.data);
+            arrPlan.push(selectedPlantType.yield * selectedPlantType.crops);
+          }
+        });
+      }
+      setReportData({
+        plan: arrPlan,
+        real: arrReal
+      });
+      setLables(arrLables)
+      dispatch(hideLoading())
+    }
+
+    fetchMyAPI();
+  }, [selectedPlantType]);
+
+  useEffect(() => {
     var username = JSON.parse(sessionStorage.getItem('USER'))
       ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
-    callAPI(`PlantType/getPlantTypeName/${username}`, 'GET', null).then(res => {
+    callAPI(
+      `PlantType/getPlantTypeInfoByUsername/${username}`,
+      'GET',
+      null
+    ).then(res => {
       if (res.status === 200) {
         setPlantType(res.data);
       }
@@ -148,7 +171,7 @@ const CancelContractReport = props => {
           getOptionLabel={option => option.plantTypeName}
           style={{ width: 300 }}
           renderInput={params => (
-            <TextField {...params} label="Combo box" variant="outlined" />
+            <TextField {...params} label="Chọn loại trái cây" variant="outlined" />
           )}
         />
         {/* <DatePicker
