@@ -123,6 +123,7 @@ const Results = props => {
     0: colors.grey[600],
     1: colors.orange[600],
     2: colors.green[600],
+    3: colors.lightBlue[600],
     rejected: colors.red[600]
   };
 

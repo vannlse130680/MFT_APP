@@ -11,7 +11,10 @@ import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
-import { actFetchSchedulesCollect, actSearchSchedulesCollect } from 'actions/schedulesCollect';
+import {
+  actFetchSchedulesCollect,
+  actSearchSchedulesCollect
+} from 'actions/schedulesCollect';
 
 import { AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
@@ -46,11 +49,13 @@ const UpdateSchedule = () => {
   const schedulesCollectStore = useSelector(state => state.schedulesCollect);
   const dispatch = useDispatch();
   useEffect(() => {
-    
     dispatch(showLoading());
-   
-    
-    callAPI('ContractDetail/getAllDeliveryScheduleToFinishContract', 'GET', null)
+
+    callAPI(
+      'ContractDetail/getAllDeliveryScheduleToFinishContract',
+      'GET',
+      null
+    )
       .then(res => {
         if (res.status === 200) {
           dispatch(actFetchSchedulesCollect(res.data));
@@ -146,25 +151,26 @@ const UpdateSchedule = () => {
       event: null
     });
   };
-  const handleEventOpenEdit = plantType => {
-    callAPI(
-      `Contract/GetContractByPlantTypeId/${plantType.id}`,
-      'GET',
-      null
-    ).then(res => {
-      console.log(res.data);
-      if (res.data.length === 0) {
-        setSelectedPlantType(plantType);
-        setEventModal({
-          open: true,
-          event: {}
-        });
-      } else {
-        handleClickOpen()
-      }
-    }).catch((err) => {
-      console.log(err)
-    });
+  const handleEventOpenEdit = schedule => {
+    setSelectedPlantType(schedule);
+    console.log(schedule)
+    callAPI(`PackageDelivery/checkContractDetailCanFinshOrNot/${schedule.id}`, 'GET', null).then((res) => {
+      if(res.status === 200) {
+        if(res.data) {
+          console.log('hahaha')
+          dispatch(showLoading())
+          callAPI(`ContractDetail/updateDeliveryCrop/${schedule.id}`, 'PUT', null).then((res) => {
+            if(res.status === 200) {
+              dispatch(hideLoading())
+              toastSuccess('Cập nhật thành công !')
+              setValue(!value)
+            }
+          })
+        } else {
+          handleClickOpen()
+        }
+      } 
+    })
   };
 
   return (
@@ -195,10 +201,10 @@ const UpdateSchedule = () => {
         aria-labelledby="alert-dialog-title"
         onClose={handleClose}
         open={open}>
-        <DialogTitle id="alert-dialog-title">Chỉnh sửa loại cây</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Xác nhận</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn không thể chỉnh sửa loại cây này vì có cây thuộc loại cây này đang trong hợp đồng với khách hàng!
+            Bạn không thể xác nhận lịch vân chuyển vì chưa giao thành công tất các đơn hàng
           </DialogContentText>
         </DialogContent>
         <DialogActions>

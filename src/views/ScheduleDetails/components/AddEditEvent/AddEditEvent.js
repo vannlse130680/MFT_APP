@@ -32,50 +32,50 @@ import { showLoadingChildren } from 'actions/childrenLoading';
 import NumberFormat from 'react-number-format';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 const schema = {
-  name: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    length: {
-      maximum: 100,
-      message: 'Tối đa chỉ 100 kí tự '
-    }
-  },
-  supplier: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    length: {
-      maximum: 200,
-      message: 'Tối đa chỉ 200 kí tự '
-    }
-  },
-  test: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
-  },
-  yield: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    numericality: {
-      greaterThan: 0,
-      lessThanOrEqualTo: 1000,
-      message: 'Năng suất phải lớn 0 và bé hơn 10000kg'
-    }
-  },
-  crops: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    numericality: {
-      onlyInteger: true,
-      greaterThan: 0,
-      lessThanOrEqualTo: 100,
-      message: 'Số vụ phải lớn 0 và bé hơn 100 và là số nguyên'
-    }
-  },
-  price: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
-    numericality: {
-      onlyInteger: true,
+  // name: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   length: {
+  //     maximum: 100,
+  //     message: 'Tối đa chỉ 100 kí tự '
+  //   }
+  // },
+  // supplier: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   length: {
+  //     maximum: 200,
+  //     message: 'Tối đa chỉ 200 kí tự '
+  //   }
+  // },
+  // test: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  // },
+  // yield: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   numericality: {
+  //     greaterThan: 0,
+  //     lessThanOrEqualTo: 1000,
+  //     message: 'Năng suất phải lớn 0 và bé hơn 10000kg'
+  //   }
+  // },
+  // crops: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   numericality: {
+  //     onlyInteger: true,
+  //     greaterThan: 0,
+  //     lessThanOrEqualTo: 100,
+  //     message: 'Số vụ phải lớn 0 và bé hơn 100 và là số nguyên'
+  //   }
+  // },
+  // price: {
+  //   presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+  //   numericality: {
+  //     onlyInteger: true,
 
-      greaterThan: 0,
-      lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
-    }
-  }
+  //     greaterThan: 0,
+  //     lessThanOrEqualTo: 100000000,
+  //     message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+  //   }
+  // }
 };
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -171,22 +171,22 @@ const AddEditEvent = forwardRef((props, ref) => {
       });
   }, []);
 
-  useEffect(() => {
-    if (selectedPlantType)
-      setFormState(formState => ({
-        ...formState,
-        values: {
-          name: selectedPlantType.plantTypeName,
-          supplier: selectedPlantType.supplier,
-          yield: selectedPlantType.yield,
-          crops: selectedPlantType.crops,
-          price: selectedPlantType.price,
-          test: 'a',
-          auto: selectedPlantType.t,
-          status: selectedPlantType.status
-        }
-      }));
-  }, []);
+  // useEffect(() => {
+  //   if (selectedPlantType)
+  //     setFormState(formState => ({
+  //       ...formState,
+  //       values: {
+  //         name: selectedPlantType.plantTypeName,
+  //         supplier: selectedPlantType.supplier,
+  //         yield: selectedPlantType.yield,
+  //         crops: selectedPlantType.crops,
+  //         price: selectedPlantType.price,
+  //         test: 'a',
+  //         auto: selectedPlantType.t,
+  //         status: selectedPlantType.status
+  //       }
+  //     }));
+  // }, []);
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
   // const [values, setValues] = useState(event || defaultEvent);
@@ -266,22 +266,23 @@ const AddEditEvent = forwardRef((props, ref) => {
   };
 
   const handleEdit = () => {
+    console.log(formState.values)
     dispatch(showLoadingChildren());
-    var username = JSON.parse(sessionStorage.getItem('USER')).username;
-    // console.log(formState.values);
-    var data = {
-      id: selectedPlantType.id,
-      treeTypeID: formState.values.auto.id,
-      plantTypeName: formState.values.name,
-      farmerUsername: username,
-      supplier: formState.values.supplier,
-      crops: parseInt(formState.values.crops),
-      yield: parseFloat(formState.values.yield),
-      price: parseInt(formState.values.price),
-      status: formState.values.status
-    };
-    // console.log(data)
-    onEdit(data);
+    // var username = JSON.parse(sessionStorage.getItem('USER')).username;
+    // // console.log(formState.values);
+    // var data = {
+    //   id: selectedPlantType.id,
+    //   treeTypeID: formState.values.auto.id,
+    //   plantTypeName: formState.values.name,
+    //   farmerUsername: username,
+    //   supplier: formState.values.supplier,
+    //   crops: parseInt(formState.values.crops),
+    //   yield: parseFloat(formState.values.yield),
+    //   price: parseInt(formState.values.price),
+    //   status: formState.values.status
+    // };
+    // // console.log(data)
+    onEdit(formState.values.status);
   };
   // console.log(selectedPlantType);
   return (
@@ -290,9 +291,9 @@ const AddEditEvent = forwardRef((props, ref) => {
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
+            {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật'}
           </Typography>
-          <Autocomplete
+          {/* <Autocomplete
             // onChange={handleChange}
             // value={selectedPlantType.t}
             defaultValue={selectedPlantType ? selectedPlantType.t : null}
@@ -382,7 +383,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             // type="number"
             value={formState.values.price || ''}
             variant="outlined"
-          />
+          /> */}
 
           {selectedPlantType ? (
             <FormControl className={classes.field} fullWidth variant="outlined">
@@ -396,8 +397,8 @@ const AddEditEvent = forwardRef((props, ref) => {
                 name="status"
                 onChange={handleChange}
                 value={formState.values.status}>
-                <MenuItem value={1}>Hoạt động</MenuItem>
-                <MenuItem value={0}>Tạm ngừng</MenuItem>
+                <MenuItem value={1}>Giao hàng thành công</MenuItem>
+                <MenuItem value={0}>Giao hàng hất bại</MenuItem>
               </Select>
             </FormControl>
           ) : null}

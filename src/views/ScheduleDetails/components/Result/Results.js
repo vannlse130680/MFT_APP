@@ -55,6 +55,13 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   }
 }));
+const statusColors = {
+  canceled: colors.grey[600],
+  0: colors.orange[600],
+  1: colors.green[600],
+  rejected: colors.red[600]
+};
+
 
 const Results = props => {
   const { className, schedules, onEditEvent, resetPage, ...rest } = props;
@@ -114,13 +121,13 @@ const Results = props => {
   };
   const statusColors = {
     canceled: colors.grey[600],
-    2: colors.orange[600],
+    0: colors.orange[600],
     1: colors.green[600],
-    rejected: colors.red[600]
+    2: colors.red[600]
   };
 
-  const handleEditClick = plantType => {
-    onEditEvent(plantType);
+  const handleEditClick = schedule => {
+    onEditEvent(schedule);
   };
 
   return (
@@ -157,18 +164,17 @@ const Results = props => {
                     </TableCell> */}
                     <TableCell>STT</TableCell>
                     <TableCell>Người nhận</TableCell>
-                    
-                    
+
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Địa chỉ</TableCell>
 
                     <TableCell>Ngày giao hàng</TableCell>
-                    
+                    <TableCell>Trạng thái</TableCell>
+                    <TableCell>Thao tác</TableCell>
 
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
                     <TableCell>Reviews</TableCell> */}
-                    
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -197,7 +203,7 @@ const Results = props => {
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{schedule.fullname}</TableCell>
-                      
+
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
                             schedule.yield
@@ -216,7 +222,23 @@ const Results = props => {
                         <TableCell>
                           {moment(schedule.deliveryDate).format('DD/MM/YYYY')}
                         </TableCell>
-                      
+                        <TableCell>
+                          <Label
+                            color={statusColors[schedule.status]}
+                            variant="contained">
+                            {schedule.statusName}
+                          </Label>
+                        </TableCell>
+                        <TableCell>
+                          {' '}
+                          <Button
+                            color="secondary"
+                            size="small"
+                            onClick={handleEditClick.bind(this, schedule)}
+                            variant="contained">
+                            Cập nhật
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -240,7 +262,5 @@ const Results = props => {
     </div>
   );
 };
-
-
 
 export default Results;

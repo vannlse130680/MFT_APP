@@ -2,17 +2,21 @@ import {
   FETCH_SCHEDULES_DETAILS,
   SEARCH_SCHEDULES_DETAILS
 } from 'actions/scheduleDetails';
-
+const statusName = {
+  2: 'Giao thất bại',
+  0: 'Đang giao',
+  1: 'Giao thành công'
+};
 var initState = [];
 var arrSearch = [];
 var scheduleDetails = (state = initState, action) => {
   switch (action.type) {
     case FETCH_SCHEDULES_DETAILS:
       state = action.schedules;
-      // for (let index = 0; index < action.schedules.length; index++) {
-      //   state[index].statusName =
-      //     action.schedules[index].status === 2 ? 'Đang giao' : 'Đã giao ';
-      // }
+      for (let index = 0; index < action.schedules.length; index++) {
+        state[index].statusName =
+        statusName[action.schedules[index].status];
+      }
 
       // state.plantTypeName = action.plantTypes.t.typeName
       arrSearch = state;

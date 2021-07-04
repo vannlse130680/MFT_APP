@@ -11,7 +11,10 @@ import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
-import { actFetchScheduleDetails, actSearchScheduleDetails } from 'actions/scheduleDetails';
+import {
+  actFetchScheduleDetails,
+  actSearchScheduleDetails
+} from 'actions/scheduleDetails';
 import {
   actFetchSchedulesCollect,
   actSearchSchedulesCollect
@@ -39,8 +42,7 @@ const ScheduleDetail = props => {
   const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
   const { id } = props.match.params;
-  
-  
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -122,23 +124,45 @@ const ScheduleDetail = props => {
   const handleEventEdit = data => {
     // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
     console.log(data);
-    callAPI('PlantType/updatePlantType', 'PUT', data).then(res => {
-      if (res.status === 200) {
-        if (res.data) {
-          dispatch(hideLoadingChildren());
-          toastSuccess('Cập nhật thành công !');
-          setValue(!value);
+    console.log(selectedPlantType.id)
+    if (data === 1) {
+      callAPI(`PackageDelivery/updatePackageSuccessStatus/${selectedPlantType.id}`, 'PUT', null).then(res => {
+        if (res.status === 200) {
+          if (res.data) {
+            dispatch(hideLoadingChildren());
+            toastSuccess('Cập nhật thành công !');
+            setValue(!value);
 
-          setEventModal({
-            open: false,
-            event: null
-          });
-        } else {
-          dispatch(hideLoadingChildren());
-          toastError('Cập nhật thất bại !');
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            dispatch(hideLoadingChildren());
+            toastError('Cập nhật thất bại !');
+          }
         }
-      }
-    });
+      });
+    }
+    if (data === 0) {
+      callAPI(`PackageDelivery/updatePackageFailStatus/${selectedPlantType.id}`, 'PUT', null).then(res => {
+        if (res.status === 200) {
+          if (res.data) {
+            dispatch(hideLoadingChildren());
+            toastSuccess('Cập nhật thành công !');
+            setValue(!value);
+
+            setEventModal({
+              open: false,
+              event: null
+            });
+          } else {
+            dispatch(hideLoadingChildren());
+            toastError('Cập nhật thất bại !');
+          }
+        }
+      });
+    }
   };
 
   const handleFilter = () => {};
@@ -154,24 +178,15 @@ const ScheduleDetail = props => {
       event: null
     });
   };
-  // const handleEventOpenEdit = plantType => {
-  //   callAPI(`Contract/GetContractByPlantTypeId/${plantType.id}`, 'GET', null)
-  //     .then(res => {
-  //       console.log(res.data);
-  //       if (res.data.length === 0) {
-  //         setSelectedPlantType(plantType);
-  //         setEventModal({
-  //           open: true,
-  //           event: {}
-  //         });
-  //       } else {
-  //         handleClickOpen();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
+  const handleEventOpenEdit = (schedule) => {
+    // console.log('hahahah')
+    setSelectedPlantType(schedule)
+    console.log(schedule)
+    setEventModal({
+      open: true,
+      event: {}
+    });
+  };
 
   return (
     <Page className={classes.root} title="Chi tiết lịch vận chuyển">
@@ -183,10 +198,10 @@ const ScheduleDetail = props => {
           resetPage={resetPage}
           className={classes.results}
           schedules={schedulesDetailsStore}
-          // onEditEvent={handleEventOpenEdit}
+          onEditEvent={handleEventOpenEdit}
         />
       )}
-      {/* <Modal onClose={handleModalClose} open={eventModal.open}>
+      <Modal onClose={handleModalClose} open={eventModal.open}>
         <AddEditEvent
           selectedPlantType={selectedPlantType}
           event={eventModal.event}
@@ -195,7 +210,7 @@ const ScheduleDetail = props => {
           onDelete={handleEventDelete}
           onEdit={handleEventEdit}
         />
-      </Modal> */}
+      </Modal>
       <Dialog
         aria-describedby="alert-dialog-description"
         aria-labelledby="alert-dialog-title"
