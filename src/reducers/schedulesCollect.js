@@ -5,7 +5,7 @@ var arrSearch = [];
 var schedulesCollect = (state = initState, action) => {
   switch (action.type) {
     case FETCH_SCHEDULES_COLLECT:
-      state = action.schedules;
+      state = action.schedules.reverse();
       for (let index = 0; index < action.schedules.length; index++) {
      
         state[index].statusName =

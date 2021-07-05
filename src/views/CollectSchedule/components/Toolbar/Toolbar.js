@@ -51,7 +51,7 @@ const Toolbar = props => {
   ];
   useEffect(() => {
     callAPI(
-      'ContractDetail/getAllDeliveryScheduleToFinishContract',
+      'ContractDetail/getAllDeliveryScheduleToExportExcel',
       'GET',
       null
     )

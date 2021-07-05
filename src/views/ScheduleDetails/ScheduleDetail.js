@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 const ScheduleDetail = props => {
   const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
-  const { id } = props.match.params;
+  const { id, status } = props.match.params;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -124,9 +124,13 @@ const ScheduleDetail = props => {
   const handleEventEdit = data => {
     // setEvents(events => events.map(e => (e.id === event.id ? event : e)));
     console.log(data);
-    console.log(selectedPlantType.id)
+    console.log(selectedPlantType.id);
     if (data === 1) {
-      callAPI(`PackageDelivery/updatePackageSuccessStatus/${selectedPlantType.id}`, 'PUT', null).then(res => {
+      callAPI(
+        `PackageDelivery/updatePackageSuccessStatus/${selectedPlantType.id}`,
+        'PUT',
+        null
+      ).then(res => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
@@ -145,7 +149,11 @@ const ScheduleDetail = props => {
       });
     }
     if (data === 0) {
-      callAPI(`PackageDelivery/updatePackageFailStatus/${selectedPlantType.id}`, 'PUT', null).then(res => {
+      callAPI(
+        `PackageDelivery/updatePackageFailStatus/${selectedPlantType.id}`,
+        'PUT',
+        null
+      ).then(res => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
@@ -178,10 +186,10 @@ const ScheduleDetail = props => {
       event: null
     });
   };
-  const handleEventOpenEdit = (schedule) => {
+  const handleEventOpenEdit = schedule => {
     // console.log('hahahah')
-    setSelectedPlantType(schedule)
-    console.log(schedule)
+    setSelectedPlantType(schedule);
+    console.log(schedule);
     setEventModal({
       open: true,
       event: {}
@@ -195,6 +203,7 @@ const ScheduleDetail = props => {
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {schedulesDetailsStore && (
         <Results
+          status={status}
           resetPage={resetPage}
           className={classes.results}
           schedules={schedulesDetailsStore}

@@ -84,9 +84,9 @@ const ContractDetailPage = props => {
       .then(res => {
         if (res.status === 200) {
           console.log(res.data);
-          if (res.data.length === props.totalCrop) {
-            props.onComplete()
-          }
+
+          props.onComplete();
+
           dispatch(actFetchContractDetail(res.data));
           dispatch(actSearchContractDetail(searchValue));
           dispatch(hideLoading());

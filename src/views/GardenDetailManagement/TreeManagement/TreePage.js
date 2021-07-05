@@ -5,7 +5,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  DialogContentText
+  DialogContentText,
+  TextField
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,8 +24,54 @@ import Results from './Result/Results';
 import AddEditEvent from './AddEditEvent';
 import { actFetchTREES, actSearchTREES } from 'actions/trees';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
-import { hideLoadingChildren } from 'actions/childrenLoading';
+import {
+  hideLoadingChildren,
+  showLoadingChildren
+} from 'actions/childrenLoading';
+import { validate } from 'validate.js';
+function removeVietnameseTones(str) {
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+  str = str.replace(/đ/g, 'd');
+  str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A');
+  str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E');
+  str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I');
+  str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O');
+  str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U');
+  str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y');
+  str = str.replace(/Đ/g, 'D');
+  // Some system encode vietnamese combining accent as individual utf-8 characters
+  // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+  str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ''); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+  str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+  // Remove extra spaces
+  // Bỏ các khoảng trắng liền nhau
+  str = str.replace(/ + /g, ' ');
+  str = str.trim();
+  // Remove punctuations
+  // Bỏ dấu câu, kí tự đặc biệt
+  str = str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    ' '
+  );
+  return str;
+}
+const schema = {
+  copyNum: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
 
+      greaterThan: 0,
+      lessThanOrEqualTo: 100000000,
+      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+    }
+  }
+};
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -35,15 +82,44 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TreePage = props => {
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: {},
+    touched: {},
+    errors: {}
+  });
+  useEffect(() => {
+    const errors = validate(formState.values, schema, { fullMessages: false });
+
+    setFormState(formState => ({
+      ...formState,
+      isValid: errors ? false : true,
+      errors: errors || {}
+    }));
+  }, [formState.values]);
+  const hasError = field =>
+    formState.touched[field] && formState.errors[field] ? true : false;
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = React.useState(false);
- 
+  const plantTypeName = useSelector(
+    state => state.gardenInfor.pt.plantTypeName
+  );
+  const gardenInfor = useSelector(state => state.gardenInfor);
+  const [copyNum, setCopyNum] = useState(0);
+  const [openCopy, setOpenCopy] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleClickOpenCopy = () => {
+    setOpenCopy(true);
+  };
+
+  const handleCloseCopy = () => {
+    setOpenCopy(false);
   };
   const { gardenId } = props;
   const classes = useStyles();
@@ -142,7 +218,7 @@ const TreePage = props => {
   const handleFilter = () => {};
   const handleSearch = keyword => {
     // setResetPage(!resetPage)
-    setSearchValue(keyword)
+    setSearchValue(keyword);
     dispatch(actSearchTREES(keyword));
   };
   const handleEventNew = () => {
@@ -165,16 +241,77 @@ const TreePage = props => {
       });
     }
   };
+  const handleClickCopy = tree => {
+    setFormState({ isValid: false, values: {}, touched: {}, errors: {} });
+    setSelectedTree(tree);
+    handleClickOpenCopy();
+    console.log(tree);
+  };
+  const handleChange = (event, value) => {
+    if (!event) return;
 
+    event.persist();
+
+    if (event.target.name) {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          [event.target.name]:
+            event.target.type === 'checkbox'
+              ? event.target.checked
+              : event.target.value === ''
+              ? null
+              : event.target.value
+        },
+        touched: {
+          ...formState.touched,
+          [event.target.name]: true
+        }
+      }));
+    }
+  };
+  const handleCopy = () => {
+    async function fetchMyAPI() {
+      dispatch(showLoadingChildren());
+      var number = parseInt(formState.values.copyNum);
+      for (let index = 0; index < number; index++) {
+        var data = {
+          treeCode:
+            'C' +
+            removeVietnameseTones(
+              plantTypeName
+                .split(/\s/)
+                .reduce((response, word) => (response += word.slice(0, 1)), '')
+            ) +
+            Math.floor(100000 + Math.random() * 900000),
+          gardenId: parseInt(gardenId),
+          price: selectedTree.price,
+          standard: selectedTree.standard,
+          image: null,
+          description: selectedTree.description
+        };
+        console.log(data);
+        await callAPI('Tree/addTree', 'POST', data);
+      }
+      setValue(!value);
+      dispatch(hideLoadingChildren());
+      handleCloseCopy();
+      toastSuccess('Sao chép thành công !');
+    }
+
+    fetchMyAPI();
+    console.log(formState.values);
+  };
   return (
     <Page className={classes.root} title="Quản lý cây">
       <AuthGuard roles={['Nông dân']} />
       <TreeHeader onAddEvent={handleEventNew} />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      
 
       {treesStore && (
         <Results
+          onCopy={handleClickCopy}
           className={classes.results}
           onEditEvent={handleEventOpenEdit}
           trees={treesStore}
@@ -185,6 +322,7 @@ const TreePage = props => {
         onClose={handleModalClose}
         open={eventModal.open}>
         <AddEditEvent
+          plantTypeName={plantTypeName}
           event={eventModal.event}
           onAdd={handleEventAdd}
           onCancel={handleModalClose}
@@ -193,6 +331,43 @@ const TreePage = props => {
           selectedTree={selectedTree}
         />
       </Modal>
+      <Dialog
+        aria-describedby="alert-dialog-description"
+        aria-labelledby="alert-dialog-title"
+        onClose={handleCloseCopy}
+        open={openCopy}>
+        <GoblaLoadingChildren />
+        <DialogTitle id="alert-dialog-title">Sao chép cây</DialogTitle>
+        <DialogContent>
+          <TextField
+            className={classes.field}
+            error={hasError('copyNum')}
+            fullWidth
+            helperText={
+              hasError('copyNum') ? formState.errors.copyNum[0] : null
+            }
+            label="Số cây được sao chép"
+            type="number"
+            name="copyNum"
+            onChange={handleChange}
+            value={formState.values.copyNum || ''}
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleCloseCopy}>
+            Đóng
+          </Button>
+          <Button
+            color="primary"
+            size="small"
+            onClick={handleCopy}
+            variant="contained"
+            disabled={!formState.isValid}>
+            Sao chép
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         aria-describedby="alert-dialog-description"
         aria-labelledby="alert-dialog-title"

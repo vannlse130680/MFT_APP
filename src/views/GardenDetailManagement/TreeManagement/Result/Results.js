@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, trees, onEditEvent, ...rest } = props;
+  const { className, trees, onEditEvent, onCopy, ...rest } = props;
   const router = useRouter();
 
   console.log(trees);
@@ -121,7 +121,6 @@ const Results = props => {
     2: colors.red[600]
   };
   const statusName = {
-    
     0: 'Tạm ngừng',
     1: 'Hoạt động',
     2: 'Đã bán',
@@ -131,6 +130,9 @@ const Results = props => {
   const handleEditClick = tree => {
     onEditEvent(tree);
   };
+  const handleCopyClick = (tree) => {
+    onCopy(tree)
+  }
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {trees.length < 1 ? (
@@ -241,14 +243,23 @@ const Results = props => {
                           </Button>
 
                           <Button
-                         
                             color="secondary"
+                            className={classes.actionIcon}
                             onClick={handleEditClick.bind(this, tree)}
                             size="small"
                             variant="contained">
                             {' '}
                             {/* <EditIcon className={classes.buttonIcon} /> */}
                             Sửa
+                          </Button>
+                          <Button
+                            color="secondary"
+                            onClick={handleCopyClick.bind(this, tree)}
+                            size="small"
+                            variant="contained">
+                            {' '}
+                            {/* <EditIcon className={classes.buttonIcon} /> */}
+                            Sao chép
                           </Button>
                         </TableCell>
                       </TableRow>

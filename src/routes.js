@@ -354,7 +354,7 @@ const routes = [
         component: UpdateSchedule
       },
       {
-        path: '/transport/update/:id',
+        path: '/transport/update/:id/:status',
         exact: true,
         component: ScheduleDetail
       },

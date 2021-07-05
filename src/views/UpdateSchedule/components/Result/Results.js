@@ -224,15 +224,16 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/transport/update/${schedule.id}`}
+                            to={`/transport/update/${schedule.id}/${schedule.status}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
-                            Xem
+                            Quản lý
                           </Button>
                           <Button
                             color="secondary"
                             size="small"
+                            disabled={schedule.status === 3}
                             onClick={handleEditClick.bind(this, schedule)}
                             variant="contained">
                             Xác nhận 

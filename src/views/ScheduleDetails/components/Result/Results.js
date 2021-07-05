@@ -62,9 +62,15 @@ const statusColors = {
   rejected: colors.red[600]
 };
 
-
 const Results = props => {
-  const { className, schedules, onEditEvent, resetPage, ...rest } = props;
+  const {
+    className,
+    schedules,
+    onEditEvent,
+    resetPage,
+    status,
+    ...rest
+  } = props;
   // console.log(plantTypes);
   const classes = useStyles();
   useEffect(() => {
@@ -130,6 +136,7 @@ const Results = props => {
     onEditEvent(schedule);
   };
 
+  console.log(status)
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {schedules.length < 1 ? (
@@ -234,9 +241,10 @@ const Results = props => {
                           <Button
                             color="secondary"
                             size="small"
+                            disabled={parseInt(status)  === 3}
                             onClick={handleEditClick.bind(this, schedule)}
                             variant="contained">
-                            Cập nhật
+                            Cập nhật 
                           </Button>
                         </TableCell>
                       </TableRow>
