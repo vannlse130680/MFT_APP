@@ -67,8 +67,8 @@ const schema = {
       onlyInteger: true,
 
       greaterThan: 0,
-      lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+      lessThanOrEqualTo: 10,
+      message: 'Số lần phải lớn 0 và bé hơn 10 và là số nguyên'
     }
   }
 };
