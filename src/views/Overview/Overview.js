@@ -10,6 +10,12 @@ import {
   Todos
 } from './components';
 import { result } from 'validate.js';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'actions/loading';
+import callAPI from 'utils/callAPI';
+import Contracts from './components/Contracts/Contracts';
+import HarvestSchedules from './components/HarvestSchedules/HarvestSchedules';
+import Visitings from './components/Visitings.js/Visitings';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,21 +38,75 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+var username = JSON.parse(sessionStorage.getItem('USER'))
+  ? JSON.parse(sessionStorage.getItem('USER')).username
+  : null;
+
 const Overview = () => {
   const classes = useStyles();
-  
+  const dispatch = useDispatch();
+  const [contracts, setContracts] = useState([]);
+  const [visitings, setVisitings] = useState([]);
+  const [harvestSchedule, setHarvestSchedule] = useState([])
+  const [profile, setProfile] = useState({});
+  useEffect(() => {
+    console.log('cc');
+    dispatch(showLoading());
+    var user = sessionStorage.getItem('USER');
+    if (user) {
+      var data = JSON.parse(user);
+      // console.log(data);
+      console.log('lala');
+      setProfile(data);
+     
+      callAPI(
+        `Dashboard/GetPendingContractByUsername/${data.username}`,
+        'GET',
+        null
+      ).then(res => {
+        if (res.status === 200) {
+          setContracts(res.data)
+        }
+      });
+      callAPI(
+        `Dashboard/getAllVisitingScheduleByUsernameForDashboard/${data.username}`,
+        'GET',
+        null
+      ).then(res => {
+        if (res.status === 200) {
+          setVisitings(res.data)
+        }
+      });
+      callAPI(
+        `ContractDetail/getHarvestDateByFarmerUsername/${data.username}`,
+        'GET',
+        null
+      ).then(res => {
+        if (res.status === 200) {
+          setHarvestSchedule(res.data)
+        }
+      });
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, []);
 
   return (
     <Page className={classes.root} title="Trang chủ">
-      {/* {todoList ? todoList.map((item, index) => 
-        <div key={index}>{item.title}</div>
-      ) : null} */}
       <Header />
-      {/* <Statistics className={classes.statistics} />
-      <Notifications className={classes.notifications} />
-      <Projects className={classes.projects} />
-     
-      <Todos className={classes.todos} /> */}
+      {profile.role === 'Nông dân' ? (
+        <div>
+          {' '}
+          <Statistics className={classes.statistics} contracts={contracts} visitings={visitings} harvestSchedule={harvestSchedule}/>
+          {/* <Notifications className={classes.notifications} /> */}
+          {/* <Projects className={classes.projects} /> */}
+          <Contracts className={classes.projects} contracts={contracts}/>
+          <HarvestSchedules className={classes.projects} harvestSchedule={harvestSchedule}/>
+          <Visitings className={classes.projects} visitings={visitings}/>
+          {/* <Todos className={classes.todos} /> */}
+        </div>
+      ) : null}
     </Page>
   );
 };

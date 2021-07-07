@@ -54,6 +54,20 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   }
 }));
+const statusColors = {
+  0: colors.orange[600],
+  1: colors.green[600],
+  2: colors.red[600],
+  5: colors.lightBlue[600]
+};
+const statusName = {
+  2: 'Giao thất bại',
+  0: 'Mới',
+  1: 'Giao thành công',
+  3: 'Chờ xác nhận',
+  4: 'Chờ xác nhận hủy',
+  5: 'Hoàn thành'
+};
 
 const Results = props => {
   const { className, plantTypes, onEditEvent, resetPage, ...rest } = props;
@@ -111,12 +125,7 @@ const Results = props => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const statusColors = {
-    canceled: colors.grey[600],
-    0: colors.orange[600],
-    1: colors.green[600],
-    rejected: colors.red[600]
-  };
+  
 
   const handleEditClick = plantType => {
     onEditEvent(plantType);
@@ -159,6 +168,7 @@ const Results = props => {
                     <TableCell>Số điện thoại</TableCell>
                     <TableCell>Địa chỉ</TableCell>
                     <TableCell>Khối lượng</TableCell>
+                    <TableCell>Trạng thái</TableCell>
 
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -207,7 +217,14 @@ const Results = props => {
                             plantType.yield
                           )}
                         </TableCell>
-
+                        <TableCell>
+                          {' '}
+                          <Label
+                            color={statusColors[plantType.status]}
+                            variant="contained">
+                            {statusName[plantType.status]}
+                          </Label>
+                        </TableCell>
                         {/* <TableCell>
                           <Label
                             color={statusColors[plantType.status]}

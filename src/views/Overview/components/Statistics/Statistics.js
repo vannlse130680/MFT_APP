@@ -40,89 +40,55 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Statistics = props => {
-  const { className, ...rest } = props;
-
+  const { className, contracts, visitings, harvestSchedule, ...rest } = props;
+  console.log(contracts.length);
   const classes = useStyles();
   const [statistics, setStatistics] = useState(null);
 
-  useEffect(() => {
-    let mounted = true;
+  // useEffect(() => {
+  //   let mounted = true;
 
-    const fetchStatistics = () => {
-      axios.get('/api/account/statistics').then(response => {
-        if (mounted) {
-          setStatistics(response.data.statistics);
-        }
-      });
-    };
+  //   const fetchStatistics = () => {
+  //     axios.get('/api/account/statistics').then(response => {
+  //       if (mounted) {
+  //         setStatistics(response.data.statistics);
+  //       }
+  //     });
+  //   };
 
-    fetchStatistics();
+  //   fetchStatistics();
 
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, []);
 
-  if (!statistics) {
-    return null;
-  }
+  // if (!statistics) {
+  //   return null;
+  // }
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Grid
-        alignItems="center"
-        container
-        justify="space-between"
-      >
-        <Grid
-          className={classes.item}
-          item
-          md={3}
-          sm={6}
-          xs={12}
-        >
-          <Typography variant="h2">${statistics.payout}</Typography>
-          <Typography
-            className={classes.overline}
-            variant="overline"
-          >
-            Next payout
+    <Card {...rest} className={clsx(classes.root, className)}>
+      <Grid alignItems="center" container justify="space-between">
+        <Grid className={classes.item} item md={4} sm={6} xs={12}>
+          <Typography variant="h2">{contracts.length}</Typography>
+          <Typography className={classes.overline} variant="overline">
+            hợp đồng mới
           </Typography>
         </Grid>
-        <Grid
-          className={classes.item}
-          item
-          md={3}
-          sm={6}
-          xs={12}
-        >
-          <Typography variant="h2">${statistics.projects}</Typography>
-          <Typography
-            className={classes.overline}
-            variant="overline"
-          >
-            Total products
+        <Grid className={classes.item} item md={4} sm={6} xs={12}>
+          <Typography variant="h2">{harvestSchedule.length}</Typography>
+          <Typography className={classes.overline} variant="overline">
+            Số cây sắp thu hoạch
           </Typography>
         </Grid>
-        <Grid
-          className={classes.item}
-          item
-          md={3}
-          sm={6}
-          xs={12}
-        >
-          <Typography variant="h2">{statistics.visitors}</Typography>
-          <Typography
-            className={classes.overline}
-            variant="overline"
-          >
-            Today's Visitors
+        <Grid className={classes.item} item md={4} sm={6} xs={12}>
+          <Typography variant="h2">{visitings.length}</Typography>
+          <Typography className={classes.overline} variant="overline">
+            Lịch hẹn thăm vườn
           </Typography>
         </Grid>
-        <Grid
+        {/* <Grid
           className={classes.item}
           item
           md={3}
@@ -149,7 +115,7 @@ const Statistics = props => {
           >
             Watching now
           </Typography>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Card>
   );
