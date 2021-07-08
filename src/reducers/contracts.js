@@ -1,4 +1,5 @@
 import { FETCH_CONTRACTS, SEARCH_CONTRACTS } from 'actions/contracts';
+import moment from 'moment';
 const statusName = {
   2: 'Đã hủy',
   0: 'Mới',
@@ -19,6 +20,7 @@ var contracts = (state = initState, action) => {
       for (let index = 0; index < action.contracts.length; index++) {
         // state[index].treeTypeName = action.plantTypes[index].t.typeName;
         state[index].statusName = statusName[action.contracts[index].status];
+        state[index].searchDate = moment(action.contracts[index].date).format('DD/MM/YYYY');
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

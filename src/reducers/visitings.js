@@ -1,4 +1,5 @@
 import { FETCH_VISITINGS, SEARCH_VISITINGS } from 'actions/visitings';
+import moment from 'moment';
 
 var initState = [];
 var arrSearch = [];
@@ -7,9 +8,11 @@ var wards = (state = initState, action) => {
     case FETCH_VISITINGS:
       state = action.visitings.reverse();
       for (let index = 0; index < action.visitings.length; index++) {
-        
         state[index].statusName =
           action.visitings[index].status === 1 ? 'Đã xác nhận' : 'Đang chờ';
+        state[index].searchDate = moment(action.visitings[index].visitDate).format(
+          'DD/MM/YYYY'
+        );
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

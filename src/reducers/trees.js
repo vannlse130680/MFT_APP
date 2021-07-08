@@ -1,4 +1,5 @@
 import { FETCH_TREES, SEARCH_TREES } from 'actions/trees';
+import moment from 'moment';
 
 var initState = [];
 var arrSearch = [];
@@ -16,6 +17,7 @@ var trees = (state = initState, action) => {
         state[index].description = state[index].description
           ? state[index].description
           : '';
+        state[index].searchDate = moment(action.trees[index].addDate).format('DD/MM/YYYY')
         state[index].statusName =
           action.trees[index].status === 1
             ? 'Hoạt động'

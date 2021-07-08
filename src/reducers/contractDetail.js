@@ -2,6 +2,7 @@ import {
   FETCH_CONTRACT_DETAIL,
   SEARCH_CONTRACT_DETAIL
 } from 'actions/contractDetail';
+import moment from 'moment';
 const statusName = {
   0: 'Bắt đầu',
   1: 'Chờ thu hoạch',
@@ -29,6 +30,15 @@ var contractDetail = (state = initState, action) => {
             : action.contractDetail[index].deliveryDate;
         state[index].statusName =
           statusName[action.contractDetail[index].status];
+        state[index].searchStart = moment(
+          action.contractDetail[index].startHarvest
+        ).format('DD/MM/YYYY');
+        state[index].searchEnd = moment(
+          action.contractDetail[index].endHarvest
+        ).format('DD/MM/YYYY');
+        state[index].searchDeli = moment(
+          action.contractDetail[index].deliveryDate
+        ).format('DD/MM/YYYY');
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName

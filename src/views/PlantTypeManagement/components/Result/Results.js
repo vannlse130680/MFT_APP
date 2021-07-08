@@ -225,13 +225,13 @@ const Results = props => {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           {plantType.plantTypeName}{' '}
-                          {'C' + removeVietnameseTones(plantType.plantTypeName
+                          {/* {'C' + removeVietnameseTones(plantType.plantTypeName
                             .split(/\s/)
                             .reduce(
                               (response, word) =>
                                 (response += word.slice(0, 1)),
                               ''
-                            ))}
+                            ))} */}
                         </TableCell>
                         <TableCell>{plantType.t.typeName}</TableCell>
                         <TableCell>

@@ -1,5 +1,8 @@
-import { FETCH_TREE_PROCESSES, SEARCH_TREE_PROCESSES } from "actions/treeProcesses";
-
+import {
+  FETCH_TREE_PROCESSES,
+  SEARCH_TREE_PROCESSES
+} from 'actions/treeProcesses';
+import moment from 'moment';
 
 var initState = [];
 var arrSearch = [];
@@ -7,11 +10,11 @@ var treeProcesses = (state = initState, action) => {
   switch (action.type) {
     case FETCH_TREE_PROCESSES:
       state = action.treeProcesses.reverse();
-      // for (let index = 0; index < action.plantTypes.length; index++) {
-      //   state[index].treeTypeName = action.plantTypes[index].t.typeName;
-      //   state[index].statusName =
-      //     action.plantTypes[index].status === 1 ? 'Hoạt động' : 'Tạm ngưng';
-      // }
+      for (let index = 0; index < action.treeProcesses.length; index++) {
+        state[index].searchDate = moment(
+          action.treeProcesses[index].date
+        ).format('DD/MM/YYYY');
+      }
 
       // state.plantTypeName = action.plantTypes.t.typeName
       arrSearch = state;
