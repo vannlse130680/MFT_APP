@@ -26,6 +26,7 @@ import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
 import { toastError, toastSuccess } from 'utils/toastHelper';
 import Header from './components/Header';
+import BackHeader from './components/Header/BackHeader';
 import Results from './components/Result/Results';
 
 const useStyles = makeStyles(theme => ({
@@ -127,6 +128,7 @@ const WardPage = props => {
     <Page className={classes.root} title="Quản lý địa chỉ">
       <AuthGuard roles={['Quản lý']} />
       <Header onAddEvent={handleEventImport} />
+      <BackHeader/>
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {wardsStore && (
         <Results

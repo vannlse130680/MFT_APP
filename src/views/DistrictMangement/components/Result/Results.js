@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, districts, onEditEvent, onBan, ...rest } = props;
+  const { className, districts, onEditEvent, onBan,cityId, ...rest } = props;
 
   const classes = useStyles();
 
@@ -191,7 +191,7 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/managementAddress/districts/${district.id}`}
+                            to={`/managementAddress/districts/${district.id}/${cityId}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}

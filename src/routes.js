@@ -36,6 +36,7 @@ import CancelContractReport from 'views/CancelContractReport/CancelContractRepor
 import ReportCancelPage from 'views/CancelContractReport/ReportCancelPage';
 import SignContractRepostPage from 'views/SignContractReport/SignContractRepostPage';
 import LineChartReportPage from 'views/LineChartReport/LineChartReportPage';
+import FeebBackViewPage from 'views/FeedBackView/FeebBackViewPage';
 
 const routes = [
   {
@@ -333,7 +334,7 @@ const routes = [
         component: DistrictPage
       },
       {
-        path: '/managementAddress/districts/:districtId',
+        path: '/managementAddress/districts/:districtId/:cityId',
         exact: true,
         component: WardPage
       },
@@ -372,6 +373,11 @@ const routes = [
         path: '/report/yield',
         exact: true,
         component: LineChartReportPage
+      },
+      {
+        path: '/feedBack/:username',
+        exact: true,
+        component: FeebBackViewPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

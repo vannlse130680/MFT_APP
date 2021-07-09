@@ -82,9 +82,7 @@ const Results = props => {
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  
 
-  
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
       ? accounts.map(garden => garden.id)
@@ -189,9 +187,7 @@ const Results = props => {
                       <TableRow
                         hover
                         key={index}
-                        selected={
-                          selectedCustomers.indexOf(account.id) !== -1
-                        }>
+                        selected={selectedCustomers.indexOf(account.id) !== -1}>
                         {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={
@@ -226,7 +222,15 @@ const Results = props => {
                         <TableCell>{account.password}</TableCell>
 
                         <TableCell>{account.phone}</TableCell>
-                        <TableCell>{account.address + ', ' + account.wardName + ', ' + account.districtName + ', ' + account.cityName}</TableCell>
+                        <TableCell>
+                          {account.address +
+                            ', ' +
+                            account.wardName +
+                            ', ' +
+                            account.districtName +
+                            ', ' +
+                            account.cityName}
+                        </TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[account.status]}
@@ -237,20 +241,27 @@ const Results = props => {
 
                         <TableCell align="center">
                           <Button
+                            className={classes.actionIcon}
+                            color="primary"
+                            component={RouterLink}
+                            size="small"
+                            to={`/feedBack/${account.username}`}
+                            variant="contained">
+                            {' '}
+                            {/* <ViewIcon className={classes.buttonIcon} /> */}
+                            Xem
+                          </Button>
+                          <Button
                             className={
                               account.status === 1 ? classes.redButton : ''
                             }
                             size="small"
-                            onClick={handleBanAccount.bind(
-                              this,
-                              account
-                            )}
+                            onClick={handleBanAccount.bind(this, account)}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             {account.status === 1 ? 'Khóa' : 'Mở khóa'}
                           </Button>
-                        
                         </TableCell>
                       </TableRow>
                     ))}
@@ -272,7 +283,6 @@ const Results = props => {
         </CardActions>
       </Card>
       <TableEditBar selected={selectedCustomers} />
-    
     </div>
   );
 };

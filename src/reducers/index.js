@@ -19,6 +19,7 @@ import wards from './wards';
 import schedulesCollect from './schedulesCollect';
 import scheduleDetails from './scheduleDetails'
 import visitings from './visitings'
+import feedbacks from './feedbacks'
 const rootReducer = combineReducers({
   session: sessionReducer,
   loading,
@@ -38,7 +39,8 @@ const rootReducer = combineReducers({
   wards,
   schedulesCollect,
   scheduleDetails,
-  visitings
+  visitings,
+  feedbacks
 });
 
 export default rootReducer;
