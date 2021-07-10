@@ -16,6 +16,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import PeopleIcon from '@material-ui/icons/PeopleOutlined';
 import CodeIcon from '@material-ui/icons/Code';
 import StoreIcon from '@material-ui/icons/Store';
+import ContractIcon from '@material-ui/icons/Assignment';
 
 import gradients from 'utils/gradients';
 
@@ -49,9 +50,9 @@ const NotificationList = props => {
   const classes = useStyles();
 
   const avatars = {
-    order: (
+    contract: (
       <Avatar className={classes.avatarBlue}>
-        <PaymentIcon />
+        <ContractIcon />
       </Avatar>
     ),
     user: (
@@ -82,14 +83,14 @@ const NotificationList = props => {
           className={classes.listItem}
           component={RouterLink}
           divider={i < notifications.length - 1}
-          key={notification.id}
-          to="/contract"
+          key={notification.key}
+          to={notification.type === 'contract' ? '/contract' : '/management/visiting'}
         >
           <ListItemAvatar>{avatars[notification.type]}</ListItemAvatar>
           <ListItemText
             primary={notification.title}
             primaryTypographyProps={{ variant: 'body1' }}
-            secondary={moment(notification.created_at).fromNow()}
+            secondary={moment(notification.created).locale('vi').fromNow()}
           />
           <ArrowForwardIcon className={classes.arrowForwardIcon} />
         </ListItem>

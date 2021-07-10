@@ -30,7 +30,7 @@ const EmptyList = props => {
       className={clsx(classes.root, className)}
     >
       <div className={classes.image} />
-      <Typography variant="h4">There's nothing here...</Typography>
+      <Typography variant="h4">Bạn không có thông báo nào...</Typography>
     </div>
   );
 };

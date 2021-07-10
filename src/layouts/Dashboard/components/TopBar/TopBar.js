@@ -117,6 +117,9 @@ const TopBar = props => {
   const [openNotifications, setOpenNotifications] = useState(false);
   const [todoList, setTodoList] = useState([]);
   useEffect(() => {
+    var username = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).username
+      : null;
     const todoRef = firebase.database().ref('notification');
 
     todoRef.on('value', snapshot => {
@@ -124,18 +127,9 @@ const TopBar = props => {
       const todoList = [];
 
       for (const key in todos) {
-        console.log(todos[key]);
-        if (todos[key].farmer === 'nhattc') {
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
-          todoList.push({ key, ...todos[key] });
+        console.log(todos[key].farmer);
+        if (todos[key].farmer === username) {
+          console.log('ccc');
           todoList.push({ key, ...todos[key] });
         }
       }
@@ -189,10 +183,14 @@ const TopBar = props => {
     dbCon.once('value', function(snapshot) {
       snapshot.forEach(function(child) {
         // console.log(child.val())
-        if (child.val().farmer === 'nhattc') {
+        var username = JSON.parse(sessionStorage.getItem('USER'))
+          ? JSON.parse(sessionStorage.getItem('USER')).username
+          : null;
+        if (child.val().farmer === username) {
           child.ref.update({
             isSeen: true
           });
+          // child.ref.remove()
         }
       });
     });
@@ -234,6 +232,7 @@ const TopBar = props => {
     var result = 0;
     for (let index = 0; index < arr.length; index++) {
       if (!arr[index].isSeen) {
+        // toastSuccess("La la la")
         result += 1;
       }
     }
