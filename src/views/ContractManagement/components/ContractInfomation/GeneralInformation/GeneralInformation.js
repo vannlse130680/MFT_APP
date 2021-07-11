@@ -17,7 +17,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow
+  TableRow, BottomNavigationAction
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -36,6 +36,7 @@ import { toastError, toastSuccess } from 'utils/toastHelper';
 import useRouter from 'utils/useRouter';
 import AddEditEvent from './AddEditEvent';
 import Header from './Header/Header';
+import firebase from '../../../../../firebase/firebase';
 
 const useStyles = makeStyles(theme => ({
   root: { padding: theme.spacing(3) },
@@ -144,6 +145,16 @@ const GeneralInformation = props => {
           dispatch(hideLoadingChildren());
           handleClose();
           onAccept();
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer : contractInfomation.customerUsername,
+            isSeen: false,
+            title: 'Hợp đồng ' + contractInfomation.contractNumber + ' đã được cập nhật',
+            type: 'contract',
+            created: moment().toISOString()
+          }
+          dbCon.push(noti)
+
         } else {
           dispatch(hideLoadingChildren());
           toastError('Gửi hợp đồng không thành công !');

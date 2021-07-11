@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 import { NotificationList, EmptyList } from './components';
+import firebase from '../../firebase/firebase';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,10 +24,26 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center'
   }
 }));
+const handleDeleteAll = () => {
+  
+  let dbCon = firebase.database().ref('/notification/');
+  dbCon.once('value', function(snapshot) {
+    snapshot.forEach(function(child) {
+      // console.log(child.val())
+      var username = JSON.parse(sessionStorage.getItem('USER'))
+        ? JSON.parse(sessionStorage.getItem('USER')).username
+        : null;
+      if (child.val().farmer === username) {
+        
+        child.ref.remove()
+      }
+    });
+  });
+};
 
 const NotificationsPopover = props => {
   const { notifications, anchorEl, ...rest } = props;
-  console.log(notifications)
+  console.log(notifications);
   const classes = useStyles();
 
   return (
@@ -36,8 +53,7 @@ const NotificationsPopover = props => {
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'center'
-      }}
-    >
+      }}>
       <div className={classes.root}>
         <CardHeader title="Thông báo" />
         <Divider />
@@ -48,12 +64,8 @@ const NotificationsPopover = props => {
         )}
         <Divider />
         <CardActions className={classes.actions}>
-          <Button
-            component={RouterLink}
-            size="small"
-            to="#"
-          >
-            Xóa tất cả 
+          <Button size="small" onClick={handleDeleteAll}>
+            Xóa tất cả
           </Button>
         </CardActions>
       </div>

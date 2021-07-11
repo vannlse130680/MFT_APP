@@ -55,7 +55,7 @@ const NotificationList = props => {
         <ContractIcon />
       </Avatar>
     ),
-    user: (
+    visit: (
       <Avatar className={classes.avatarOrange}>
         <PeopleIcon />
       </Avatar>

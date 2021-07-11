@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
@@ -113,13 +113,55 @@ const TopBar = props => {
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
   const [openSearchPopover, setOpenSearchPopover] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [role, setRole] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [openNotifications, setOpenNotifications] = useState(false);
   const [todoList, setTodoList] = useState([]);
+  // const popularSearches = [
+  //   'Devias React Dashboard',
+  //   'Devias',
+  //   'Admin Pannel',
+  //   'Project',
+  //   'Pages'
+  // ];
+  const [popularSearches, setPopularSearches] = useState([
+    'Quản lý hợp đồng',
+    'Quản lý loại cây',
+    'Quản lý vườn',
+    'Lịch thu hoạch',
+    'Yêu cầu tham quan vườn',
+    'Lịch tham quan vườn',
+    'Thống kê sản lượng thu hoạch',
+    'Thống kê hủy hợp đồng',
+    'Thống kê ký kết hợp đồng',
+    'Thông tin cá nhân',
+    'Đổi mật khẩu'
+  ]);
+  const [popularSearchesAdmin, setPopularSearchesAdmin] = useState([
+    'Quản lý tài khoản nông dân',
+    'Quản lý tài khoản khách hàng',
+    'Quản lý tài khoản giao hàng',
+    'Thông tin cá nhân',
+    'Đổi mật khẩu'
+  ]);
+  const [popularSearchesShipper, setPopularSearchesShipper] = useState([
+    'Lịch lấy hàng',
+    'Lịch giao hàng',
+    'Cập nhật lịch vận chuyển',
+    'Thông tin cá nhân',
+    'Đổi mật khẩu'
+  ]);
+  const [popularSearchesShow, setPopularSearchesShow] = useState([]);
+
   useEffect(() => {
     var username = JSON.parse(sessionStorage.getItem('USER'))
       ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
+    var role = JSON.parse(sessionStorage.getItem('USER'))
+      ? JSON.parse(sessionStorage.getItem('USER')).role
+      : null;
+    setRole(role);
+    console.log(role);
     const todoRef = firebase.database().ref('notification');
 
     todoRef.on('value', snapshot => {
@@ -129,7 +171,6 @@ const TopBar = props => {
       for (const key in todos) {
         console.log(todos[key].farmer);
         if (todos[key].farmer === username) {
-          console.log('ccc');
           todoList.push({ key, ...todos[key] });
         }
       }
@@ -137,6 +178,17 @@ const TopBar = props => {
       setNotifications(todoList.reverse());
     });
   }, []);
+  useEffect(() => {
+    if (role === 'Nông dân') {
+      setPopularSearchesShow(popularSearches);
+    }
+    if (role === 'Quản lý') {
+      setPopularSearchesShow(popularSearchesAdmin);
+    }
+    if (role === 'Shipper') {
+      setPopularSearchesShow(popularSearchesShipper);
+    }
+  }, [role]);
   // useEffect(() => {
   //   let mounted = true;
 
@@ -177,6 +229,21 @@ const TopBar = props => {
   const handlePricingClose = () => {
     setPricingModalOpen(false);
   };
+  useEffect(() => {
+    var arrSearch =
+      role === 'Nông dân'
+        ? popularSearches
+        : role === 'Quản lý'
+        ? popularSearchesAdmin
+        : popularSearchesShipper;
+    if (arrSearch) {
+      var filtered = arrSearch.filter(function(str) {
+        return str.toUpperCase().includes(searchValue.toUpperCase());
+      });
+      setPopularSearchesShow(filtered);
+      console.log(filtered);
+    }
+  }, [searchValue]);
 
   const handleNotificationsOpen = () => {
     let dbCon = firebase.database().ref('/notification/');
@@ -217,13 +284,6 @@ const TopBar = props => {
     setOpenSearchPopover(false);
   };
 
-  const popularSearches = [
-    'Devias React Dashboard',
-    'Devias',
-    'Admin Pannel',
-    'Project',
-    'Pages'
-  ];
   const handleClickNoti = () => {
     console.log('hahahah');
   };
@@ -237,6 +297,82 @@ const TopBar = props => {
       }
     }
     return result;
+  };
+
+  const handleSeachClick = search => {
+    // 'Quản lý hợp đồng',
+    //   'Quản lý loại cây',
+    //   'Quản lý vườn',
+    //   'Lịch thu hoạch',
+    //   'Yêu cầu tham vườn',
+    //   'Lịch tham quan vườn',
+    //   'Thống kê sản lượng thu hoạch',
+    //   'Thông kê hủy hợp đồng',
+    //   'Thống kê ký kết hợp đồng',
+    //   'Thông tin cá nhân',
+    //   'Đổi mật khẩu';
+    // 'Quản lý tài khoản nông dân',
+    // 'Quản lý tài khoản khách hàng',
+    // 'Quản lý tài khoản giao hàng',
+    // 'Lịch lấy hàng',
+    // 'Lịch giao hàng',
+    // 'Cập nhật lịch vận chuyển',
+
+    if (search === 'Quản lý hợp đồng') {
+      history.push('/contract');
+    }
+    if (search === 'Quản lý loại cây') {
+      history.push('/plantType');
+    }
+    if (search === 'Quản lý vườn') {
+      history.push('/gardenManagement/garden');
+    }
+    if (search === 'Lịch thu hoạch') {
+      history.push('/calendar/harvest');
+    }
+    if (search === 'Thống kê sản lượng thu hoạch') {
+      history.push('/report/yield');
+    }
+    if (search === 'Yêu cầu tham quan vườn') {
+      history.push('/management/visiting');
+    }
+    if (search === 'Lịch tham quan vườn') {
+      history.push('/calendar/visit');
+    }
+    if (search === 'Thống kê hủy hợp đồng') {
+      history.push('/report/cancelContract');
+    }
+    if (search === 'Thống kê ký kết hợp đồng') {
+      history.push('/report/signContract');
+    }
+    if (search === 'Thông tin cá nhân') {
+      history.push('/settings/general');
+    }
+    if (search === 'Đổi mật khẩu') {
+      history.push('/settings/security');
+    }
+
+
+    if (search === 'Quản lý tài khoản nông dân') {
+      history.push('/managementAccount/farmers');
+    }
+    if (search === 'Quản lý tài khoản khách hàng') {
+      history.push('/managementAccount/customers');
+    }
+    if (search === 'Quản lý tài khoản giao hàng') {
+      history.push('/managementAccount/shippers');
+    }
+
+
+    if (search === 'Lịch lấy hàng') {
+      history.push('/transport/collect');
+    }
+    if (search === 'Lịch giao hàng') {
+      history.push('/transport/delivery');
+    }
+    if (search === 'Cập nhật lịch vận chuyển') {
+      history.push('/transport/update');
+    }
   };
   return (
     <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
@@ -289,11 +425,11 @@ const TopBar = props => {
             <ClickAwayListener onClickAway={handleSearchPopverClose}>
               <Paper className={classes.searchPopperContent} elevation={3}>
                 <List>
-                  {popularSearches.map(search => (
+                  {popularSearchesShow.map(search => (
                     <ListItem
                       button
                       key={search}
-                      onClick={handleSearchPopverClose}>
+                      onClick={handleSeachClick.bind(this, search)}>
                       <ListItemIcon>
                         <SearchIcon />
                       </ListItemIcon>
