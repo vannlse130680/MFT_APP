@@ -59,8 +59,8 @@ const schema = {
   fullName: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 100,
-      message: 'Tối đa chỉ 100 kí tự '
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự '
     }
   },
 
@@ -76,8 +76,8 @@ const schema = {
       message: 'Email không hợp lệ'
     },
     length: {
-      maximum: 50,
-      message: 'Tố đa chỉ 50 kí tự'
+      maximum: 100,
+      message: 'Tố đa chỉ 100 kí tự'
     }
   },
   birthday: {
@@ -332,7 +332,7 @@ const GeneralSettings = props => {
                 label="Họ và tên"
                 name="fullName"
                 onChange={handleChange}
-                required
+                
                 value={formState.values.fullName || ''}
                 variant="outlined"
               />
@@ -356,7 +356,7 @@ const GeneralSettings = props => {
                       moment(formState.values.birthday).format('YYYY-MM-DD') ||
                       ''
                     }
-                    label="Ngày sinh *"
+                    label="Ngày sinh "
                     type="date"
                     // defaultValue="1999-06-03"
                     className={classes.textField}
@@ -402,7 +402,7 @@ const GeneralSettings = props => {
                 }
                 name="email"
                 onChange={handleChange}
-                required
+                
                 value={formState.values.email || ''}
                 variant="outlined"
               />
@@ -570,7 +570,7 @@ const GeneralSettings = props => {
               variant="contained"
               color="primary"
               onClick={handleClickUpdate}>
-              Sửa
+              Cập nhật
             </Button>
           )}
         </CardActions>

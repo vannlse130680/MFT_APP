@@ -24,6 +24,8 @@ import { toastError, toastSuccess } from 'utils/toastHelper';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
+import firebase from '../../firebase/firebase';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -153,24 +155,48 @@ const UpdateSchedule = () => {
   };
   const handleEventOpenEdit = schedule => {
     setSelectedPlantType(schedule);
-    console.log(schedule)
-    callAPI(`PackageDelivery/checkContractDetailCanFinshOrNot/${schedule.id}`, 'GET', null).then((res) => {
-      if(res.status === 200) {
-        if(res.data) {
-          console.log('hahaha')
-          dispatch(showLoading())
-          callAPI(`ContractDetail/updateDeliveryCrop/${schedule.id}`, 'PUT', null).then((res) => {
-            if(res.status === 200) {
-              dispatch(hideLoading())
-              toastSuccess('Cập nhật thành công !')
-              setValue(!value)
+    console.log(schedule);
+    callAPI(
+      `PackageDelivery/checkContractDetailCanFinshOrNot/${schedule.id}`,
+      'GET',
+      null
+    ).then(res => {
+      if (res.status === 200) {
+        if (res.data) {
+          console.log('hahaha');
+          dispatch(showLoading());
+          callAPI(
+            `ContractDetail/updateDeliveryCrop/${schedule.id}`,
+            'PUT',
+            null
+          ).then(res => {
+            if (res.status === 200) {
+              dispatch(hideLoading());
+              toastSuccess('Cập nhật thành công !');
+              let dbCon = firebase.database().ref('/notification/');
+              var noti = {
+                farmer: schedule.farmerUsername,
+                isSeen: false,
+                title:
+                  'Mùa vụ ngày ' +
+                  moment(schedule.delivery)
+                    .add(1, 'day')
+                    .format('DD/MM/YYYY') +
+                  ' của hợp đồng số' +
+                  schedule.contractNumber +
+                  ' của bạn đã giao hàng thành công.',
+                type: 'contract',
+                created: moment().toISOString()
+              };
+              dbCon.push(noti);
+              setValue(!value);
             }
-          })
+          });
         } else {
-          handleClickOpen()
+          handleClickOpen();
         }
-      } 
-    })
+      }
+    });
   };
 
   return (
@@ -204,7 +230,8 @@ const UpdateSchedule = () => {
         <DialogTitle id="alert-dialog-title">Xác nhận</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn không thể xác nhận lịch vân chuyển vì chưa giao thành công tất các đơn hàng
+            Bạn không thể xác nhận lịch vân chuyển vì chưa giao thành công tất
+            các đơn hàng
           </DialogContentText>
         </DialogContent>
         <DialogActions>

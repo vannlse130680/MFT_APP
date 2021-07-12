@@ -260,7 +260,7 @@ const AddEditEvent = forwardRef((props, ref) => {
               disabled={!formState.isValid}
               onClick={handleEdit}
               variant="contained">
-              Lưu
+              Xác nhận
             </Button>
           )}
         </CardActions>

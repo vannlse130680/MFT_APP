@@ -92,9 +92,9 @@ const ContractInformation = props => {
     setValue(!value);
   };
   const onComplete = () => {
-    console.log('DONE mua vu')
-    setValue(!value)
-  }
+    console.log('DONE mua vu');
+    setValue(!value);
+  };
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']} />
@@ -119,6 +119,7 @@ const ContractInformation = props => {
         )}
         {tab === 'tree' && (
           <TreeProcess
+            contractInfomation={contractInfomation}
             contractStatus={contractInfomation.status}
             treeId={contractInfomation.treeID}
           />
@@ -133,6 +134,7 @@ const ContractInformation = props => {
         )}
         {tab === 'detail' && (
           <ContractDetailPage
+            contractInfomation={contractInfomation}
             totalCrop={contractInfomation.totalCrop}
             onComplete={onComplete}
             contractStatus={contractInfomation.status}

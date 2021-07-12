@@ -42,7 +42,7 @@ const handleDeleteAll = () => {
 };
 
 const NotificationsPopover = props => {
-  const { notifications, anchorEl, ...rest } = props;
+  const { notifications, anchorEl,onClickNoti, ...rest } = props;
   console.log(notifications);
   const classes = useStyles();
 
@@ -58,7 +58,7 @@ const NotificationsPopover = props => {
         <CardHeader title="Thông báo" />
         <Divider />
         {notifications.length > 0 ? (
-          <NotificationList notifications={notifications} />
+          <NotificationList notifications={notifications} onClickNoti={onClickNoti} />
         ) : (
           <EmptyList />
         )}

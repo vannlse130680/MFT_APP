@@ -35,15 +35,23 @@ const schema = {
       message: 'Mã không được chứa kí tự đặc biệt'
     },
     length: {
-      maximum: 10,
-      message: 'Tối đa chỉ 10 kí tự'
+      maximum: 20,
+      message: 'Tối đa chỉ 20 kí tự'
     }
   },
   name: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự'
+    }
   },
   address: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    length: {
+      maximum: 100,
+      message: 'Tối đa chỉ 100 kí tự'
+    }
   },
   test: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
@@ -318,7 +326,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           <Autocomplete
             // onChange={handleChange}
             // value={selectedPlantType.t}
-            // disableClearable="true"
+            disableClearable="true"
             defaultValue={selectedGarden ? selectedGarden.plantTypeObj : null}
             // inputValue={formState.values.test}
             getOptionLabel={option => option.plantTypeName}

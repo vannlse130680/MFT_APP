@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NotificationList = props => {
-  const { notifications, className, ...rest } = props;
+  const { notifications, className,onClickNoti, ...rest } = props;
 
   const classes = useStyles();
 
@@ -85,6 +85,7 @@ const NotificationList = props => {
           divider={i < notifications.length - 1}
           key={notification.key}
           to={notification.type === 'contract' ? '/contract' : '/management/visiting'}
+          onClick={onClickNoti}
         >
           <ListItemAvatar>{avatars[notification.type]}</ListItemAvatar>
           <ListItemText

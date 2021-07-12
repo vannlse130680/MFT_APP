@@ -480,6 +480,7 @@ const TopBar = props => {
         anchorEl={notificationsRef.current}
         notifications={notifications}
         onClose={handleNotificationsClose}
+        onClickNoti={handleNotificationsClose}
         open={openNotifications}
       />
     </AppBar>

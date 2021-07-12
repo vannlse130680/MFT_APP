@@ -17,7 +17,8 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow, BottomNavigationAction
+  TableRow,
+  BottomNavigationAction
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -147,14 +148,16 @@ const GeneralInformation = props => {
           onAccept();
           let dbCon = firebase.database().ref('/notificationApp/');
           var noti = {
-            customer : contractInfomation.customerUsername,
+            customer: contractInfomation.customerUsername,
             isSeen: false,
-            title: 'Hợp đồng ' + contractInfomation.contractNumber + ' đã được cập nhật',
+            title:
+              'Hợp đồng số' +
+              contractInfomation.contractNumber +
+              ' đã được cập nhật.',
             type: 'contract',
             created: moment().toISOString()
-          }
-          dbCon.push(noti)
-
+          };
+          dbCon.push(noti);
         } else {
           dispatch(hideLoadingChildren());
           toastError('Gửi hợp đồng không thành công !');
@@ -187,6 +190,18 @@ const GeneralInformation = props => {
           toastSuccess('Xác nhận thành công !');
           dispatch(hideLoadingChildren());
           handleCloseConfirmCancel();
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Hợp đồng số ' +
+              contractInfomation.contractNumber +
+              ' của bạn đã được xác nhận hủy.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           onConfirmCancel();
         } else {
           dispatch(hideLoadingChildren());
@@ -204,6 +219,18 @@ const GeneralInformation = props => {
           toastSuccess('Xác nhận thành công !');
           dispatch(hideLoadingChildren());
           handleModalClose();
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Nông dân đã gửi yêu cầu hủy hợp đồng số ' +
+              contractInfomation.contractNumber +
+              ' của bạn.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           onCancelContract();
         } else {
           dispatch(hideLoadingChildren());

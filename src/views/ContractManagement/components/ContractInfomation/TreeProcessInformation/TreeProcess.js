@@ -18,6 +18,7 @@ import {
 } from 'actions/treeProcesses';
 
 import { Alert, AuthGuard, Page, SearchBar } from 'components';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import callAPI from 'utils/callAPI';
@@ -27,6 +28,7 @@ import useRouter from 'utils/useRouter';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
+import firebase from '../../../../../firebase/firebase'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -104,6 +106,18 @@ const TreeProcess = props => {
             dispatch(hideLoadingChildren());
             toastSuccess('Thêm thành công !');
             setValue(!value);
+            let dbCon = firebase.database().ref('/notificationApp/');
+            var noti = {
+              customer: props.contractInfomation.customerUsername,
+              isSeen: false,
+              title:
+                'Hợp đồng số ' +
+                props.contractInfomation.contractNumber +
+                ' của bạn có cập nhật tiến trình chăm sóc cây mới.',
+              type: 'contract',
+              created: moment().toISOString()
+            };
+            dbCon.push(noti);
             setEventModal({
               open: false,
               event: null

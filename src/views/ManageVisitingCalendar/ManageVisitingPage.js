@@ -21,6 +21,8 @@ import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildr
 import { toastSuccess } from 'utils/toastHelper';
 import Header from './components/Header';
 import Results from './components/Result/Results';
+import firebase from '../../firebase/firebase';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -169,6 +171,20 @@ const ManageVisitingPage = () => {
           setValue(!value);
           handleClose();
           toastSuccess('Chấp nhận thành công !');
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: selectedItem.username,
+            isSeen: false,
+            title:
+              'Lịch thăm vườn ngày ' +
+              selectedItem.searchDate +
+              ' tại ' +
+              selectedItem.gardenName +
+              ' của bạn đã được nông dân chấp nhận.',
+            type: 'visit',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
         }
       })
       .catch(err => {
@@ -188,6 +204,20 @@ const ManageVisitingPage = () => {
           setValue(!value);
           handleCloseReject();
           toastSuccess('Từ chối thành công !');
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: selectedItem.username,
+            isSeen: false,
+            title:
+              'Lịch thăm vườn ngày ' +
+              selectedItem.searchDate +
+              ' tại ' +
+              selectedItem.gardenName +
+              ' của bạn đã bị nông dân từ chối.',
+            type: 'visit',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
         }
       })
       .catch(err => {

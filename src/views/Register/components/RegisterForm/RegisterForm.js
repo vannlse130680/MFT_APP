@@ -42,8 +42,8 @@ const schema = {
   fullName: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 100,
-      message: 'Tối đa chỉ 100 kí tự '
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự '
     }
   },
   username: {
@@ -293,7 +293,7 @@ const RegisterForm = props => {
             hasError('fullName') ? formState.errors.fullName[0] : null
           }
           fullWidth
-          label="Họ và tên *"
+          label="Họ và tên"
           name="fullName"
           onChange={handleChange}
           value={formState.values.fullName || ''}
@@ -308,7 +308,7 @@ const RegisterForm = props => {
           name="birthday"
           variant="outlined"
           value={formState.values.birthday || ''}
-          label="Ngày sinh *"
+          label="Ngày sinh "
           type="date"
           // defaultValue="1999-06-03"
           className={classes.textField}
@@ -348,7 +348,7 @@ const RegisterForm = props => {
           helperText={
             hasError('phoneNum') ? formState.errors.phoneNum[0] : null
           }
-          label="Số điện thoại *"
+          label="Số điện thoại "
           name="phoneNum"
           onChange={handleChange}
           value={formState.values.phoneNum || ''}
@@ -433,7 +433,7 @@ const RegisterForm = props => {
               helperText={
                 hasError('address') ? formState.errors.address[0] : null
               }
-              label="Địa chỉ *"
+              label="Số/Đường"
               name="address"
               onChange={handleChange}
               value={formState.values.address || ''}
@@ -448,7 +448,7 @@ const RegisterForm = props => {
           helperText={
             hasError('username') ? formState.errors.username[0] : null
           }
-          label="Tên tài khoản *"
+          label="Tên tài khoản "
           name="username"
           onChange={handleChange}
           value={formState.values.username || ''}
@@ -460,7 +460,7 @@ const RegisterForm = props => {
           helperText={
             hasError('password') ? formState.errors.password[0] : null
           }
-          label="Mật khẩu *"
+          label="Mật khẩu "
           name="password"
           onChange={handleChange}
           type="password"
@@ -475,7 +475,7 @@ const RegisterForm = props => {
               ? formState.errors.confirmPassword[0]
               : null
           }
-          label="Xác nhận mật khẩu *"
+          label="Xác nhận mật khẩu "
           name="confirmPassword"
           onChange={handleChange}
           type="password"

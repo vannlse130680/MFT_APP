@@ -20,6 +20,7 @@ import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
 
 import { Alert, AuthGuard, Page, SearchBar } from 'components';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import callAPI from 'utils/callAPI';
@@ -28,7 +29,7 @@ import useRouter from 'utils/useRouter';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
-
+import firebase from '../../firebase/firebase';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -174,7 +175,22 @@ const ContractDetailPage = props => {
           dispatch(hideLoadingChildren());
           toastSuccess('Cập nhật thành công !');
           setValue(!value);
-
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: props.contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Hợp đồng số ' +
+              props.contractInfomation.contractNumber +
+              ' của bạn đã cập nhật thời gian có thể thu hoạch của vụ mùa mới.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
+          setEventModal({
+            open: false,
+            event: null
+          });
           setEventModal({
             open: false,
             event: null
@@ -193,7 +209,18 @@ const ContractDetailPage = props => {
           dispatch(hideLoadingChildren());
           toastSuccess('Cập nhật thành công !');
           setValue(!value);
-
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: props.contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Hợp đồng số ' +
+              props.contractInfomation.contractNumber +
+              ' của bạn đã cập nhật sản lượng (dự kiến) thu hoạch.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           setEventModal({
             open: false,
             event: null
@@ -222,7 +249,18 @@ const ContractDetailPage = props => {
           dispatch(hideLoadingChildren());
           toastSuccess('Cập nhật thành công !');
           setValue(!value);
-
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: props.contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Yêu cầu ngày giao của hợp đồng số ' +
+              props.contractInfomation.contractNumber +
+              ' của bạn đã được nông dân xác nhận.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           setEventModal({
             open: false,
             event: null
@@ -253,7 +291,18 @@ const ContractDetailPage = props => {
           dispatch(hideLoadingChildren());
           toastSuccess('Cập nhật thành công !');
           setValue(!value);
-
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: props.contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Mùa vụ hiện tại của hợp đồng số' +
+              props.contractInfomation.contractNumber +
+              ' của bạn đã thu hoạch và chuyển cho giao hàng.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           handleCloseAccept();
         } else {
           dispatch(hideLoadingChildren());
@@ -279,7 +328,18 @@ const ContractDetailPage = props => {
           dispatch(hideLoadingChildren());
           toastSuccess('Từ chối thành công !');
           setValue(!value);
-
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: props.contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Yêu cầu ngày giao của hợp đồng số ' +
+              props.contractInfomation.contractNumber +
+              ' của bạn đã bị nông dân từ chối.',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
           setEventModal({
             open: false,
             event: null

@@ -35,15 +35,15 @@ const schema = {
   name: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 100,
-      message: 'Tối đa chỉ 100 kí tự '
+      maximum: 50,
+      message: 'Tối đa chỉ 50 kí tự '
     }
   },
   supplier: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 200,
-      message: 'Tối đa chỉ 200 kí tự '
+      maximum: 100,
+      message: 'Tối đa chỉ 100 kí tự '
     }
   },
   test: {
@@ -54,7 +54,7 @@ const schema = {
     numericality: {
       greaterThan: 0,
       lessThanOrEqualTo: 1000,
-      message: 'Năng suất phải lớn 0 và bé hơn 10000kg'
+      message: 'Năng suất phải lớn 0 và bé hơn 1.000 kg'
     }
   },
   crops: {
@@ -73,7 +73,7 @@ const schema = {
 
       greaterThan: 0,
       lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+      message: 'Giá phải lớn 0 và bé hơn 100.000.000 và là số nguyên'
     }
   }
 };
@@ -196,7 +196,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const handleChange = (event, value) => {
     if (!event) return;
     /// changehere
-    if (event.target.name !== 'price') {
+    if (event.target.name !== 'price' && event.target.name !== 'yield') {
       event.persist();
     }
 
@@ -293,6 +293,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
           </Typography>
           <Autocomplete
+            disableClearable={true}
             // onChange={handleChange}
             // value={selectedPlantType.t}
             defaultValue={selectedPlantType ? selectedPlantType.t : null}
@@ -347,7 +348,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             fullWidth
             fullWidth
             helperText={hasError('crops') ? formState.errors.crops[0] : null}
-            label="Số vụ"
+            label="Số vụ/năm"
             name="crops"
             onChange={handleChange}
             type="number"
@@ -363,9 +364,11 @@ const AddEditEvent = forwardRef((props, ref) => {
             label="Năng suất bình quân (kg/vụ)"
             name="yield"
             onChange={handleChange}
-            type="number"
             value={formState.values.yield || ''}
             variant="outlined"
+            InputProps={{
+              inputComponent: NumberFormatCustom
+            }}
           />
 
           <TextField

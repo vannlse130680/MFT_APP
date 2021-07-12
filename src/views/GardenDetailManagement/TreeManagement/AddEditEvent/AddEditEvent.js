@@ -60,8 +60,8 @@ const schema = {
     },
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 10,
-      message: 'Tối đa chỉ 10 kí tự'
+      maximum: 20,
+      message: 'Tối đa chỉ 20 kí tự'
     }
   },
   price: {
@@ -71,7 +71,7 @@ const schema = {
 
       greaterThan: 0,
       lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn 0 và bé hơn 100000000 và là số nguyên'
+      message: 'Giá phải lớn 0 và bé hơn 100.000.000 và là số nguyên'
     }
   },
   desc: {

@@ -1,4 +1,8 @@
-import { FETCH_SCHEDULES_COLLECT, SEARCH_SCHEDULES_COLLECT } from "actions/schedulesCollect";
+import {
+  FETCH_SCHEDULES_COLLECT,
+  SEARCH_SCHEDULES_COLLECT
+} from 'actions/schedulesCollect';
+import moment from 'moment';
 
 var initState = [];
 var arrSearch = [];
@@ -7,9 +11,9 @@ var schedulesCollect = (state = initState, action) => {
     case FETCH_SCHEDULES_COLLECT:
       state = action.schedules.reverse();
       for (let index = 0; index < action.schedules.length; index++) {
-     
         state[index].statusName =
           action.schedules[index].status === 2 ? 'Đang giao' : 'Đã giao ';
+        state[index].searchDate = moment(action.schedules[index].delivery).format('DD/MM/YYYY');
       }
 
       // state.plantTypeName = action.plantTypes.t.typeName
