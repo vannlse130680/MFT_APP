@@ -208,7 +208,7 @@ const Results = props => {
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
                             contract.totalPrice
-                          )}
+                          )} VNĐ
                         </TableCell>
                         <TableCell>
                           {moment(contract.date).format('DD/MM/YYYY')}

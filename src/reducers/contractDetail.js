@@ -6,7 +6,7 @@ import moment from 'moment';
 const statusName = {
   0: 'Bắt đầu',
   1: 'Chờ thu hoạch',
-  2: 'Đã thu hoạch',
+  2: 'Đã thu hoạch và chờ giao',
   3: 'Đã giao'
 };
 var initState = [];

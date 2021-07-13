@@ -127,7 +127,7 @@ const HarvestSchedules = props => {
                     <TableCell>{index + 1}</TableCell>
 
                     <TableCell>{contract.treeCode}</TableCell>
-                    <TableCell>{contract.yield}</TableCell>
+                    <TableCell>{contract.yield} kg</TableCell>
                     <TableCell>
                       {moment(contract.deliveryDate).format('DD/MM/YYYY')}
                     </TableCell>

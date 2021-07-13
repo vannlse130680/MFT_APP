@@ -38,6 +38,8 @@ import useRouter from 'utils/useRouter';
 import AddEditEvent from './AddEditEvent';
 import Header from './Header/Header';
 import firebase from '../../../../../firebase/firebase';
+import QRCode from 'qrcode.react';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const useStyles = makeStyles(theme => ({
   root: { padding: theme.spacing(3) },
@@ -240,6 +242,19 @@ const GeneralInformation = props => {
       .catch(err => {
         console.log(err);
       });
+  };
+  const downloadQRCode = () => {
+    const qrCodeURL = document
+      .getElementById('qrCodeEl')
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    console.log(qrCodeURL);
+    let aEl = document.createElement('a');
+    aEl.href = qrCodeURL;
+    aEl.download = 'QR_Code.png';
+    document.body.appendChild(aEl);
+    aEl.click();
+    document.body.removeChild(aEl);
   };
   return (
     <Page className={classes.root}>
@@ -498,6 +513,28 @@ const GeneralInformation = props => {
             selectedContract={contractInfomation}
           />
         </Modal>
+        <Grid item lg={4} md={6} xl={4} xs={12}>
+          <Card>
+            <CardHeader title="Mã QR code" />
+            <Divider />
+            <CardContent className={classes.content}>
+              {' '}
+              <QRCode
+                id="qrCodeEl"
+                size={250}
+                value={contractInfomation.contractNumber ? 'contract/' + contractInfomation.contractNumber : ''}
+              />
+              <Button
+             
+                size="small"
+                
+                style={{ marginTop: 20 }}
+                onClick={downloadQRCode}>
+                <GetAppIcon /> Tải QR code{' '}
+              </Button>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
     </Page>
   );

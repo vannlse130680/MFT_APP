@@ -28,7 +28,7 @@ import useRouter from 'utils/useRouter';
 import AddEditEvent from './components/AddEditEvent';
 import Header from './components/Header';
 import Results from './components/Result/Results';
-import firebase from '../../../../../firebase/firebase'
+import firebase from '../../../../../firebase/firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   },
   results: {
     marginTop: theme.spacing(3)
+  },
+  alert : {
+    marginBottom: 10
   }
 }));
 
@@ -205,6 +208,14 @@ const TreeProcess = props => {
       <AuthGuard roles={['Nông dân']}></AuthGuard>
       {props.contractStatus === 1 || props.contractStatus === 5 ? (
         <div>
+          {props.contractStatus === 5 ? (
+            <Alert
+            
+              className={classes.alert}
+              variant="info"
+              message="Hợp đồng đã được hoàn thành !"
+            />
+          ) : null}
           <Header
             onAddEvent={handleEventNew}
             contractStatus={props.contractStatus}

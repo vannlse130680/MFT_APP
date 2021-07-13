@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   },
   results: {
     marginTop: theme.spacing(3)
+  },
+  alert : {
+    marginBottom: 10
   }
 }));
 
@@ -358,6 +361,14 @@ const ContractDetailPage = props => {
       <AuthGuard roles={['Nông dân']}></AuthGuard>
       {props.contractStatus === 1 || props.contractStatus === 5 ? (
         <div>
+          {props.contractStatus === 5 ? (
+            <Alert
+            
+              className={classes.alert}
+              variant="info"
+              message="Hợp đồng đã được hoàn thành !"
+            />
+          ) : null}
           <Header onAddEvent={handleEventNew} />
           <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
           {contractDetailStore && (

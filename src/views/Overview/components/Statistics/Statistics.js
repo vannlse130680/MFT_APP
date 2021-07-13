@@ -79,7 +79,7 @@ const Statistics = props => {
         <Grid className={classes.item} item md={4} sm={6} xs={12}>
           <Typography variant="h2">{harvestSchedule.length}</Typography>
           <Typography className={classes.overline} variant="overline">
-            Số cây sắp thu hoạch
+            cây sắp thu hoạch
           </Typography>
         </Grid>
         <Grid className={classes.item} item md={4} sm={6} xs={12}>

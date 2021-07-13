@@ -3,27 +3,23 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardHeader,
-  CardMedia,
-  Collapse,
-  colors,
+  CardHeader, colors,
   Divider,
   Grid,
   Table,
   TableBody,
   TableCell,
-  TableRow,
-  TextField,
-  Typography
+  TableRow
 } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { makeStyles } from '@material-ui/styles';
 import { hideLoading, showLoading } from 'actions/loading';
 import { Alert, AuthGuard, Label, Page } from 'components';
 import moment from 'moment';
+import QRCode from 'qrcode.react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import callAPI from 'utils/callAPI';
 import Header from 'views/GardenDetailManagement/Header/Header';
@@ -63,8 +59,8 @@ const statusName = {
   canceled: colors.grey[600],
   0: 'Tạm ngừng',
   1: 'Hoạt động',
-  2: "Đã bán",
-  3: "Đang giao dịch"
+  2: 'Đã bán',
+  3: 'Đang giao dịch'
 };
 const TreePageDetail = props => {
   const { match, history } = props;
@@ -89,12 +85,28 @@ const TreePageDetail = props => {
         console.log(err);
       });
   }, []);
+  const downloadQRCode = () => {
+    const qrCodeURL = document
+      .getElementById('qrCodeEl')
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    console.log(qrCodeURL);
+    let aEl = document.createElement('a');
+    aEl.href = qrCodeURL;
+    aEl.download = 'QR_Code.png';
+    document.body.appendChild(aEl);
+    aEl.click();
+    document.body.removeChild(aEl);
+  };
   return (
     <Page className={classes.root} title="Quản lý vườn">
       <AuthGuard roles={['Nông dân']} />
       <Header />
       <Divider />
-      <TreeDetailHeader gardenId={selectedTree.gardenID} style={{ marginTop: 20 }} />
+      <TreeDetailHeader
+        gardenId={selectedTree.gardenID}
+        style={{ marginTop: 20 }}
+      />
       <Alert
         className={classes.alert}
         message="Để cập nhật thông tin cây, bạn cần về quản lí danh sách cây !"
@@ -115,7 +127,7 @@ const TreePageDetail = props => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item lg={8} md={6} xl={9} xs={12}>
+        <Grid item lg={8} md={4} xl={6} xs={12}>
           <Card style={{ width: 800 }}>
             <CardHeader title="Thông tin chi tiết cây" />
             <Divider />
@@ -153,8 +165,7 @@ const TreePageDetail = props => {
                     <TableCell>Trạng thái:</TableCell>
                     <TableCell>
                       <div>
-                        <Label
-                          color={statusColors[selectedTree.status]}>
+                        <Label color={statusColors[selectedTree.status]}>
                           {statusName[selectedTree.status]}
                         </Label>
                       </div>
@@ -182,6 +193,27 @@ const TreePageDetail = props => {
                 Về quản lý loại cây trồng
               </Button> */}
             </CardActions>
+          </Card>
+        </Grid>
+        <Grid item lg={4} md={6} xl={3} xs={12}>
+          <Card>
+          <CardHeader title="Mã QR code" />
+          <Divider/>
+            <CardContent className={classes.content}>
+              {' '}
+              <QRCode
+                id="qrCodeEl"
+                size={250}
+                value={selectedTree.treeCode ? 'tree/' + selectedTree.treeCode : ''}
+              />
+              <Button
+                color='primary'
+                size='small'
+                variant='contained'
+                style={{marginTop: 20}}
+                onClick={downloadQRCode}
+              ><GetAppIcon/> Tải QR code </Button>
+            </CardContent>
           </Card>
         </Grid>
       </Grid>

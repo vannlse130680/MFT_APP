@@ -355,7 +355,7 @@ const TreePage = props => {
           />
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={handleCloseCopy}>
+          <Button onClick={handleCloseCopy}>
             Đóng
           </Button>
           <Button
