@@ -132,7 +132,7 @@ const Results = props => {
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
+        <CardHeader  title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>

@@ -5,7 +5,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Modal
+  Modal,
+  TextField
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   results: {
     marginTop: theme.spacing(3)
   },
-  alert : {
+  alert: {
     marginBottom: 10
   }
 }));
@@ -338,7 +339,7 @@ const ContractDetailPage = props => {
             title:
               'Yêu cầu ngày giao của hợp đồng số ' +
               props.contractInfomation.contractNumber +
-              ' của bạn đã bị nông dân từ chối.',
+              ' của bạn đã bị nông dân từ chối vì: ' + reason,
             type: 'contract',
             created: moment().toISOString()
           };
@@ -356,6 +357,25 @@ const ContractDetailPage = props => {
       }
     });
   };
+  const handleEventOpenEditDate = plantType => {
+    setSelectedPlantType(plantType);
+    setEventModal({
+      open: true,
+      event: 1
+    });
+  };
+  const handleEventOpenYieldDate = plantType => {
+    setSelectedPlantType(plantType);
+    setEventModal({
+      open: true,
+      event: 2
+    });
+  };
+  const [reason, setReason] = useState("")
+  const handleChange = (event) => {
+    setReason(event.target.value)
+   
+  }
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -363,7 +383,6 @@ const ContractDetailPage = props => {
         <div>
           {props.contractStatus === 5 ? (
             <Alert
-            
               className={classes.alert}
               variant="info"
               message="Hợp đồng đã được hoàn thành !"
@@ -382,6 +401,8 @@ const ContractDetailPage = props => {
               className={classes.results}
               contractDetails={contractDetailStore}
               onEditEvent={handleEventOpenEdit}
+              onEditDateEvent={handleEventOpenEditDate}
+              onEditYieldEvent={handleEventOpenYieldDate}
             />
           )}
           <Modal onClose={handleModalClose} open={eventModal.open}>
@@ -431,12 +452,23 @@ const ContractDetailPage = props => {
               <DialogContentText id="alert-dialog-description">
                 Bạn có chắn chắn muốn từ chối ngày giao hàng của khách hàng!
               </DialogContentText>
+              <TextField
+                className={classes.field}
+                multiline
+                fullWidth
+                // helperText={hasError('name') ? formState.errors.name[0] : null}
+                label="Lí do từ chối"
+                name="reason"
+                onChange={handleChange}
+                value={reason || ''}
+                variant="outlined"
+              />
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseDeny}>
                 Đóng
               </Button>
-              <Button color="primary" onClick={handleDenyDeliveryDate}>
+              <Button color="primary" onClick={handleDenyDeliveryDate} disabled={reason === ''}>
                 Đồng ý
               </Button>
             </DialogActions>

@@ -207,9 +207,9 @@ const TreePageDetail = props => {
                 value={selectedTree.treeCode ? 'tree/' + selectedTree.treeCode : ''}
               />
               <Button
-                color='primary'
+                
                 size='small'
-                variant='contained'
+                
                 style={{marginTop: 20}}
                 onClick={downloadQRCode}
               ><GetAppIcon/> Tải QR code </Button>

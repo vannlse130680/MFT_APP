@@ -146,7 +146,7 @@ const Results = props => {
         {Math.ceil(trees.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
+        <CardHeader title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -250,7 +250,7 @@ const Results = props => {
                             variant="contained">
                             {' '}
                             {/* <EditIcon className={classes.buttonIcon} /> */}
-                            Sửa
+                            Cập nhật
                           </Button>
                           <Button
                             color="secondary"

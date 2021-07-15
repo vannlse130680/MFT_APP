@@ -89,6 +89,10 @@ const General = props => {
               </TableCell>
             </TableRow>
             <TableRow selected>
+              <TableCell>Phí vận chuyển</TableCell>
+              <TableCell>{  new Intl.NumberFormat('vi-VN').format(gardenInfor.shipFee)} VNĐ</TableCell>
+            </TableRow>
+            <TableRow selected>
               <TableCell>Trạng thái</TableCell>
               <TableCell>
                 <div>

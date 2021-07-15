@@ -271,7 +271,7 @@ const Results = props => {
                             size="small"
                             onClick={handleEditClick.bind(this, plantType)}
                             variant="contained">
-                            Sửa
+                            Cập nhật
                           </Button>
                         </TableCell>
                       </TableRow>

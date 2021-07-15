@@ -42,20 +42,19 @@ const Toolbar = props => {
   const headers = [
     { label: 'STT', key: 'id' },
     { label: 'Người nhận', key: 'customer' },
+    { label: 'Địa chỉ', key: 'address' },
     { label: 'Vườn', key: 'garden' },
     { label: 'Loại trái cây', key: 'plantType' },
+
     { label: 'Khối lượng', key: 'yield' },
-    { label: 'Địa chỉ', key: 'address' },
+
     { label: 'Ngày', key: 'date' },
-    { label: 'Trạng thái', key: 'status' },
+    
+    { label: 'Trạng thái', key: 'status' }
   ];
   const [dataExport, setDataExport] = useState([{}]);
   useEffect(() => {
-    callAPI(
-      'ContractDetail/getAllCustomerDeliverySchedule',
-      'GET',
-      null
-    )
+    callAPI('ContractDetail/getAllCustomerDeliverySchedule', 'GET', null)
       .then(res => {
         if (res.status === 200) {
           var data = res.data;

@@ -132,7 +132,7 @@ const Results = props => {
         {Math.ceil(gardens.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
+        <CardHeader title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -154,8 +154,9 @@ const Results = props => {
                     <TableCell>STT</TableCell>
                     <TableCell>Mã</TableCell>
                     <TableCell>Tên</TableCell>
-                    <TableCell>Địa chỉ</TableCell>
                     <TableCell>Loại cây được trồng</TableCell>
+                    <TableCell>Địa chỉ</TableCell>
+                    <TableCell>Phí vận chuyển</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
@@ -186,6 +187,7 @@ const Results = props => {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{garden.gardenCode}</TableCell>
                         <TableCell>{garden.gardenName}</TableCell>
+                        <TableCell>{garden.plantTypeName}</TableCell>
                         <TableCell>
                           {garden.address +
                             ' , ' +
@@ -195,7 +197,12 @@ const Results = props => {
                             ' , ' +
                             garden.cityName}
                         </TableCell>
-                        <TableCell>{garden.plantTypeName}</TableCell>
+                        <TableCell>
+                          {' '}
+                          {new Intl.NumberFormat('vi-VN').format(
+                            garden.shipFee
+                          )} VNĐ
+                        </TableCell>
                         <TableCell>
                           <Label
                             color={statusColors[garden.status]}
@@ -223,7 +230,7 @@ const Results = props => {
                             variant="contained">
                             {' '}
                             {/* <EditIcon className={classes.buttonIcon} /> */}
-                            Sửa
+                            Cập nhật
                           </Button>
                         </TableCell>
                       </TableRow>

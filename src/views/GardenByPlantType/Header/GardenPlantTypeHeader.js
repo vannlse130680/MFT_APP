@@ -23,7 +23,7 @@ const GardenPlantTypeHeader = props => {
       <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
         <Grid item>
          
-          <Typography component="h1" variant="h5">
+          <Typography component="h2" variant="h3">
             Danh sách vườn trồng
           </Typography>
         </Grid>

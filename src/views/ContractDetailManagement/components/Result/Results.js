@@ -63,6 +63,8 @@ const Results = props => {
     contractId,
     onDenyDeliveryDate,
     contractStatus,
+    onEditDateEvent,
+    onEditYieldEvent,
     ...rest
   } = props;
   // console.log(plantTypes);
@@ -130,6 +132,12 @@ const Results = props => {
   const handleEditClick = plantType => {
     onEditEvent(plantType);
   };
+  const handleEditDateClick = plantType => {
+    onEditDateEvent(plantType);
+  };
+  const handleEditYieldClick = plantType => {
+    onEditYieldEvent(plantType);
+  };
   const hanleAcceptDeliveryDate = (id, event) => {
     event.preventDefault();
     console.log(id);
@@ -157,7 +165,7 @@ const Results = props => {
         {Math.ceil(contractDetails.length / rowsPerPage)}
       </Typography>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="Danh sách" />
+        <CardHeader title="Danh sách" />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -234,11 +242,37 @@ const Results = props => {
                           ) : (
                             'Chưa cập nhật'
                           )}{' '}
+                          {contractDetail.status === 0 ? (
+                            <div>
+                              {' '}
+                              <Link
+                                href="#"
+                                onClick={handleEditDateClick.bind(this, contractDetail)}>
+                                Cập nhật
+                              </Link>{' '}
+                             
+                            </div>
+                          ) : (
+                            null
+                          )}
                         </TableCell>
 
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
                             contractDetail.yield
+                          )}
+                           {contractDetail.status === 0 || contractDetail.status === 1 ? (
+                            <div>
+                              {' '}
+                              <Link
+                                href="#"
+                                onClick={handleEditYieldClick.bind(this, contractDetail)}>
+                                Cập nhật
+                              </Link>{' '}
+                             
+                            </div>
+                          ) : (
+                            null
                           )}
                         </TableCell>
                         <TableCell>
@@ -303,15 +337,15 @@ const Results = props => {
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-                          <Button
+                          {/* <Button
                             className={classes.actionIcon}
                             color="secondary"
                             onClick={handleEditClick.bind(this, contractDetail)}
                             size="small"
                             // disabled={contractStatus === 5}
                             variant="contained">
-                            Sửa
-                          </Button>
+                            Cập nhật
+                          </Button> */}
                           <Button
                             color="secondary"
                             onClick={handleAcceptClick.bind(

@@ -21,6 +21,7 @@ import { showLoadingChildren } from 'actions/childrenLoading';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
+import NumberFormat from 'react-number-format';
 import { useDispatch } from 'react-redux';
 import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
@@ -64,8 +65,39 @@ const schema = {
   },
   ward: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+  },
+  shipFee: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      onlyInteger: true,
+
+      greaterThan: 0,
+      lessThanOrEqualTo: 1000000,
+      message: 'Giá phải lớn 0 và bé hơn 1.000.000 và là số nguyên'
+    }
   }
 };
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      decimalSeparator={','}
+      getInputRef={inputRef}
+      isNumericString
+      onValueChange={values => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value
+          }
+        });
+      }}
+      thousandSeparator={'.'}
+    />
+  );
+}
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'absolute',
@@ -99,6 +131,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// eslint-disable-next-line react/no-multi-comp
 const AddEditEvent = forwardRef((props, ref) => {
   const {
     event,
@@ -193,7 +226,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           status: selectedGarden.status,
           city: selectedGarden.city,
           district: selectedGarden.district,
-          ward: selectedGarden.ward
+          ward: selectedGarden.ward,
+          shipFee: selectedGarden.shipFee
         }
       }));
   }, []);
@@ -205,8 +239,10 @@ const AddEditEvent = forwardRef((props, ref) => {
   const handleChange = (event, value) => {
     if (!event) return;
 
-    event.persist();
-
+    if (event.target.name !== 'shipFee') {
+      event.persist();
+    }
+    
     if (event.target.name === 'test') {
       setFormState(formState => ({
         ...formState,
@@ -228,8 +264,8 @@ const AddEditEvent = forwardRef((props, ref) => {
             event.target.type === 'checkbox'
               ? event.target.checked
               : event.target.value === ''
-              ? null
-              : event.target.value
+                ? null
+                : event.target.value
         },
         touched: {
           ...formState.touched,
@@ -285,7 +321,8 @@ const AddEditEvent = forwardRef((props, ref) => {
       plantTypeID: values.auto.id,
       city: values.city,
       district: values.district,
-      ward: values.ward
+      ward: values.ward,
+      shipFee: parseInt(values.shipFee) 
     };
 
     console.log(formState.values);
@@ -308,7 +345,9 @@ const AddEditEvent = forwardRef((props, ref) => {
       status: formState.values.status,
       city: formState.values.city,
       district: formState.values.district,
-      ward: formState.values.ward
+      ward: formState.values.ward,
+      shipFee: parseInt(formState.values.shipFee) 
+
     };
     // console.log(data)
     onEdit(data);
@@ -316,18 +355,26 @@ const AddEditEvent = forwardRef((props, ref) => {
   // console.log(selectedPlantType);
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
+    <Card
+      {...rest}
+      className={clsx(classes.root, className)}
+      ref={ref}
+    >
       <GoblaLoadingChildren />
       <form>
         <CardContent>
-          <Typography align="center" gutterBottom variant="h3">
+          <Typography
+            align="center"
+            gutterBottom
+            variant="h3"
+          >
             {mode === 'add' ? 'Thêm vườn' : 'Cập nhật vườn'}
           </Typography>
           <Autocomplete
             // onChange={handleChange}
             // value={selectedPlantType.t}
-            disableClearable="true"
             defaultValue={selectedGarden ? selectedGarden.plantTypeObj : null}
+            disableClearable={true}
             // inputValue={formState.values.test}
             getOptionLabel={option => option.plantTypeName}
             // value={formState.values.test}
@@ -371,19 +418,34 @@ const AddEditEvent = forwardRef((props, ref) => {
             value={formState.values.name || ''}
             variant="outlined"
           />
-          <Grid container spacing={1}>
-            <Grid item md={3} xs={12}>
+          <Grid
+            container
+            spacing={1}
+          >
+            <Grid
+              item
+              md={3}
+              xs={12}
+            >
               {' '}
-              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+              <FormControl
+                className={classes.formControl}
+                fullWidth
+                variant="outlined"
+              >
                 <InputLabel>Tỉnh/Thành Phố</InputLabel>
                 <Select
                   error={hasError('city')}
-                  name="city"
                   label="Tỉnh/Thành Phố"
+                  name="city"
                   onChange={handleChange}
-                  value={formState.values.city || ''}>
+                  value={formState.values.city || ''}
+                >
                   {citys.map((pro, index) => (
-                    <MenuItem key={index} value={pro.id}>
+                    <MenuItem
+                      key={index}
+                      value={pro.id}
+                    >
                       {pro.cityName}
                     </MenuItem>
                   ))}
@@ -393,54 +455,82 @@ const AddEditEvent = forwardRef((props, ref) => {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item md={3} xs={12}>
-              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+            <Grid
+              item
+              md={3}
+              xs={12}
+            >
+              <FormControl
+                className={classes.formControl}
+                fullWidth
+                variant="outlined"
+              >
                 <InputLabel id="demo-simple-select-label">
                   Quận/Huyện
                 </InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Quận/Huyện"
+                  labelId="demo-simple-select-label"
                   name="district"
+                  onChange={handleChange}
                   value={formState.values.district || ''}
-                  onChange={handleChange}>
+                >
                   {districts
                     .filter(dis => dis.cityID === formState.values.city)
                     .map((dis, index) => (
-                      <MenuItem key={index} value={dis.id}>
+                      <MenuItem
+                        key={index}
+                        value={dis.id}
+                      >
                         {dis.districtName}
                       </MenuItem>
                     ))}
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item md={3} xs={12}>
+            <Grid
+              item
+              md={3}
+              xs={12}
+            >
               {' '}
-              <FormControl className={classes.formControl} variant="outlined" fullWidth>
+              <FormControl
+                className={classes.formControl}
+                fullWidth
+                variant="outlined"
+              >
                 <InputLabel id="demo-simple-select-label">
                   Xã/Thị trấn
                 </InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  name="ward"
                   label="Xã/Thị Trấn"
+                  labelId="demo-simple-select-label"
+                  name="ward"
+                  onChange={handleChange}
                   value={formState.values.ward || ''}
-                  onChange={handleChange}>
+                >
                   {wards
                     .filter(
                       ward => ward.districtID === formState.values.district
                     )
                     .map((ward, index) => (
-                      <MenuItem key={index} value={ward.id}>
+                      <MenuItem
+                        key={index}
+                        value={ward.id}
+                      >
                         {ward.wardName}
                       </MenuItem>
                     ))}
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item md={3} xs={12}>
+            <Grid
+              item
+              md={3}
+              xs={12}
+            >
               <TextField
                 className={classes.field}
                 error={hasError('address')}
@@ -455,10 +545,30 @@ const AddEditEvent = forwardRef((props, ref) => {
                 variant="outlined"
               />
             </Grid>
+            <TextField
+              className={classes.field}
+              error={hasError('shipFee')}
+              fullWidth
+              fullWidth
+              helperText={hasError('shipFee') ? formState.errors.shipFee[0] : null}
+              InputProps={{
+                inputComponent: NumberFormatCustom
+              }}
+              label="Giá"
+              name="shipFee"
+              onChange={handleChange}
+              // type="number"
+              value={formState.values.shipFee || ''}
+              variant="outlined"
+            />
           </Grid>
 
           {selectedGarden ? (
-            <FormControl className={classes.field} variant="outlined" fullWidth>
+            <FormControl
+              className={classes.field}
+              fullWidth
+              variant="outlined"
+            >
               <InputLabel id="demo-simple-select-outlined-label">
                 Trạng thái
               </InputLabel>
@@ -468,7 +578,8 @@ const AddEditEvent = forwardRef((props, ref) => {
                 labelId="demo-simple-select-outlined-label"
                 name="status"
                 onChange={handleChange}
-                value={formState.values.status}>
+                value={formState.values.status}
+              >
                 <MenuItem value={1}>Hoạt động</MenuItem>
                 <MenuItem value={0}>Tạm ngừng</MenuItem>
               </Select>
@@ -483,7 +594,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           <Button
             className={classes.cancelButton}
             onClick={onCancel}
-            variant="contained">
+            variant="contained"
+          >
             Hủy bỏ
           </Button>
           {mode === 'add' ? (
@@ -491,7 +603,8 @@ const AddEditEvent = forwardRef((props, ref) => {
               className={classes.confirmButton}
               disabled={!formState.isValid}
               onClick={handleAdd}
-              variant="contained">
+              variant="contained"
+            >
               Tạo
             </Button>
           ) : (
@@ -499,7 +612,8 @@ const AddEditEvent = forwardRef((props, ref) => {
               className={classes.confirmButton}
               disabled={!formState.isValid}
               onClick={handleEdit}
-              variant="contained">
+              variant="contained"
+            >
               Lưu
             </Button>
           )}

@@ -4,7 +4,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  TextField
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -196,6 +197,7 @@ const ManageVisitingPage = () => {
     handleClickOpenReject();
   };
   const handleReject = () => {
+    console.log(reason)
     dispatch(showLoadingChildren());
     callAPI(`VisitingSchedule/rejectVisit/${selectedItem.id}`, 'PUT', null)
       .then(res => {
@@ -213,7 +215,7 @@ const ManageVisitingPage = () => {
               selectedItem.searchDate +
               ' tại ' +
               selectedItem.gardenName +
-              ' của bạn đã bị nông dân từ chối.',
+              ' của bạn đã bị nông dân từ chối vì: ' + reason,
             type: 'visit',
             created: moment().toISOString()
           };
@@ -224,6 +226,11 @@ const ManageVisitingPage = () => {
         console.log(err);
       });
   };
+  const [reason, setReason] = useState("")
+  const handleChange = (event) => {
+    setReason(event.target.value)
+   
+  }
   return (
     <Page className={classes.root} title="Yêu cầu thăm vườn">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -283,10 +290,21 @@ const ManageVisitingPage = () => {
           <DialogContentText id="alert-dialog-description">
             Bạn có chắc chắn muốn từ chối yêu cầu thăm vườn này của khách hàng !
           </DialogContentText>
+          <TextField
+            className={classes.field}
+            multiline
+            fullWidth
+            // helperText={hasError('name') ? formState.errors.name[0] : null}
+            label="Lí do từ chối"
+            name="reason"
+            onChange={handleChange}
+            value={reason || ''}
+            variant="outlined"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseReject}>Hủy bỏ</Button>
-          <Button onClick={handleReject} color="primary" autoFocus>
+          <Button onClick={handleReject}  disabled={reason === ''} color="primary" autoFocus>
             Đồng ý
           </Button>
         </DialogActions>

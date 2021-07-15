@@ -170,7 +170,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     onEditYield,
     ...rest
   } = props;
-
+  console.log(event);
   const classes = useStyles();
   const [expandDate, setExpandDate] = useState(true);
   const [expandYield, setExpandYield] = useState(true);
@@ -329,144 +329,148 @@ const AddEditEvent = forwardRef((props, ref) => {
           <Typography align="center" gutterBottom variant="h3">
             {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật'}
           </Typography>
-          <div className={classes.contentSection}>
-            <div
-              className={classes.contentSectionHeader}
-              onClick={handleToggleDate}>
-              <Typography variant="h5">Thời gian có thể thu hoạch</Typography>
-              {expandDate ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </div>
-            <Divider />
-            <Collapse in={expandDate}>
-              <div className={classes.contentSectionContent}>
-                <div className={classes.formGroup}>
-                  <TextField
-                    InputProps={{
-                      inputProps: {
-                        min: moment().format('YYYY-MM-DD'),
-                        max: formState.values.endDate
+          {event === 1 ? (
+            <div className={classes.contentSection}>
+              <div
+                className={classes.contentSectionHeader}
+                onClick={handleToggleDate}>
+                <Typography variant="h5">Thời gian có thể thu hoạch</Typography>
+                {expandDate ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </div>
+              <Divider />
+              <Collapse in={expandDate}>
+                <div className={classes.contentSectionContent}>
+                  <div className={classes.formGroup}>
+                    <TextField
+                      InputProps={{
+                        inputProps: {
+                          min: moment().format('YYYY-MM-DD'),
+                          max: formState.values.endDate
+                        }
+                      }}
+                      error={hasError('startDate')}
+                      helperText={
+                        hasError('startDate')
+                          ? formState.errors.startDate[0]
+                          : null
                       }
-                    }}
-                    error={hasError('startDate')}
-                    helperText={
-                      hasError('startDate')
-                        ? formState.errors.startDate[0]
-                        : null
-                    }
-                    onChange={handleChange}
-                    fullWidth
-                    name="startDate"
-                    variant="outlined"
-                    value={
-                      moment(formState.values.startDate).format('YYYY-MM-DD') ||
-                      ''
-                    }
-                    label="Bắt đầu"
-                    type="date"
-                    // defaultValue="1999-06-03"
-                    className={classes.field}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                  <TextField
-                    InputProps={{
-                      inputProps: { min: formState.values.startDate }
-                    }}
-                    error={hasError('endDate')}
-                    helperText={
-                      hasError('endDate') ? formState.errors.endDate[0] : null
-                    }
-                    onChange={handleChange}
-                    name="endDate"
-                    variant="outlined"
-                    value={
-                      moment(formState.values.endDate).format('YYYY-MM-DD') ||
-                      ''
-                    }
-                    label="Kết thúc"
-                    type="date"
-                    fullWidth
-                    // defaultValue="1999-06-03"
-                    className={classes.field}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-                <CardActions>
-                  {/* <IconButton edge="start" onClick={handleDelete}>
+                      onChange={handleChange}
+                      fullWidth
+                      name="startDate"
+                      variant="outlined"
+                      value={
+                        moment(formState.values.startDate).format(
+                          'YYYY-MM-DD'
+                        ) || ''
+                      }
+                      label="Bắt đầu"
+                      type="date"
+                      // defaultValue="1999-06-03"
+                      className={classes.field}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                    <TextField
+                      InputProps={{
+                        inputProps: { min: formState.values.startDate }
+                      }}
+                      error={hasError('endDate')}
+                      helperText={
+                        hasError('endDate') ? formState.errors.endDate[0] : null
+                      }
+                      onChange={handleChange}
+                      name="endDate"
+                      variant="outlined"
+                      value={
+                        moment(formState.values.endDate).format('YYYY-MM-DD') ||
+                        ''
+                      }
+                      label="Kết thúc"
+                      type="date"
+                      fullWidth
+                      // defaultValue="1999-06-03"
+                      className={classes.field}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                  </div>
+                  <CardActions>
+                    {/* <IconButton edge="start" onClick={handleDelete}>
             <DeleteIcon />
           </IconButton> */}
-                  <Button
-                    className={classes.cancelButton}
-                    onClick={onCancel}
-                    variant="contained">
-                    Hủy bỏ
-                  </Button>
+                    <Button
+                      className={classes.cancelButton}
+                      onClick={onCancel}
+                      variant="contained">
+                      Hủy bỏ
+                    </Button>
 
-                  <Button
-                    className={classes.confirmButton}
-                    disabled={!formState.isValid || !isUpdateDate}
-                    onClick={handleEditDate}
-                    variant="contained">
-                    Lưu
-                  </Button>
-                </CardActions>
-              </div>
-            </Collapse>
-          </div>
-          <div className={classes.contentSection}>
-            <div
-              className={classes.contentSectionHeader}
-              onClick={handleToggleYield}>
-              <Typography variant="h5">Tổng sản lượng thu hoạch</Typography>
-              {expandYield ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    <Button
+                      className={classes.confirmButton}
+                      disabled={!formState.isValid || !isUpdateDate}
+                      onClick={handleEditDate}
+                      variant="contained">
+                      Lưu
+                    </Button>
+                  </CardActions>
+                </div>
+              </Collapse>
             </div>
-            <Divider />
-            <Collapse in={expandYield}>
-              <div className={classes.contentSectionContent}>
-                <TextField
-                  error={hasErrorYield('totalYield')}
-                  helperText={
-                    hasErrorYield('totalYield')
-                      ? formStateYield.errors.totalYield[0]
-                      : null
-                  }
-                  fullWidth
-                  type="number"
-                  onChange={handleChangeYield}
-                  name="totalYield"
-                  variant="outlined"
-                  value={formStateYield.values.totalYield || ''}
-                  label="Tổng sản lượng"
-                  // defaultValue="1999-06-03"
-                  className={classes.field}
-                />
-
-                <CardActions>
-                  <Button
-                    className={classes.cancelButton}
-                    onClick={onCancel}
-                    variant="contained">
-                    Hủy bỏ
-                  </Button>
-
-                  <Button
-                    className={classes.confirmButton}
-                    disabled={
-                      !formStateYield.isValid ||
-                      selectedContractDetail.status === 2 ||
-                      selectedContractDetail.status === 3
-                    }
-                    onClick={handleEditYield}
-                    variant="contained">
-                    Lưu
-                  </Button>
-                </CardActions>
+          ) : (
+            <div className={classes.contentSection}>
+              <div
+                className={classes.contentSectionHeader}
+                onClick={handleToggleYield}>
+                <Typography variant="h5">Tổng sản lượng thu hoạch</Typography>
+                {expandYield ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </div>
-            </Collapse>
-          </div>
+              <Divider />
+              <Collapse in={expandYield}>
+                <div className={classes.contentSectionContent}>
+                  <TextField
+                    error={hasErrorYield('totalYield')}
+                    helperText={
+                      hasErrorYield('totalYield')
+                        ? formStateYield.errors.totalYield[0]
+                        : null
+                    }
+                    fullWidth
+                    type="number"
+                    onChange={handleChangeYield}
+                    name="totalYield"
+                    variant="outlined"
+                    value={formStateYield.values.totalYield || ''}
+                    label="Tổng sản lượng"
+                    // defaultValue="1999-06-03"
+                    className={classes.field}
+                  />
+
+                  <CardActions>
+                    <Button
+                      className={classes.cancelButton}
+                      onClick={onCancel}
+                      variant="contained">
+                      Hủy bỏ
+                    </Button>
+
+                    <Button
+                      className={classes.confirmButton}
+                      disabled={
+                        !formStateYield.isValid ||
+                        selectedContractDetail.status === 2 ||
+                        selectedContractDetail.status === 3
+                      }
+                      onClick={handleEditYield}
+                      variant="contained">
+                      Lưu
+                    </Button>
+                  </CardActions>
+                </div>
+              </Collapse>
+            </div>
+          )}
         </CardContent>
       </form>
     </Card>
@@ -475,7 +479,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
 AddEditEvent.propTypes = {
   className: PropTypes.string,
-  event: PropTypes.object,
+
   onAdd: PropTypes.func,
   onCancel: PropTypes.func,
   onDelete: PropTypes.func,

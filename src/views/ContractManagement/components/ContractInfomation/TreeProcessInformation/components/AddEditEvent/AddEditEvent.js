@@ -288,7 +288,7 @@ const AddEditEvent = forwardRef((props, ref) => {
       <form>
         <CardContent>
           <Typography align="center" gutterBottom variant="h3">
-            {mode === 'add' ? 'Thêm loại cây' : 'Cập nhật loại cây'}
+            {mode === 'add' ? 'Thêm chăm sóc cây mới' : 'Cập nhật chăm sóc cây'}
           </Typography>
           <Grid container spacing={1}>
             <Grid container item xs={6}>
