@@ -153,7 +153,7 @@ const GeneralInformation = props => {
             customer: contractInfomation.customerUsername,
             isSeen: false,
             title:
-              'Hợp đồng số' +
+              'Hợp đồng số ' +
               contractInfomation.contractNumber +
               ' đã được cập nhật.',
             type: 'contract',

@@ -21,7 +21,7 @@ import {
 import RemoveIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import AddPhotoIcon from '@material-ui/icons/AddPhotoAlternate';
 import { makeStyles } from '@material-ui/styles';
-import { showLoadingChildren } from 'actions/childrenLoading';
+import { hideLoadingChildren, showLoadingChildren } from 'actions/childrenLoading';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
@@ -30,6 +30,7 @@ import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildr
 import validate from 'validate.js';
 import firebase from '../../../../firebase/firebase';
 import NumberFormat from 'react-number-format';
+import { toastError } from 'utils/toastHelper';
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
 
@@ -264,6 +265,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           }));
         },
         error => {
+          dispatch(hideLoadingChildren());
+          toastError('Có lỗi xảy ra vui lòng thử lại');
           throw error;
         },
         () => {
@@ -322,6 +325,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           }));
         },
         error => {
+          dispatch(hideLoadingChildren());
+          toastError('Có lỗi xảy ra vui lòng thử lại');
           throw error;
         },
         () => {

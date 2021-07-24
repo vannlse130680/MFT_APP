@@ -182,7 +182,7 @@ const UpdateSchedule = () => {
                   moment(schedule.delivery)
                     .add(1, 'day')
                     .format('DD/MM/YYYY') +
-                  ' của hợp đồng số' +
+                  ' của hợp đồng số ' +
                   schedule.contractNumber +
                   ' của bạn đã giao hàng thành công.',
                 type: 'contract',

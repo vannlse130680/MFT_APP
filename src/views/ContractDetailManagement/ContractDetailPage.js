@@ -300,7 +300,7 @@ const ContractDetailPage = props => {
             customer: props.contractInfomation.customerUsername,
             isSeen: false,
             title:
-              'Mùa vụ hiện tại của hợp đồng số' +
+              'Mùa vụ hiện tại của hợp đồng số ' +
               props.contractInfomation.contractNumber +
               ' của bạn đã thu hoạch và chuyển cho giao hàng.',
             type: 'contract',

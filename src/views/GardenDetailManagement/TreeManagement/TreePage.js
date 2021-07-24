@@ -356,7 +356,7 @@ const TreePage = props => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseCopy}>
-            Đóng
+            Hủy bỏ
           </Button>
           <Button
             color="primary"

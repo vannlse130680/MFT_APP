@@ -19,6 +19,7 @@ import { toastError, toastSuccess } from 'utils/toastHelper';
 import { useDispatch } from 'react-redux';
 import { actUpdateUserAvatar } from 'actions/userInformation';
 import { hideLoading, showLoading } from 'actions/loading';
+import { hideLoadingChildren } from 'actions/childrenLoading';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -73,6 +74,8 @@ const ProfileDetails = props => {
           // }));
         },
         error => {
+          dispatch(hideLoadingChildren());
+          toastError('Có lỗi xảy ra vui lòng thử lại');
           throw error;
         },
         () => {

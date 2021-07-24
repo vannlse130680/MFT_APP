@@ -11,12 +11,16 @@ import {
   Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { showLoadingChildren } from 'actions/childrenLoading';
+import {
+  hideLoadingChildren,
+  showLoadingChildren
+} from 'actions/childrenLoading';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
+import { toastError } from 'utils/toastHelper';
 import validate from 'validate.js';
 import firebase from '../../../../../../../firebase/firebase';
 const schema = {
@@ -165,6 +169,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           }));
         },
         error => {
+          dispatch(hideLoadingChildren());
+          toastError('Có lỗi xảy ra vui lòng thử lại');
           throw error;
         },
         () => {
@@ -205,6 +211,8 @@ const AddEditEvent = forwardRef((props, ref) => {
           }));
         },
         error => {
+          dispatch(hideLoadingChildren());
+          toastError('Có lỗi xảy ra vui lòng thử lại');
           throw error;
         },
         () => {

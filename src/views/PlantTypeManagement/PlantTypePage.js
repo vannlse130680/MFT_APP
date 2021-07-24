@@ -131,7 +131,7 @@ const PlantTypePage = () => {
           });
         } else {
           dispatch(hideLoadingChildren());
-          toastError('Cập nhật thất bại !');
+          toastError('Cập nhật thất bại ! Vì có vườn thuộc loại cây này đang hoạt động');
         }
       }
     });

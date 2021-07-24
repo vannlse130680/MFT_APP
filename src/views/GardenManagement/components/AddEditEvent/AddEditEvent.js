@@ -554,7 +554,7 @@ const AddEditEvent = forwardRef((props, ref) => {
               InputProps={{
                 inputComponent: NumberFormatCustom
               }}
-              label="Giá"
+              label="Phí vận chuyển"
               name="shipFee"
               onChange={handleChange}
               // type="number"
