@@ -23,15 +23,17 @@ const schema = {
   newPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 50,
-      message: 'Tối đa chỉ 50 kí tự'
+      maximum: 16,
+      minimum: 4,
+      message: 'Tối đa chỉ 16 kí tự và tối thiểu 4 ký tự'
     }
   },
   confirmNewPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 50,
-      message: 'Tối đa chỉ 50 kí tự'
+      maximum: 16,
+      minimum: 4,
+      message: 'Tối đa chỉ 16 kí tự và tối thiểu 4 ký tự'
     },
     equality: {
       attribute: 'newPassword',
@@ -41,8 +43,9 @@ const schema = {
   oldPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 50,
-      message: 'Tối đa chỉ 50 kí tự'
+      maximum: 16,
+      minimum: 4,
+      message: 'Tối đa chỉ 16 kí tự và tối thiểu 4 ký tự'
     }
   }
 };

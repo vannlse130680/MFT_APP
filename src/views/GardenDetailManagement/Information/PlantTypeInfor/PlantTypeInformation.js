@@ -66,16 +66,16 @@ const PlantTypeInformation = props => {
       <CardContent className={classes.content}>
         <Table>
           <TableBody>
-            <TableRow>
+            <TableRow selected>
               <TableCell>Phân loại:</TableCell>
               <TableCell>{gardenInfor.tt.typeName}</TableCell>
             </TableRow>
             <TableRow
-              // style={{
-              //   whiteSpace: 'normal',
-              //   wordWrap: 'break-word'
-              // }}
-              selected>
+            // style={{
+            //   whiteSpace: 'normal',
+            //   wordWrap: 'break-word'
+            // }}
+            >
               <TableCell>Tên:</TableCell>
               <TableCell>{gardenInfor.pt.plantTypeName}</TableCell>
             </TableRow>
@@ -84,24 +84,24 @@ const PlantTypeInformation = props => {
               <TableCell>{gardenInfor.pt.crops}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Năng suất bình quân:</TableCell>
+              <TableCell>Năng suất bình quân(Kg/vụ):</TableCell>
               <TableCell>
                 {new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.yield)}
               </TableCell>
             </TableRow>
 
-            <TableRow>
+            <TableRow selected>
               <TableCell>Nhà cung cấp:</TableCell>
               <TableCell>{gardenInfor.pt.supplier} </TableCell>
             </TableRow>
-            <TableRow selected>
+            <TableRow >
               <TableCell>Giá:</TableCell>
               <TableCell>
                 {new Intl.NumberFormat('vi-VN').format(gardenInfor.pt.price)}{' '}
                 VNĐ
               </TableCell>
             </TableRow>
-            <TableRow>
+            <TableRow selected>
               <TableCell>Trạng thái:</TableCell>
               <TableCell>
                 <div>

@@ -99,7 +99,7 @@ const GardenPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Mã vườn đã tồn tại hoặc hoặc loại cây thuộc vườn này đang tạm ngừng !');
+            toastError('Mã vườn đã tồn tại  !');
           }
         }
       })
@@ -131,7 +131,7 @@ const GardenPage = () => {
             });
           } else {
             dispatch(hideLoadingChildren());
-            toastError('Mã vườn đã tồn tại !');
+            toastError('Mã vườn đã tồn tại hoặc hoặc loại cây thuộc vườn này đang tạm ngừng!');
           }
         }
       })

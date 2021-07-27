@@ -197,7 +197,7 @@ const ManageVisitingPage = () => {
     handleClickOpenReject();
   };
   const handleReject = () => {
-    console.log(reason)
+    console.log(reason);
     dispatch(showLoadingChildren());
     callAPI(`VisitingSchedule/rejectVisit/${selectedItem.id}`, 'PUT', null)
       .then(res => {
@@ -215,7 +215,8 @@ const ManageVisitingPage = () => {
               selectedItem.searchDate +
               ' tại ' +
               selectedItem.gardenName +
-              ' của bạn đã bị nông dân từ chối vì: ' + reason,
+              ' của bạn đã bị nông dân từ chối vì: ' +
+              reason,
             type: 'visit',
             created: moment().toISOString()
           };
@@ -226,11 +227,10 @@ const ManageVisitingPage = () => {
         console.log(err);
       });
   };
-  const [reason, setReason] = useState("")
-  const handleChange = (event) => {
-    setReason(event.target.value)
-   
-  }
+  const [reason, setReason] = useState('');
+  const handleChange = event => {
+    setReason(event.target.value);
+  };
   return (
     <Page className={classes.root} title="Yêu cầu thăm vườn">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -294,6 +294,11 @@ const ManageVisitingPage = () => {
             className={classes.field}
             multiline
             fullWidth
+            error={reason.length > 200}
+            
+            helperText={
+              reason.length > 200 ? "Tối đa 200 ký tự" : null
+            }
             // helperText={hasError('name') ? formState.errors.name[0] : null}
             label="Lí do từ chối"
             name="reason"
@@ -304,7 +309,11 @@ const ManageVisitingPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseReject}>Hủy bỏ</Button>
-          <Button onClick={handleReject}  disabled={reason === ''} color="primary" autoFocus>
+          <Button
+            onClick={handleReject}
+            disabled={reason === '' || reason.length > 200}
+            color="primary"
+            autoFocus>
             Đồng ý
           </Button>
         </DialogActions>

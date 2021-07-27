@@ -66,17 +66,17 @@ const General = props => {
       <CardContent className={classes.content}>
         <Table>
           <TableBody>
-            <TableRow>
+            <TableRow selected>
               <TableCell style={{ fontWeight: 'bold' }}> Mã</TableCell>
               <TableCell style={{ fontWeight: 'bold' }}>
                 {gardenInfor.gardenCode}
               </TableCell>
             </TableRow>
-            <TableRow selected>
+            <TableRow >
               <TableCell>Tên</TableCell>
               <TableCell>{gardenInfor.gardenName}</TableCell>
             </TableRow>
-            <TableRow>
+            <TableRow selected>
               <TableCell>Địa chỉ</TableCell>
               <TableCell>
                 {gardenInfor.address +
@@ -88,7 +88,7 @@ const General = props => {
                   gardenInfor.cityName}
               </TableCell>
             </TableRow>
-            <TableRow selected>
+            <TableRow >
               <TableCell>Phí vận chuyển</TableCell>
               <TableCell>{  new Intl.NumberFormat('vi-VN').format(gardenInfor.shipFee)} VNĐ</TableCell>
             </TableRow>

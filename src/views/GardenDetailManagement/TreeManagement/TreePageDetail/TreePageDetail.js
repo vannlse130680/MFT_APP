@@ -134,17 +134,17 @@ const TreePageDetail = props => {
             <CardContent style={{ padding: 0 }}>
               <Table>
                 <TableBody>
-                  <TableRow>
+                  <TableRow selected>
                     <TableCell style={{ width: 200 }}>Mã</TableCell>
                     <TableCell>{selectedTree.treeCode}</TableCell>
                   </TableRow>
-                  <TableRow selected>
+                  <TableRow >
                     <TableCell>Ngày Tạo</TableCell>
                     <TableCell>
                       {moment(selectedTree.addDate).format('DD/MM/YYYY')}
                     </TableCell>
                   </TableRow>
-                  <TableRow>
+                  <TableRow selected>
                     <TableCell>Tiêu chuẩn</TableCell>
                     <TableCell>{selectedTree.standard}</TableCell>
                   </TableRow>

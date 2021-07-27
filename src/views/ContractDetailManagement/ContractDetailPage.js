@@ -339,7 +339,8 @@ const ContractDetailPage = props => {
             title:
               'Yêu cầu ngày giao của hợp đồng số ' +
               props.contractInfomation.contractNumber +
-              ' của bạn đã bị nông dân từ chối vì: ' + reason,
+              ' của bạn đã bị nông dân từ chối vì: ' +
+              reason,
             type: 'contract',
             created: moment().toISOString()
           };
@@ -371,11 +372,10 @@ const ContractDetailPage = props => {
       event: 2
     });
   };
-  const [reason, setReason] = useState("")
-  const handleChange = (event) => {
-    setReason(event.target.value)
-   
-  }
+  const [reason, setReason] = useState('');
+  const handleChange = event => {
+    setReason(event.target.value);
+  };
   return (
     <Page className={classes.root} title="Quản lý hợp đồng">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
@@ -456,6 +456,8 @@ const ContractDetailPage = props => {
                 className={classes.field}
                 multiline
                 fullWidth
+                error={reason.length > 200}
+                helperText={reason.length > 200 ? 'Tối đa 200 ký tự' : null}
                 // helperText={hasError('name') ? formState.errors.name[0] : null}
                 label="Lí do từ chối"
                 name="reason"
@@ -468,7 +470,10 @@ const ContractDetailPage = props => {
               <Button color="primary" onClick={handleCloseDeny}>
                 Đóng
               </Button>
-              <Button color="primary" onClick={handleDenyDeliveryDate} disabled={reason === ''}>
+              <Button
+                color="primary"
+                onClick={handleDenyDeliveryDate}
+                disabled={reason === '' || reason.length > 200}>
                 Đồng ý
               </Button>
             </DialogActions>

@@ -83,6 +83,7 @@ const schema = {
     }
   },
   phoneNum: {
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     format: {
       pattern: /((09|03|07|08|05)+([0-9]{8})\b)/,
 
@@ -92,15 +93,17 @@ const schema = {
   password: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 50,
-      message: 'Tối đa chỉ 50 kí tự'
+      maximum: 16,
+      minimum: 4,
+      message: 'Tối đa chỉ 16 kí tự và tối thiểu 4 ký tự'
     }
   },
   confirmPassword: {
     presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
     length: {
-      maximum: 50,
-      message: 'Tối đa chỉ 50 kí tự'
+      maximum: 16,
+      minimum: 4,
+      message: 'Tối đa chỉ 16 kí tự và tối thiểu 4 ký tự'
     },
     equality: {
       attribute: 'password',
@@ -217,7 +220,8 @@ const RegisterForm = props => {
       },
       touched: {
         ...formState.touched,
-        [event.target.name]: event.target.value === '' ? false : true
+        // [event.target.name]: event.target.value === '' ? false : true
+        [event.target.name]:  true
       }
     }));
 
