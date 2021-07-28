@@ -314,7 +314,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     var { values } = formState;
     var username = JSON.parse(sessionStorage.getItem('USER')).username;
     var data = {
-      gardenCode: values.code,
+      gardenCode: values.code.toUpperCase(),
       farmerUsername: username,
       gardenName: values.name,
       address: values.address,
@@ -336,7 +336,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     // console.log(selectedGarden)
     var data = {
       gardenId: selectedGarden.id,
-      gardenCode: formState.values.code,
+      gardenCode: formState.values.code.toUpperCase(),
       farmerUsername: username,
       gardenName: formState.values.name,
       address: formState.values.address,

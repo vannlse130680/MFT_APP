@@ -284,7 +284,7 @@ const GeneralSettings = props => {
           setIsUpdate(false);
         } else {
           dispatch(hideLoading());
-          toastError('Cập nhật thất bại!');
+          toastError('Cập nhật thất bại !');
         }
       })
       .catch(err => {

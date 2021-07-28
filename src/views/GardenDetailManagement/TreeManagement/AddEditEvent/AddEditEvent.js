@@ -177,7 +177,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           (response, word) =>
             (response += word.slice(0, 1)),
           ''
-        )) + Math.floor(100000 + Math.random() * 900000)
+        )).toUpperCase() + Math.floor(100000 + Math.random() * 900000)
     },
     touched: {},
     errors: {}
@@ -273,7 +273,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           uploadTask.snapshot.ref.getDownloadURL().then(url => {
             var { values } = formState;
             var data = {
-              treeCode: values.code,
+              treeCode: values.code.toUpperCase(),
               gardenId: values.gardenId,
               price: parseInt(values.price),
               image: url,
@@ -289,7 +289,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     } else {
       var { values } = formState;
       var data = {
-        treeCode: values.code,
+        treeCode: values.code.toUpperCase(),
         gardenId: values.gardenId,
         price: parseInt(values.price),
         image: null,
@@ -333,7 +333,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           uploadTask.snapshot.ref.getDownloadURL().then(url => {
             var data = {
               id: selectedTree.id,
-              treeCode: formState.values.code,
+              treeCode: formState.values.code.toUpperCase(),
               gardenDetailID: selectedTree.gardenDetailID,
               price: parseInt(formState.values.price),
               standard: formState.values.standard,
@@ -351,7 +351,7 @@ const AddEditEvent = forwardRef((props, ref) => {
     } else {
       var data = {
         id: selectedTree.id,
-        treeCode: formState.values.code,
+        treeCode: formState.values.code.toUpperCase(),
         gardenDetailID: selectedTree.gardenDetailID,
         price: parseInt(formState.values.price),
         standard: formState.values.standard,
