@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import callAPI from 'utils/callAPI';
 import GoblaLoadingChildren from 'utils/globalLoadingChildren/GoblaLoadingChildren';
-import { toastSuccess } from 'utils/toastHelper';
+import { toastError, toastSuccess } from 'utils/toastHelper';
 import Header from './components/Header';
 import Results from './components/Result/Results';
 
@@ -89,6 +89,14 @@ const CustomerAccountsPage = () => {
           dispatch(hideLoadingChildren());
           setValue(!value);
           handleClose();
+        } else {
+          toastError(
+            banUsername.status === 1
+              ? 'Khóa thất bại !'
+              : 'Mở khóa thất bại !'
+          );
+          dispatch(hideLoadingChildren());
+          
         }
       })
       .catch(err => {

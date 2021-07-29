@@ -467,7 +467,7 @@ const GeneralInformation = props => {
           <Divider />
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Bạn có chắc chắn muốn gửi hợp đồng này cho khác hàng !
+              Bạn có chắc chắn muốn gửi hợp đồng này cho khách hàng !
             </DialogContentText>
           </DialogContent>
           <DialogActions>

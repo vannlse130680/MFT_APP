@@ -134,7 +134,7 @@ const Security = props => {
     callAPI('Account/changePassword', 'PUT', data).then(res => {
       if (res.data) {
         dispatch(hideLoading());
-        toastSuccess('Cập nhật thành công!');
+        toastSuccess('Đổi mật khẩu thành công !');
         setFormState({ isValid: false, values: {}, touched: {}, errors: {} });
       } else {
         dispatch(hideLoading());

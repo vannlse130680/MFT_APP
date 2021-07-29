@@ -270,7 +270,7 @@ const RegisterForm = props => {
       .then(response => {
         if (response.status === 200 && response.data) {
           dispatch(hideLoading());
-          toastSuccess('Đăng kí tài khoản thành công');
+          toastSuccess('Đăng ký tài khoản thành công !');
           history.push('/');
         } else {
           dispatch(hideLoading());

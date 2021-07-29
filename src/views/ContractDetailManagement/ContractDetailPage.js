@@ -428,7 +428,7 @@ const ContractDetailPage = props => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn có chắn chắn muốn xác nhận ngày giao hàng của khách hàng!
+                Bạn có chắc chắn muốn xác nhận ngày giao hàng của khách hàng!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -450,7 +450,7 @@ const ContractDetailPage = props => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn có chắn chắn muốn từ chối ngày giao hàng của khách hàng!
+                Bạn có chắc chắn muốn từ chối ngày giao hàng của khách hàng!
               </DialogContentText>
               <TextField
                 className={classes.field}
@@ -488,7 +488,7 @@ const ContractDetailPage = props => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Bạn có chắn chắn muốn hoàn thành chi tiết hợp đồng này!!
+                Bạn có chắc chắn muốn hoàn thành chi tiết hợp đồng này!
               </DialogContentText>
             </DialogContent>
             <DialogActions>

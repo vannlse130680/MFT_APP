@@ -73,7 +73,7 @@ const schema = {
 
       greaterThan: 0,
       lessThanOrEqualTo: 1000000,
-      message: 'Giá phải lớn 0 và bé hơn 1.000.000 và là số nguyên'
+      message: 'Giá phải lớn hơn 0 và bé hơn 1.000.000 và là số nguyên'
     }
   }
 };

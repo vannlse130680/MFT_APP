@@ -75,7 +75,7 @@ const ProfileDetails = props => {
         },
         error => {
           dispatch(hideLoadingChildren());
-          toastError('Có lỗi xảy ra vui lòng thử lại');
+          toastError('Có lỗi xảy ra vui lòng thử lại !');
           throw error;
         },
         () => {
@@ -89,11 +89,11 @@ const ProfileDetails = props => {
               .then(res => {
                 if (res.data === true) {
                   dispatch(hideLoading());
-                  toastSuccess('Cập nhật ảnh đại diện thành công');
+                  toastSuccess('Cập nhật ảnh đại diện thành công !');
                   dispatch(actUpdateUserAvatar(data.avatar));
                 } else {
                   dispatch(hideLoading());
-                  toastError('Cập nhật ảnh đại diện thất bại');
+                  toastError('Cập nhật ảnh đại diện thất bại !');
                 }
               })
               .catch(err => {
@@ -116,12 +116,12 @@ const ProfileDetails = props => {
         if (res.data === true) {
           setOpen(false);
           dispatch(hideLoading());
-          toastSuccess('Cập nhật ảnh đại diện thành công');
+          toastSuccess('Cập nhật ảnh đại diện thành công !');
           dispatch(actUpdateUserAvatar(data.avatar));
         } else {
           setOpen(false);
           dispatch(hideLoading());
-          toastError('Cập nhật ảnh đại diện thất bại');
+          toastError('Cập nhật ảnh đại diện thất bại !');
         }
       })
       .catch(err => {

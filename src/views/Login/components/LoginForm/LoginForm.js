@@ -113,7 +113,7 @@ const LoginForm = props => {
             router.history.push('/');
           } else {
             dispatch(hideLoading());
-            toastError('Tên đăng nhập hoặc mật khẩu không chính xác');
+            toastError('Tên đăng nhập hoặc mật khẩu không chính xác !');
           }
         })
         .catch(err => {

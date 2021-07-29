@@ -91,7 +91,7 @@ const GardenPage = () => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Tạo vườn thành công !');
+            toastSuccess('Thêm thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -123,7 +123,7 @@ const GardenPage = () => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Cập nhật vườn thành công !');
+            toastSuccess('Cập nhật thành công !');
             setValue(!value);
             setEventModal({
               open: false,

@@ -166,7 +166,7 @@ const TreePage = props => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Tạo cây thành công !');
+            toastSuccess('Thêm thành công !');
             setValue(!value);
             setEventModal({
               open: false,
@@ -198,7 +198,7 @@ const TreePage = props => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Cập nhật cây thành công !');
+            toastSuccess('Cập nhật thành công !');
             setValue(!value);
             setEventModal({
               open: false,

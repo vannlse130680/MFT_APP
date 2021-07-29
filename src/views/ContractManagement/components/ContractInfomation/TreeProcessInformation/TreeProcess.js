@@ -197,6 +197,9 @@ const TreeProcess = props => {
           setValue(!value);
           dispatch(hideLoadingChildren());
           handleCloseDelete();
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Xóa thất bại !');
         }
       })
       .catch(err => {

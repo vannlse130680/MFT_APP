@@ -130,7 +130,7 @@ const ShippAccountPage = () => {
         if (res.status === 200) {
           if (res.data) {
             dispatch(hideLoadingChildren());
-            toastSuccess('Thêm tài khoản thành công !');
+            toastSuccess('Thêm thành công !');
             setValue(!value);
             setEventModal({
               open: false,
