@@ -49,6 +49,7 @@ const ManageVisitingPage = () => {
 
   const handleClickOpenReject = () => {
     setOpenReject(true);
+    setReason("")
   };
 
   const handleCloseReject = () => {

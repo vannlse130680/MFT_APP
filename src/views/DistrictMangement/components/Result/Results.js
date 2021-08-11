@@ -195,7 +195,7 @@ const Results = props => {
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
-                            Xem
+                            Quản lý
                           </Button>
                           
                         </TableCell>

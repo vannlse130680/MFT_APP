@@ -105,6 +105,7 @@ const CancelContractReport = props => {
   }, [selectedPlantType]);
 
   useEffect(() => {
+    dispatch(showLoading())
     var username = JSON.parse(sessionStorage.getItem('USER'))
       ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
@@ -115,43 +116,44 @@ const CancelContractReport = props => {
     ).then(res => {
       if (res.status === 200) {
         setPlantType(res.data);
+        dispatch(hideLoading())
       }
     });
   }, []);
-  const handleReport = () => {
-    dispatch(showLoading());
-    var username = JSON.parse(sessionStorage.getItem('USER'))
-      ? JSON.parse(sessionStorage.getItem('USER')).username
-      : null;
-    var data = {
-      username: username,
-      minYear: parseInt(moment(selectedDateStart).format('YYYY'))
-    };
-    console.log(data);
-    callAPI('Report/CancelPlantTypeReportWithRange', 'PUT', data)
-      .then(res => {
-        if (res.status === 200) {
-          dispatch(hideLoading());
-          console.log(res.data);
-          var data = res.data;
-          var lables = [];
-          var reportData = { thisYear: [] };
-          for (let index = 0; index < data.length; index++) {
-            lables.push(data[index].plantTypeName);
+  // const handleReport = () => {
+  //   dispatch(showLoading());
+  //   var username = JSON.parse(sessionStorage.getItem('USER'))
+  //     ? JSON.parse(sessionStorage.getItem('USER')).username
+  //     : null;
+  //   var data = {
+  //     username: username,
+  //     minYear: parseInt(moment(selectedDateStart).format('YYYY'))
+  //   };
+  //   console.log(data);
+  //   callAPI('Report/CancelPlantTypeReportWithRange', 'PUT', data)
+  //     .then(res => {
+  //       if (res.status === 200) {
+  //         dispatch(hideLoading());
+  //         console.log(res.data);
+  //         var data = res.data;
+  //         var lables = [];
+  //         var reportData = { thisYear: [] };
+  //         for (let index = 0; index < data.length; index++) {
+  //           lables.push(data[index].plantTypeName);
 
-            reportData.thisYear.push(data[index].cancelTime);
-          }
+  //           reportData.thisYear.push(data[index].cancelTime);
+  //         }
 
-          setLables(lables);
-          setReportData(reportData);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // console.log(moment(selectedDateStart).format('YYYY'));
-    // console.log(moment(selectedDateEnd).format('YYYY'));
-  };
+  //         setLables(lables);
+  //         setReportData(reportData);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  //   // console.log(moment(selectedDateStart).format('YYYY'));
+  //   // console.log(moment(selectedDateEnd).format('YYYY'));
+  // };
   const handleChange = (event, value) => {
     setSelectedPlantType(value);
   };
@@ -162,7 +164,7 @@ const CancelContractReport = props => {
       className={clsx(classes.root, className)}>
       <CardHeader
         action={<GenericMoreButton />}
-        title="Thống kế số lượng hợp đồng đã hủy"></CardHeader>
+        title="Thống kế sản lượng thu hoạch theo loại cây"></CardHeader>
       <div className={classes.picker}>
         <Autocomplete
           id="combo-box-demo"

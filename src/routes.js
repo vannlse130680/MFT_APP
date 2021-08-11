@@ -37,6 +37,7 @@ import ReportCancelPage from 'views/CancelContractReport/ReportCancelPage';
 import SignContractRepostPage from 'views/SignContractReport/SignContractRepostPage';
 import LineChartReportPage from 'views/LineChartReport/LineChartReportPage';
 import FeebBackViewPage from 'views/FeedBackView/FeebBackViewPage';
+import TreeAvailable from 'views/TreeAvailable/TreeAvailable';
 
 const routes = [
   {
@@ -378,6 +379,16 @@ const routes = [
         path: '/feedBack/:username',
         exact: true,
         component: FeebBackViewPage
+      },
+      {
+        path: '/treelist/available',
+        exact: true,
+        component: TreeAvailable
+      },
+      {
+        path: '/treelist/sold',
+        exact: true,
+        component: LineChartReportPage
       },
       {
         component: () => <Redirect to="/errors/error-404" />

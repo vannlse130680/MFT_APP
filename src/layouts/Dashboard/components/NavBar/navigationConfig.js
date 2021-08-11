@@ -12,6 +12,7 @@ import PlantTypeIcon from '@material-ui/icons/Eco';
 import ContractIcon from '@material-ui/icons/Assignment';
 import VistitIcon from '@material-ui/icons/NaturePeople';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import NatureIcon from '@material-ui/icons/Nature';
 export default [
   {
     title: 'Trang',
@@ -42,6 +43,26 @@ export default [
             title: 'Vườn',
             href: '/gardenManagement/garden'
           }
+          // {
+          //   title: 'Cây',
+          //   href: '/dashboards/analytics',
+
+          // }
+        ]
+      },
+      {
+        title: 'Cây',
+        href: '/treelist',
+        icon: NatureIcon,
+        children: [
+          {
+            title: 'Cây có sẵn',
+            href: '/treelist/available'
+          },
+          {
+            title: 'Cây đã cho thuê',
+            href: '/treelist/sold'
+          },
           // {
           //   title: 'Cây',
           //   href: '/dashboards/analytics',

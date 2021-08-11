@@ -458,7 +458,7 @@ const ContractDetailPage = props => {
                 fullWidth
                 error={reason.length > 200}
                 helperText={reason.length > 200 ? 'Tối đa 200 ký tự' : null}
-                // helperText={hasError('name') ? formState.errors.name[0] : null}
+                // helperText={hasError('name') ? formState.errors.name[0] : null} test
                 label="Lí do từ chối"
                 name="reason"
                 onChange={handleChange}

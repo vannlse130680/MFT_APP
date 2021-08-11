@@ -22,7 +22,7 @@ var trees = (state = initState, action) => {
           action.trees[index].status === 1
             ? 'Hoạt động'
             : action.trees[index].status === 2
-            ? 'Đã bán'
+            ? 'Đã cho thuê'
             : 'Tạm ngừng';
       }
 

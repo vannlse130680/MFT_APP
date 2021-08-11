@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import ViewIcon from '@material-ui/icons/VisibilityOutlined';
 import {
   Card,
   CardActions,
@@ -26,17 +25,20 @@ import {
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
-import TreeHeader from 'views/GardenDetailManagement/Header/TreeHeader';
-import moment from 'moment';
-import useRouter from 'utils/useRouter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
     padding: 0
   },
+  alert: {
+    marginBottom: 10
+  },
   inner: {
     minWidth: 700
+  },
+  actionIcon: {
+    marginRight: theme.spacing(1)
   },
   nameCell: {
     display: 'flex',
@@ -50,36 +52,60 @@ const useStyles = makeStyles(theme => ({
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
-  },
-  buttonIcon: {
-    marginRight: theme.spacing(1)
-  },
-  actionIcon: {
-    marginRight: theme.spacing(1)
-  },
-  alert: {
-    marginTop: 50,
-    marginBottom: 10
   }
 }));
-
+function removeVietnameseTones(str) {
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+  str = str.replace(/đ/g, 'd');
+  str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A');
+  str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E');
+  str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I');
+  str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O');
+  str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U');
+  str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y');
+  str = str.replace(/Đ/g, 'D');
+  // Some system encode vietnamese combining accent as individual utf-8 characters
+  // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+  str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ''); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+  str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+  // Remove extra spaces
+  // Bỏ các khoảng trắng liền nhau
+  str = str.replace(/ + /g, ' ');
+  str = str.trim();
+  // Remove punctuations
+  // Bỏ dấu câu, kí tự đặc biệt
+  str = str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    ' '
+  );
+  return str;
+}
 const Results = props => {
-  const { className, trees, onEditEvent, onCopy, ...rest } = props;
-  const router = useRouter();
-
-  console.log(trees);
+  const { className, plantTypes, onEditEvent, resetPage, ...rest } = props;
+  // console.log(plantTypes);
   const classes = useStyles();
-
+  useEffect(() => {
+    if (resetPage) {
+      console.log(resetPage);
+      setPage(0);
+    }
+  }, [resetPage]);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleSelectAll = event => {
     const selectedCustomers = event.target.checked
-      ? trees.map(garden => garden.id)
+      ? plantTypes.map(garden => garden.id)
       : [];
 
     setSelectedCustomers(selectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleSelectOne = (event, id) => {
@@ -104,6 +130,7 @@ const Results = props => {
     }
 
     setSelectedCustomers(newSelectedCustomers);
+    // console.log(selectedCustomers)
   };
 
   const handleChangePage = (event, page) => {
@@ -115,35 +142,27 @@ const Results = props => {
     setPage(0);
   };
   const statusColors = {
-    3: colors.grey[600],
+    canceled: colors.grey[600],
     0: colors.orange[600],
     1: colors.green[600],
-    2: colors.red[600]
-  };
-  const statusName = {
-    0: 'Tạm ngừng',
-    1: 'Hoạt động',
-    2: 'Đã cho thuê',
-    3: 'Đang giao dịch'
+    rejected: colors.red[600]
   };
 
-  const handleEditClick = tree => {
-    onEditEvent(tree);
+  const handleEditClick = plantType => {
+    onEditEvent(plantType);
   };
-  const handleCopyClick = (tree) => {
-    onCopy(tree)
-  }
+
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      {trees.length < 1 ? (
+      {plantTypes.length < 1 ? (
         <Alert
           className={classes.alert}
-          message="Không tìm thấy cây nào ! Nhấp vào thêm mới để bắt đầu quản lý !"
+          message="Không tìm thấy cây nào !"
         />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
-        {trees.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
-        {Math.ceil(trees.length / rowsPerPage)}
+        {plantTypes.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
+        {Math.ceil(plantTypes.length / rowsPerPage)}
       </Typography>
       <Card>
         <CardHeader title="Danh sách" />
@@ -156,22 +175,23 @@ const Results = props => {
                   <TableRow>
                     {/* <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomers.length === trees.length}
+                        checked={selectedCustomers.length === plantTypes.length}
                         color="primary"
                         indeterminate={
                           selectedCustomers.length > 0 &&
-                          selectedCustomers.length < trees.length
+                          selectedCustomers.length < plantTypes.length
                         }
                         onChange={handleSelectAll}
                       />
                     </TableCell> */}
                     <TableCell>STT</TableCell>
-                    <TableCell>Hình đại diện</TableCell>
-                    <TableCell>Mã</TableCell>
-                    <TableCell>Giá thuê(/năm)</TableCell>
-                    <TableCell>Tiêu chuẩn</TableCell>
-                    <TableCell>Ngày tạo</TableCell>
-                    <TableCell>Trạng thái</TableCell>
+                    <TableCell>Mã cây</TableCell>
+                    <TableCell>Thuộc vườn</TableCell>
+                    <TableCell>Hợp đồng số</TableCell>
+                    <TableCell>Ngày cho thuê</TableCell>
+                    <TableCell>Số năm thuê</TableCell>
+                   
+                   
                     {/* <TableCell>Type</TableCell>
                     <TableCell>Projects held</TableCell>
                     <TableCell>Reviews</TableCell> */}
@@ -179,53 +199,58 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {trees
+                  {plantTypes
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((tree, index) => (
+                    .map((plantType, index) => (
                       <TableRow
                         hover
                         key={index}
-                        selected={selectedCustomers.indexOf(tree.id) !== -1}>
+                        selected={
+                          selectedCustomers.indexOf(plantType.id) !== -1
+                        }>
                         {/* <TableCell padding="checkbox">
                           <Checkbox
-                            checked={selectedCustomers.indexOf(tree.id) !== -1}
+                            checked={
+                              selectedCustomers.indexOf(plantType.id) !== -1
+                            }
                             color="primary"
-                            onChange={event => handleSelectOne(event, tree.id)}
-                            value={selectedCustomers.indexOf(tree.id) !== -1}
+                            onChange={event =>
+                              handleSelectOne(event, plantType.id)
+                            }
+                            value={
+                              selectedCustomers.indexOf(plantType.id) !== -1
+                            }
                           />
                         </TableCell> */}
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
-                          <img
-                            style={{
-                              width: '120px',
-                              height: '150px',
-                              position: 'relative',
-                              display: 'inline-block',
-                              overflow: 'hidden',
-                              margin: 0
-                            }}
-                            src={
-                              tree.image
-                                ? tree.image
-                                : '/images/treeDefault.png'
-                            }
-                          />
+                          {plantType.plantTypeName}{' '}
+                          {/* {'C' + removeVietnameseTones(plantType.plantTypeName
+                            .split(/\s/)
+                            .reduce(
+                              (response, word) =>
+                                (response += word.slice(0, 1)),
+                              ''
+                            ))} */}
                         </TableCell>
-                        <TableCell>{tree.treeCode}</TableCell>
+                        <TableCell>{plantType.t.typeName}</TableCell>
                         <TableCell>
-                          {new Intl.NumberFormat('vi-VN').format(tree.price)}
+                          {new Intl.NumberFormat('vi-VN').format(
+                            plantType.yield
+                          )}
                         </TableCell>
-                        <TableCell>{tree.standard}</TableCell>
+                        <TableCell>{plantType.crops}</TableCell>
+                        <TableCell>{plantType.supplier}</TableCell>
                         <TableCell>
-                          {moment(tree.addDate).format('DD/MM/YYYY')}
+                          {new Intl.NumberFormat('vi-VN').format(
+                            plantType.price
+                          )}
                         </TableCell>
-
                         <TableCell>
                           <Label
-                            color={statusColors[tree.status]}
+                            color={statusColors[plantType.status]}
                             variant="contained">
-                            {statusName[tree.status]}
+                            {plantType.status === 1 ? 'Hoạt động' : 'Tạm ngừng'}
                           </Label>
                         </TableCell>
 
@@ -235,31 +260,18 @@ const Results = props => {
                             color="primary"
                             component={RouterLink}
                             size="small"
-                            to={`/tree/${tree.id}`}
+                            to={`/plantType/${plantType.id}`}
                             variant="contained">
                             {' '}
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-
                           <Button
                             color="secondary"
-                            className={classes.actionIcon}
-                            onClick={handleEditClick.bind(this, tree)}
                             size="small"
+                            onClick={handleEditClick.bind(this, plantType)}
                             variant="contained">
-                            {' '}
-                            {/* <EditIcon className={classes.buttonIcon} /> */}
                             Cập nhật
-                          </Button>
-                          <Button
-                            color="secondary"
-                            onClick={handleCopyClick.bind(this, tree)}
-                            size="small"
-                            variant="contained">
-                            {' '}
-                            {/* <EditIcon className={classes.buttonIcon} /> */}
-                            Sao chép
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -272,7 +284,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={trees.length}
+            count={plantTypes.length}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             page={page}
@@ -288,11 +300,11 @@ const Results = props => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  gardens: PropTypes.array
+  plantTypes: PropTypes.array.isRequired
 };
 
 Results.defaultProps = {
-  gardens: []
+  plantTypes: []
 };
 
 export default Results;

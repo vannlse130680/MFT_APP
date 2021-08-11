@@ -376,7 +376,7 @@ const TreePage = props => {
         <DialogTitle id="alert-dialog-title">Chỉnh sửa cây</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn không thể chỉnh sửa cây trong trạng thái đã bán hoặc đang trong
+            Bạn không thể chỉnh sửa cây trong trạng thái đã cho thuê hoặc đang trong
             giao dịch!
           </DialogContentText>
         </DialogContent>

@@ -80,7 +80,12 @@ validate.extend(validate.validators.datetime, {
 // }
 const schemaYield = {
   totalYield: {
-    presence: { allowEmpty: false, message: 'Không thể bỏ trống' }
+    presence: { allowEmpty: false, message: 'Không thể bỏ trống' },
+    numericality: {
+      greaterThan: 0,
+      lessThanOrEqualTo: 1000,
+      message: 'Phải lớn hơn 0 và bé hơn 1.000'
+    }
   }
 };
 const schema = {

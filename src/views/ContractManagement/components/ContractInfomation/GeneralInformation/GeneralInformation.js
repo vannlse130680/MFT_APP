@@ -123,6 +123,15 @@ const GeneralInformation = props => {
   const handleClose = () => {
     setOpen(false);
   };
+  const [openAll, setOpenAll] = React.useState(false);
+
+  const handleClickOpenAll = () => {
+    setOpenAll(true);
+  };
+
+  const handleCloseAll = () => {
+    setOpenAll(false);
+  };
 
   const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
 
@@ -357,6 +366,17 @@ const GeneralInformation = props => {
                         </Label>
                       </div>
                     </TableCell>
+                    
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Tiền hoàn trả:</TableCell>
+                    <TableCell>
+                      {' '}
+                      {new Intl.NumberFormat('vi-VN').format(
+                        contractInfomation.refund
+                      )}{' '}
+                      VNĐ
+                    </TableCell>
                   </TableRow>
                   {contractInfomation.status === 1 ||
                   contractInfomation.status === 2 ||
@@ -386,6 +406,15 @@ const GeneralInformation = props => {
                   </Button>
                 ) : null}
 
+                {contractInfomation.status === 1 ? (
+                  <Button
+                    color="secondary"
+                    onClick={handleClickOpenAll}
+                    disabled={moment(contractInfomation.date).add(contractInfomation.numOfYear,'years') > moment()}
+                    variant="contained">
+                    Tất toán hợp đồng
+                  </Button>
+                ) : null}
                 {contractInfomation.status === 1 ? (
                   <Button
                     className={classes.redButton}
@@ -428,16 +457,7 @@ const GeneralInformation = props => {
                     <TableCell>Nguyên nhân:</TableCell>
                     <TableCell>{contractInfomation.cancelReason}</TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell>Tiền hoàn trả:</TableCell>
-                    <TableCell>
-                      {' '}
-                      {new Intl.NumberFormat('vi-VN').format(
-                        contractInfomation.refund
-                      )}{' '}
-                      VNĐ
-                    </TableCell>
-                  </TableRow>
+                  
                 </TableBody>
               </Table>
               <CardActions>
@@ -505,6 +525,32 @@ const GeneralInformation = props => {
           </DialogActions>
           <GoblaLoadingChildren />
         </Dialog>
+        <Dialog
+          aria-describedby="alert-dialog-description"
+          aria-labelledby="alert-dialog-title"
+          onClose={handleCloseAll}
+          open={openAll}>
+          <DialogTitle id="alert-dialog-title">
+            {''} <p style={{ fontSize: 18 }}>Tất toán hợp đồng</p>
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            {/* moment(contractInfomation.date).add(contractInfomation.numOfYear,'year') */}
+              {moment(contractInfomation.date).add(contractInfomation.numOfYear,'years') < moment() ? "Pass" : "Feature"}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseAll}>Hủy bỏ</Button>
+            <Button
+              autoFocus
+              color="primary"
+              onClick={handleCloseAll}>
+              Đồng ý
+            </Button>
+          </DialogActions>
+          <GoblaLoadingChildren />
+        </Dialog>
         <Modal onClose={handleModalClose} open={eventModal.open}>
           <AddEditEvent
             event={eventModal.event}
@@ -522,12 +568,14 @@ const GeneralInformation = props => {
               <QRCode
                 id="qrCodeEl"
                 size={250}
-                value={contractInfomation.contractNumber ? 'contract/' + contractInfomation.contractNumber : ''}
+                value={
+                  contractInfomation.contractNumber
+                    ? 'contract/' + contractInfomation.contractNumber
+                    : ''
+                }
               />
               <Button
-             
                 size="small"
-                
                 style={{ marginTop: 20 }}
                 onClick={downloadQRCode}>
                 <GetAppIcon /> Tải QR code{' '}

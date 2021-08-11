@@ -32,7 +32,7 @@ const schema = {
 
       greaterThan: 0,
       lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn hơn 0 và bé hơn 100000000 và là số nguyên'
+      message: 'Giá phải lớn hơn 0 và bé hơn 100.000.000 và là số nguyên'
     }
   },
   shipFee: {
@@ -41,8 +41,8 @@ const schema = {
       onlyInteger: true,
 
       greaterThan: -1,
-      lessThanOrEqualTo: 100000000,
-      message: 'Giá phải lớn hơn 0 và bé hơn 100000000 và là số nguyên'
+      lessThanOrEqualTo: 1000000,
+      message: 'Giá phải lớn hơn 0 và bé hơn 1.000.000 và là số nguyên'
     }
   }
 };
