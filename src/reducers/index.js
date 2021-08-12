@@ -20,6 +20,8 @@ import schedulesCollect from './schedulesCollect';
 import scheduleDetails from './scheduleDetails'
 import visitings from './visitings'
 import feedbacks from './feedbacks'
+import treeAvailable from './treeAvailable';
+import treeSold from './treeSold';
 const rootReducer = combineReducers({
   session: sessionReducer,
   loading,
@@ -40,7 +42,9 @@ const rootReducer = combineReducers({
   schedulesCollect,
   scheduleDetails,
   visitings,
-  feedbacks
+  feedbacks,
+  treeAvailable,
+  treeSold
 });
 
 export default rootReducer;

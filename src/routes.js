@@ -38,6 +38,7 @@ import SignContractRepostPage from 'views/SignContractReport/SignContractRepostP
 import LineChartReportPage from 'views/LineChartReport/LineChartReportPage';
 import FeebBackViewPage from 'views/FeedBackView/FeebBackViewPage';
 import TreeAvailable from 'views/TreeAvailable/TreeAvailable';
+import TreeSold from 'views/TreeSold/TreeSold';
 
 const routes = [
   {
@@ -388,7 +389,7 @@ const routes = [
       {
         path: '/treelist/sold',
         exact: true,
-        component: LineChartReportPage
+        component: TreeSold
       },
       {
         component: () => <Redirect to="/errors/error-404" />

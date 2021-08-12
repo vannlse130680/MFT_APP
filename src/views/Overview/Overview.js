@@ -47,6 +47,8 @@ const Overview = () => {
   const dispatch = useDispatch();
   const [contracts, setContracts] = useState([]);
   const [visitings, setVisitings] = useState([]);
+  const [available, setAvailable] = useState(0);
+  const [sold, setSold] = useState(0);
   const [harvestSchedule, setHarvestSchedule] = useState([])
   const [profile, setProfile] = useState({});
   useEffect(() => {
@@ -66,6 +68,7 @@ const Overview = () => {
       ).then(res => {
         if (res.status === 200) {
           setContracts(res.data)
+          
         }
       });
       callAPI(
@@ -86,6 +89,25 @@ const Overview = () => {
           setHarvestSchedule(res.data)
         }
       });
+      callAPI(
+        `Tree/getSoldTree/${data.username}`,
+        'GET',
+        null
+      ).then(res => {
+        if (res.status === 200) {
+          setSold(res.data.length)
+        }
+      });
+      callAPI(
+        `Tree/getActiveTree/${data.username}`,
+        'GET',
+        null
+      ).then(res => {
+        if (res.status === 200) {
+          setAvailable(res.data.length)
+        }
+      });
+      
       dispatch(hideLoading());
     } else {
       dispatch(hideLoading());
@@ -99,7 +121,7 @@ const Overview = () => {
         <div>
           {' '}
           <Statistics className={classes.statistics} contracts={contracts} visitings={visitings} harvestSchedule={harvestSchedule}/>
-          {/* <Notifications className={classes.notifications} /> */}
+          <Notifications className={classes.notifications} available={available} sold={sold} />
           {/* <Projects className={classes.projects} /> */}
           <Contracts className={classes.projects} contracts={contracts}/>
           <HarvestSchedules className={classes.projects} harvestSchedule={harvestSchedule}/>

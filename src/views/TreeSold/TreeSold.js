@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/styles';
 import { hideLoadingChildren } from 'actions/childrenLoading';
 import { hideLoading, showLoading } from 'actions/loading';
 import { actFetchPlantTypes, actSearchPlantTypes } from 'actions/plantType';
-import { actFetchTreeAvailable, actSearchTreeAvailable } from 'actions/treeAvailable';
+import { actFetchSold, actSearchSold } from 'actions/treeSold';
 
 import { AuthGuard, Page, SearchBar } from 'components';
 import React, { useEffect, useState } from 'react';
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TreeAvailable = () => {
+const TreeSold = () => {
   const [value, setValue] = useState(true); // integer state
   const [open, setOpen] = React.useState(false);
 
@@ -43,7 +43,7 @@ const TreeAvailable = () => {
     setOpen(false);
   };
   const [searchValue, setSearchValue] = useState('');
-  const treeAvailableStore = useSelector(state => state.treeAvailable);
+  const treeSoldStore = useSelector(state => state.treeSold);
   const dispatch = useDispatch();
   useEffect(() => {
     console.log('reden');
@@ -52,14 +52,14 @@ const TreeAvailable = () => {
       ? JSON.parse(sessionStorage.getItem('USER')).username
       : null;
     // console.log(username)
-    callAPI(`Tree/getActiveTree/${username}`, 'GET', null)
+    callAPI(`Tree/getSoldTree/${username}`, 'GET', null)
       .then(res => {
         if (res.status === 200) {
           // fetch(
           //   `http://127.0.0.1:4000/send-text?recipient=${'840985900614'}&textmessage=${'text.textmessage'}`
           // ).catch(err => console.error(err));
-          dispatch(actFetchTreeAvailable(res.data));
-          dispatch(actSearchTreeAvailable(searchValue));
+          dispatch(actFetchSold(res.data));
+          dispatch(actSearchSold(searchValue));
           dispatch(hideLoading());
         }
       })
@@ -142,24 +142,26 @@ const TreeAvailable = () => {
   const handleSearch = keyword => {
     setSearchValue(keyword);
     setResetPage(!resetPage);
-    dispatch(actSearchTreeAvailable(keyword));
+    dispatch(actSearchSold(keyword));
   };
+
 
   return (
     <Page className={classes.root} title="Cây">
       <AuthGuard roles={['Nông dân']}></AuthGuard>
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      {treeAvailableStore && (
+      {treeSoldStore && (
         <Results
           resetPage={resetPage}
           className={classes.results}
-          plantTypes={treeAvailableStore}
+          plantTypes={treeSoldStore}
           // onEditEvent={handleEventOpenEdit}
         />
       )}
+    
     </Page>
   );
 };
 
-export default TreeAvailable;
+export default TreeSold;

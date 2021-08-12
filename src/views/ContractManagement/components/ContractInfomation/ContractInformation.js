@@ -91,6 +91,10 @@ const ContractInformation = props => {
   const onCancelContract = () => {
     setValue(!value);
   };
+
+  const onTT = () => {
+    setValue(!value);
+  };
   const onComplete = () => {
     console.log('DONE mua vu');
     setValue(!value);
@@ -130,6 +134,7 @@ const ContractInformation = props => {
             onAccept={onAccept}
             onConfirmCancel={onConfirmCancel}
             onCancelContract={onCancelContract}
+            onTT={onTT}
           />
         )}
         {tab === 'detail' && (

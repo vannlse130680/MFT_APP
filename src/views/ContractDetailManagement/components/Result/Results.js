@@ -242,38 +242,41 @@ const Results = props => {
                           ) : (
                             'Chưa cập nhật'
                           )}{' '}
-                          {contractDetail.status === 0 ? (
+                          {contractDetail.status === 0 &&
+                          contractStatus !== 5 ? (
                             <div>
                               {' '}
                               <Link
                                 href="#"
-                                onClick={handleEditDateClick.bind(this, contractDetail)}>
+                                onClick={handleEditDateClick.bind(
+                                  this,
+                                  contractDetail
+                                )}>
                                 Cập nhật
                               </Link>{' '}
-                             
                             </div>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
                         </TableCell>
 
                         <TableCell>
                           {new Intl.NumberFormat('vi-VN').format(
                             contractDetail.yield
                           )}
-                           {contractDetail.status === 0 || contractDetail.status === 1 ? (
+                          {(contractDetail.status === 0 ||
+                            contractDetail.status === 1) &&
+                          contractStatus !== 5 ? (
                             <div>
                               {' '}
                               <Link
                                 href="#"
-                                onClick={handleEditYieldClick.bind(this, contractDetail)}>
+                                onClick={handleEditYieldClick.bind(
+                                  this,
+                                  contractDetail
+                                )}>
                                 Cập nhật
                               </Link>{' '}
-                             
                             </div>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
                         </TableCell>
                         <TableCell>
                           {contractDetail.deliveryDate ? (
@@ -287,25 +290,29 @@ const Results = props => {
                               <div>
                                 {contractDetail.status === 0 ? (
                                   <div>
-                                    {' '}
-                                    <Link
-                                      href="#"
-                                      onClick={hanleAcceptDeliveryDate.bind(
-                                        this,
-                                        contractDetail.id
-                                      )}>
-                                      Xác nhận
-                                    </Link>{' '}
-                                    |{' '}
-                                    <Link
-                                      // style={{ color: 'red' }}
-                                      href="#"
-                                      onClick={hanleDenyDeliveryDate.bind(
-                                        this,
-                                        contractDetail.id
-                                      )}>
-                                      Từ chối
-                                    </Link>
+                                    {contractStatus !== 5 ? (
+                                      <div>
+                                        {' '}
+                                        <Link
+                                          href="#"
+                                          onClick={hanleAcceptDeliveryDate.bind(
+                                            this,
+                                            contractDetail.id
+                                          )}>
+                                          Xác nhận
+                                        </Link>{' '}
+                                        |{' '}
+                                        <Link
+                                          // style={{ color: 'red' }}
+                                          href="#"
+                                          onClick={hanleDenyDeliveryDate.bind(
+                                            this,
+                                            contractDetail.id
+                                          )}>
+                                          Từ chối
+                                        </Link>
+                                      </div>
+                                    ) : null}
                                   </div>
                                 ) : (
                                   'Đã xác nhận'
@@ -353,7 +360,10 @@ const Results = props => {
                               contractDetail.id
                             )}
                             size="small"
-                            disabled={contractDetail.status !== 1}
+                            disabled={
+                              contractDetail.status !== 1 ||
+                              contractStatus === 5
+                            }
                             variant="contained">
                             Xác nhận
                           </Button>

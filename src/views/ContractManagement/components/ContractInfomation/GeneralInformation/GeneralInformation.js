@@ -71,6 +71,9 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     height: 150,
     width: 150
+  },
+  type: {
+    fontWeight: theme.typography.fontWeightMedium
   }
 }));
 const statusColors = {
@@ -95,6 +98,7 @@ const GeneralInformation = props => {
     onAccept,
     onConfirmCancel,
     onCancelContract,
+    onTT,
     ...rest
   } = props;
 
@@ -115,7 +119,7 @@ const GeneralInformation = props => {
   console.log(router);
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-
+  const [ttPrice, setTTPrice] = React.useState(0);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -126,6 +130,20 @@ const GeneralInformation = props => {
   const [openAll, setOpenAll] = React.useState(false);
 
   const handleClickOpenAll = () => {
+    callAPI(
+      `Contract/CalculateSettlement/${contractInfomation.contractID}`,
+      'GET',
+      null
+    )
+      .then(res => {
+        if (res.data) {
+          console.log(res.data);
+          setTTPrice(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     setOpenAll(true);
   };
 
@@ -252,6 +270,40 @@ const GeneralInformation = props => {
         console.log(err);
       });
   };
+  const handleTT = () => {
+    dispatch(showLoadingChildren());
+    var data = {
+      contractID: contractInfomation.contractID,
+      settlement: ttPrice
+    };
+    callAPI('Contract/CompleteContractAndCalculateSettlement', 'PUT', data)
+      .then(res => {
+        if (res.data) {
+          toastSuccess('Tất toán hợp đồng thành công !');
+          dispatch(hideLoadingChildren());
+          handleCloseAll();
+          let dbCon = firebase.database().ref('/notificationApp/');
+          var noti = {
+            customer: contractInfomation.customerUsername,
+            isSeen: false,
+            title:
+              'Hợp đồng số ' +
+              contractInfomation.contractNumber +
+              ' của bạn đã được tất toán',
+            type: 'contract',
+            created: moment().toISOString()
+          };
+          dbCon.push(noti);
+          onTT();
+        } else {
+          dispatch(hideLoadingChildren());
+          toastError('Tất toán không thành công !');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   const downloadQRCode = () => {
     const qrCodeURL = document
       .getElementById('qrCodeEl')
@@ -366,7 +418,6 @@ const GeneralInformation = props => {
                         </Label>
                       </div>
                     </TableCell>
-                    
                   </TableRow>
                   <TableRow>
                     <TableCell>Tiền hoàn trả:</TableCell>
@@ -410,7 +461,12 @@ const GeneralInformation = props => {
                   <Button
                     color="secondary"
                     onClick={handleClickOpenAll}
-                    disabled={moment(contractInfomation.date).add(contractInfomation.numOfYear,'years') > moment()}
+                    disabled={
+                      moment(contractInfomation.date).add(
+                        contractInfomation.numOfYear,
+                        'years'
+                      ) > moment()
+                    }
                     variant="contained">
                     Tất toán hợp đồng
                   </Button>
@@ -457,7 +513,6 @@ const GeneralInformation = props => {
                     <TableCell>Nguyên nhân:</TableCell>
                     <TableCell>{contractInfomation.cancelReason}</TableCell>
                   </TableRow>
-                  
                 </TableBody>
               </Table>
               <CardActions>
@@ -536,16 +591,23 @@ const GeneralInformation = props => {
           <Divider />
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            {/* moment(contractInfomation.date).add(contractInfomation.numOfYear,'year') */}
-              {moment(contractInfomation.date).add(contractInfomation.numOfYear,'years') < moment() ? "Pass" : "Feature"}
+              {/* moment(contractInfomation.date).add(contractInfomation.numOfYear,'year') */}
+              {/* {moment(contractInfomation.date).add(
+                contractInfomation.numOfYear,
+                'years'
+              ) < moment()
+                ? 'Pass'
+                : 'Feature'} */}
+              Sau khi tính toán số tiền bạn hoàn trả cho bên khách hàng sao khi
+              tất toán hợp đồng là{' '}
+              <span className={classes.type}>
+                {new Intl.NumberFormat('vi-VN').format(ttPrice)} {} VNĐ
+              </span>{' '}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseAll}>Hủy bỏ</Button>
-            <Button
-              autoFocus
-              color="primary"
-              onClick={handleCloseAll}>
+            <Button autoFocus color="primary" onClick={handleTT}>
               Đồng ý
             </Button>
           </DialogActions>
@@ -575,9 +637,9 @@ const GeneralInformation = props => {
                 }
               />
               <Button
+                onClick={downloadQRCode}
                 size="small"
-                style={{ marginTop: 20 }}
-                onClick={downloadQRCode}>
+                style={{ marginTop: 20 }}>
                 <GetAppIcon /> Tải QR code{' '}
               </Button>
             </CardContent>

@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 
 import { Alert, GenericMoreButton, Label, TableEditBar } from 'components';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -155,10 +156,7 @@ const Results = props => {
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       {plantTypes.length < 1 ? (
-        <Alert
-          className={classes.alert}
-          message="Không tìm thấy cây nào !"
-        />
+        <Alert className={classes.alert} message="Không tìm thấy cây nào !" />
       ) : null}
       <Typography color="textSecondary" gutterBottom variant="body2">
         {plantTypes.length} kết quả được tìm thấy. Trang {page + 1} trên{' '}
@@ -188,8 +186,13 @@ const Results = props => {
                     <TableCell>Mã cây</TableCell>
                     <TableCell>Loại cây trồng</TableCell>
                     <TableCell>Thuộc vườn</TableCell>
-                    
-                    <TableCell>Giá cho thuê</TableCell>
+                    <TableCell>Hợp đồng số</TableCell>
+                    <TableCell>Ngày cho thuê</TableCell>
+                    <TableCell>Số năm thuê</TableCell>
+
+                    {/* <TableCell>Type</TableCell>
+                    <TableCell>Projects held</TableCell>
+                    <TableCell>Reviews</TableCell> */}
                     <TableCell align="center">Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
@@ -220,22 +223,24 @@ const Results = props => {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           {plantType.treeCode}{' '}
-                          
+                          {/* {'C' + removeVietnameseTones(plantType.plantTypeName
+                            .split(/\s/)
+                            .reduce(
+                              (response, word) =>
+                                (response += word.slice(0, 1)),
+                              ''
+                            ))} */}
                         </TableCell>
-                        <TableCell>
-                          {plantType.plantTypeName}{' '}
-                          
-                        </TableCell>
-                     
-                        <TableCell>{plantType.gardenName}</TableCell>
-                       
-                        <TableCell>
-                          {new Intl.NumberFormat('vi-VN').format(
-                            plantType.price
-                          )}
-                        </TableCell>
-                        
 
+                        <TableCell>{plantType.plantTypeName}</TableCell>
+                        <TableCell>{plantType.gardenName}</TableCell>
+                        <TableCell>{plantType.contractNumber}</TableCell>
+                        <TableCell>
+                          {moment(plantType.date).format('DD/MM/YYYY')}
+                        </TableCell>
+                        <TableCell>
+                          {plantType.numOfYear}
+                        </TableCell>
                         <TableCell align="center">
                           <Button
                             className={classes.actionIcon}
@@ -248,7 +253,7 @@ const Results = props => {
                             {/* <ViewIcon className={classes.buttonIcon} /> */}
                             Xem
                           </Button>
-                         
+                          
                         </TableCell>
                       </TableRow>
                     ))}
