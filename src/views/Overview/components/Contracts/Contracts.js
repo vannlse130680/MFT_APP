@@ -20,6 +20,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
 import axios from 'utils/axios';
 import { Alert, ProjectCard } from 'components';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -142,7 +143,7 @@ const Contracts = props => {
                       )}
                     </TableCell>
 
-                    <TableCell>{contract.plantTypeName}</TableCell>
+                    <TableCell>{moment(contract.date).format('DD/MM/YYYY')}</TableCell>
 
                     <TableCell align="center">
                       <Button
